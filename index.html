@@ -314,6 +314,51 @@ h1 em { color: var(--lime); font-style: italic; }
 .role-select optgroup { font-weight: 600; font-style: normal; color: var(--lime); }
 
 .cell-pt-toggle { width: 30px; padding: 6px 2px 6px 4px !important; text-align: center; }
+
+/* Drag handle column */
+.cell-drag {
+  width: 36px; padding: 6px 2px 6px 4px !important; text-align: center;
+}
+.drag-handle {
+  background: transparent; border: 1px solid var(--border); color: var(--text-faint);
+  width: 22px; height: 22px; border-radius: 4px; cursor: grab;
+  font-size: 12px; line-height: 1; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 0.15s ease;
+  letter-spacing: -2px;
+}
+.drag-handle:hover { border-color: var(--lime); color: var(--lime); background: var(--bg-elev-2); }
+.drag-handle:active { cursor: grabbing; }
+.move-row-buttons { display: none; flex-direction: column; gap: 2px; margin-top: 2px; }
+.move-btn {
+  background: transparent; border: 1px solid var(--border); color: var(--text-faint);
+  width: 22px; height: 16px; border-radius: 3px; cursor: pointer;
+  font-size: 8px; line-height: 1; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.move-btn:hover { border-color: var(--lime); color: var(--lime); }
+
+/* Row drag visual feedback */
+.schedule tbody tr.dragging { opacity: 0.4; }
+.schedule tbody tr.drag-over { box-shadow: inset 0 2px 0 var(--lime); }
+
+/* Fill-across button inside month-1 cell */
+.month-cell-wrap { position: relative; display: flex; align-items: center; }
+.fill-btn {
+  position: absolute; right: -2px; top: 50%; transform: translateY(-50%);
+  background: var(--bg-elev-2); border: 1px solid var(--border);
+  color: var(--text-faint); cursor: pointer;
+  width: 18px; height: 18px; border-radius: 3px; padding: 0;
+  font-size: 10px; line-height: 1;
+  display: none; align-items: center; justify-content: center;
+  transition: all 0.15s ease;
+}
+.cell-month:hover .fill-btn { display: inline-flex; }
+.fill-btn:hover { border-color: var(--lime); color: var(--lime); background: var(--bg-elev-3); }
+
+/* Undo/redo disabled state */
+.icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.icon-btn:disabled:hover { border-color: var(--border); color: var(--text-muted); }
 .cell-pt-toggle .pt-btn {
   background: transparent; border: 1px solid var(--border); color: var(--text-faint); width: 22px; height: 22px; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; padding: 0; display: inline-flex; align-items: center; justify-content: center;
   transition: all 0.15s ease;
@@ -606,29 +651,85 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   .scroll-hint { display: block; }
 }
 @media (max-width: 760px) {
-  .wrap { padding: 20px 14px 60px; }
+  body { font-size: 15px; }
+  .wrap { padding: 20px 14px 80px; }
   .summary-grid { grid-template-columns: repeat(2, 1fr); }
   .project-bar { grid-template-columns: 1fr 1fr; }
   h1 { font-size: 26px; }
-  .deal-bar { gap: 8px; }
+  .tagline { font-size: 14px; }
+  .deal-bar { gap: 8px; justify-content: center; }
   .deal-bar .spacer { display: none; }
-  .deal-bar select, .deal-bar input[type=text] { min-width: 0; flex: 1; }
+  .deal-bar select, .deal-bar input[type=text] { min-width: 0; flex: 1 1 auto; }
+  .deal-bar .btn-mini-action { font-size: 13px; padding: 9px 14px; }
   .panel { padding: 16px; }
+  .panel-title { font-size: 12px; }
   .schedule-scroll { margin: -16px; padding: 16px; }
+  .schedule { font-size: 13px; }
+  .schedule thead th { font-size: 11px; padding: 0 6px 12px; }
+  .row-input { font-size: 14px; padding: 8px 10px; }
+  .cell-month .row-input { font-size: 14px; padding: 8px 6px; }
+  .cell-rate .row-input { width: 60px; font-size: 14px; }
+  .summary-label { font-size: 11px; }
+  .summary-value { font-size: 22px; }
+  .field-input { font-size: 18px; }
+  .field-label { font-size: 11px; }
   .modal { padding: 22px; }
   .modal h2 { font-size: 22px; }
+  .modal p, .modal ul { font-size: 14px; }
+  .add-row { justify-content: center; }
+  .add-row .add-input { font-size: 14px; padding: 10px 12px; }
+  .preset-buttons { justify-content: center; }
+  .btn-preset { font-size: 12px; padding: 8px 14px; }
+  .actions-bar { justify-content: center; }
+  .btn { font-size: 14px; padding: 12px 20px; }
+  /* Show move buttons, hide drag handle on touch-only devices */
+  .drag-handle { display: none; }
+  .move-row-buttons { display: flex; }
+  /* Larger touch targets */
+  .pt-btn, .btn-x { width: 28px; height: 28px; font-size: 12px; }
+  .btn-collapse { width: 32px; height: 32px; font-size: 16px; }
+  /* Fill button always visible on touch */
+  .fill-btn { display: inline-flex; }
+  /* Header layout adapts */
+  header { flex-direction: column; gap: 16px; }
+  .header-meta { align-items: flex-start; text-align: left; width: 100%; }
+  .header-actions { flex-wrap: wrap; }
 }
 @media (max-width: 480px) {
-  .summary-grid { grid-template-columns: 1fr 1fr; }
+  body { font-size: 16px; }
+  .wrap { padding: 18px 12px 80px; }
+  .summary-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .project-bar { grid-template-columns: 1fr; }
+  h1 { font-size: 24px; }
   .phase-row { grid-template-columns: 1fr 70px 90px 22px; gap: 6px; }
-  .phase-row .row-input { padding: 7px 8px; font-size: 12px; }
+  .phase-row .row-input { padding: 9px 10px; font-size: 14px; }
   .passthrough-grid { grid-template-columns: 1fr 100px 24px; }
   .passthrough-grid .pt-note-col { display: none; }
   .pay-row, .pay-header-row { grid-template-columns: 1fr 60px 80px 90px 22px; gap: 4px; }
   .pay-row > .pay-due, .pay-row > .pay-notes,
   .pay-header-row > .pay-due-h, .pay-header-row > .pay-notes-h { display: none; }
-  .pay-row .row-input, .pay-row select { padding: 7px 8px; font-size: 12px; }
+  .pay-row .row-input, .pay-row select { padding: 9px 10px; font-size: 14px; }
+}
+/* Touch-only fallbacks (any device without hover capability) */
+@media (hover: none) {
+  .drag-handle { display: none; }
+  .move-row-buttons { display: flex; }
+  .fill-btn { display: inline-flex; }
+}
+
+/* Subtle dynamic transitions (light touch) */
+.summary-card, .panel, .field {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.summary-card:hover { border-color: var(--border-strong); }
+.btn, .btn-add, .btn-preset, .btn-mini-action, .icon-btn, .pt-btn, .btn-collapse {
+  transition: all 0.15s ease;
+}
+.btn:active, .btn-preset:active, .btn-mini-action:active, .icon-btn:active {
+  transform: translateY(1px);
+}
+.row-input, .add-input, select, .notes-textarea {
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 </style>
 </head>
@@ -680,6 +781,26 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
     <div class="modal-section">
       <h3>Margin Grade</h3>
       <p>A+ Excellent (≥50%), A Healthy (40–49%), B OK (30–39%), C Compressed (20–29%), D Risk (10–19%), F Loss (&lt; 0% or below target). Color and badge update live. Reminders panel calls out specifics.</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Undo / Redo</h3>
+      <p>Big buttons in the header, or use keyboard: <strong>Cmd+Z</strong> to undo, <strong>Cmd+Shift+Z</strong> (or <strong>Cmd+Y</strong>) to redo. History persists for the session, up to 60 steps. Imports, deletes, preset applies — anything destructive can be reversed.</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Import Excel</h3>
+      <p>Click <strong>Import Excel</strong> in the deal bar to load a .xlsx. Works with files this tool exported, and best-effort with your existing BD_Pricing_Estimates sheets if they have <em>Name / Role / Rate / months</em> as headers. Pick the sheet, preview what'll be loaded, then confirm. Always undoable.</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Fill Across &amp; Reorder</h3>
+      <p>Each labor row has a small <strong>→</strong> button next to month 1 — click to copy that value across every month. Drag any row by its <strong>⋮⋮</strong> handle to reorder; on mobile, use the ▲▼ arrows that appear in the same spot. Passthrough rows reorder the same way.</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Save Persistence</h3>
+      <p>Saved deals carry across every version of this tool — the storage key is stable now, so future updates won't wipe your work. If anything ever breaks, your data sits in browser localStorage under <code>gn-bd-pricing-state</code> and <code>gn-bd-pricing-deals</code>.</p>
     </div>
 
     <div class="modal-section">
@@ -744,6 +865,19 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   </div>
 </div>
 
+<!-- ========== IMPORT PREVIEW MODAL ========== -->
+<div class="modal-overlay" id="import-modal">
+  <div class="modal">
+    <button class="modal-close" id="import-close">×</button>
+    <h2>Import from <em>Excel</em></h2>
+    <div id="import-modal-body" style="margin-top: 16px;"></div>
+    <div style="display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;">
+      <button class="btn secondary" id="import-cancel">Cancel</button>
+      <button class="btn primary" id="import-confirm">Apply import</button>
+    </div>
+  </div>
+</div>
+
 <div class="wrap" id="app-wrap" style="display: none;">
 
 <header>
@@ -759,8 +893,10 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   </div>
   <div class="header-meta">
     <div><span class="autosave-dot" id="autosave-dot"></span><span id="autosave-text">Saved</span></div>
-    <div>v4.2 · 2025 Rate Card</div>
+    <div>v4.3 · 2025 Rate Card</div>
     <div class="header-actions">
+      <button class="icon-btn" id="undo-btn" disabled>↶ Undo</button>
+      <button class="icon-btn" id="redo-btn" disabled>↷ Redo</button>
       <button class="icon-btn" id="save-now-btn">Save now</button>
       <button class="icon-btn" id="help-btn">? Help</button>
       <button class="icon-btn" id="lock-btn">Lock</button>
@@ -788,6 +924,8 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   <button class="btn-mini-action" id="export-json-btn">Export JSON</button>
   <button class="btn-mini-action" id="import-json-btn">Import JSON</button>
   <input type="file" id="import-file" accept=".json,application/json" style="display: none;">
+  <button class="btn-mini-action" id="import-excel-btn">Import Excel</button>
+  <input type="file" id="import-excel-file" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="display: none;">
   <button class="btn-mini-action primary" id="export-excel-btn">Export Excel</button>
 </div>
 
@@ -1282,10 +1420,13 @@ const DEFAULT_PAYMENT_SCHEDULE = [
 const PAY_STATUSES = ['Pending', 'Invoiced', 'Paid', 'Overdue'];
 
 // ============== STATE ==============
-const STORAGE_KEY = 'gn-pricing-calculator-v4-2';
-const STORAGE_DEALS_KEY = 'gn-pricing-calculator-v4-2-deals';
-const STORAGE_KEY_PREV = 'gn-pricing-calculator-v4-1';
-const STORAGE_DEALS_KEY_PREV = 'gn-pricing-calculator-v4-1-deals';
+// Stable storage keys — DO NOT change across versions; use schema migrations inside the JSON instead
+const STORAGE_KEY = 'gn-bd-pricing-state';
+const STORAGE_DEALS_KEY = 'gn-bd-pricing-deals';
+// Legacy keys to migrate from on first load (newest first)
+const LEGACY_STATE_KEYS = ['gn-pricing-calculator-v4-2', 'gn-pricing-calculator-v4-1'];
+const LEGACY_DEALS_KEYS = ['gn-pricing-calculator-v4-2-deals', 'gn-pricing-calculator-v4-1-deals'];
+const CURRENT_SCHEMA = 5;
 
 function freshState() {
   return {
@@ -1358,12 +1499,15 @@ function saveNow() {
 function loadFromStorage() {
   try {
     let raw = localStorage.getItem(STORAGE_KEY);
-    // Migrate v4.1 → v4.2 if needed
+    // Migrate from any legacy key — newest first
     if (!raw) {
-      const prev = localStorage.getItem(STORAGE_KEY_PREV);
-      if (prev) {
-        raw = prev;
-        localStorage.setItem(STORAGE_KEY, prev);
+      for (const legacyKey of LEGACY_STATE_KEYS) {
+        const prev = localStorage.getItem(legacyKey);
+        if (prev) {
+          raw = prev;
+          localStorage.setItem(STORAGE_KEY, prev);
+          break;
+        }
       }
     }
     if (raw) {
@@ -1376,6 +1520,7 @@ function loadFromStorage() {
       if (!state.collapsedPanels) state.collapsedPanels = {};
       if (state.notes === undefined) state.notes = '';
       if (state.projectType === undefined) state.projectType = '';
+      state.schemaVersion = CURRENT_SCHEMA;
     }
   } catch (e) { console.error('Failed to load state:', e); }
 }
@@ -1384,10 +1529,13 @@ function loadDeals() {
   try {
     let raw = localStorage.getItem(STORAGE_DEALS_KEY);
     if (!raw) {
-      const prev = localStorage.getItem(STORAGE_DEALS_KEY_PREV);
-      if (prev) {
-        raw = prev;
-        localStorage.setItem(STORAGE_DEALS_KEY, prev);
+      for (const legacyKey of LEGACY_DEALS_KEYS) {
+        const prev = localStorage.getItem(legacyKey);
+        if (prev) {
+          raw = prev;
+          localStorage.setItem(STORAGE_DEALS_KEY, prev);
+          break;
+        }
       }
     }
     return raw ? JSON.parse(raw) : {};
@@ -1399,6 +1547,281 @@ function saveDeals(deals) { localStorage.setItem(STORAGE_DEALS_KEY, JSON.stringi
 // Save on blur/visibility change for "save when you click out"
 window.addEventListener('blur', () => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){} });
 document.addEventListener('visibilitychange', () => { if (document.hidden) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){} } });
+
+// ============== UNDO / REDO ==============
+const HISTORY_MAX = 60;
+let undoStack = [];
+let redoStack = [];
+let historyTimer = null;
+let lastSnapshot = null;
+
+function snapshotState() {
+  // Exclude currentDealKey from snapshots so undo doesn't change which deal is active
+  const { currentDealKey, ...rest } = state;
+  return JSON.stringify(rest);
+}
+
+function pushHistory() {
+  const snap = snapshotState();
+  if (snap === lastSnapshot) return;
+  if (lastSnapshot !== null) {
+    undoStack.push(lastSnapshot);
+    if (undoStack.length > HISTORY_MAX) undoStack.shift();
+    redoStack = []; // any new change clears redo
+  }
+  lastSnapshot = snap;
+  updateUndoRedoButtons();
+}
+
+// Debounced — batches rapid input changes into one history entry
+function scheduleHistoryPush() {
+  clearTimeout(historyTimer);
+  historyTimer = setTimeout(pushHistory, 350);
+}
+
+function undo() {
+  if (undoStack.length === 0) { showToast('Nothing to undo', 'warn'); return; }
+  redoStack.push(snapshotState());
+  const prev = undoStack.pop();
+  const parsed = JSON.parse(prev);
+  state = { ...state, ...parsed };
+  lastSnapshot = prev;
+  applyAllUIFromState();
+  renderFitScore();
+  renderAll();
+  updateUndoRedoButtons();
+  showToast('Undone');
+}
+
+function redo() {
+  if (redoStack.length === 0) { showToast('Nothing to redo', 'warn'); return; }
+  undoStack.push(snapshotState());
+  const next = redoStack.pop();
+  const parsed = JSON.parse(next);
+  state = { ...state, ...parsed };
+  lastSnapshot = next;
+  applyAllUIFromState();
+  renderFitScore();
+  renderAll();
+  updateUndoRedoButtons();
+  showToast('Redone');
+}
+
+function updateUndoRedoButtons() {
+  const u = document.getElementById('undo-btn');
+  const r = document.getElementById('redo-btn');
+  if (u) {
+    u.disabled = undoStack.length === 0;
+    u.title = `Undo (${undoStack.length}) · Cmd+Z`;
+  }
+  if (r) {
+    r.disabled = redoStack.length === 0;
+    r.title = `Redo (${redoStack.length}) · Cmd+Shift+Z`;
+  }
+}
+
+// Keyboard shortcuts
+window.addEventListener('keydown', e => {
+  // Don't intercept in text inputs unless cmd/ctrl is held
+  const inField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+  if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'z') {
+    e.preventDefault(); undo();
+  } else if ((e.metaKey || e.ctrlKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) {
+    e.preventDefault(); redo();
+  } else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's' && !inField) {
+    e.preventDefault(); saveNow();
+  }
+});
+
+// ============== EXCEL UPLOAD ==============
+function handleExcelUpload(file) {
+  if (typeof XLSX === 'undefined') { showToast('Excel library not loaded', 'danger'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = new Uint8Array(ev.target.result);
+      const wb = XLSX.read(data, { type: 'array' });
+      if (wb.SheetNames.length === 0) { showToast('No sheets in file', 'danger'); return; }
+      // If multiple sheets, ask which
+      let sheetName = wb.SheetNames[0];
+      if (wb.SheetNames.length > 1) {
+        const pick = prompt(`Pick a sheet to import:\n\n${wb.SheetNames.map((n,i) => `${i+1}. ${n}`).join('\n')}\n\nEnter number:`, '1');
+        if (pick === null) return;
+        const idx = parseInt(pick, 10) - 1;
+        if (isNaN(idx) || idx < 0 || idx >= wb.SheetNames.length) { showToast('Invalid choice', 'warn'); return; }
+        sheetName = wb.SheetNames[idx];
+      }
+      const ws = wb.Sheets[sheetName];
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      const parsed = parseImportedRows(rows, sheetName);
+      showImportPreview(parsed);
+    } catch (err) {
+      console.error(err);
+      showToast('Could not read file: ' + err.message, 'danger');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function parseImportedRows(rows, sheetName) {
+  // Heuristic: find a header row containing "Role" and "Rate"
+  let headerIdx = -1;
+  for (let i = 0; i < Math.min(rows.length, 30); i++) {
+    const row = rows[i].map(c => String(c).toLowerCase());
+    if (row.some(c => c.includes('role')) && row.some(c => c.includes('rate'))) {
+      headerIdx = i; break;
+    }
+  }
+  if (headerIdx === -1) {
+    return { error: 'Could not find a header row with "Role" and "Rate" columns. Make sure your sheet has those headers.', sheetName };
+  }
+
+  const header = rows[headerIdx].map(c => String(c).trim());
+  const nameCol = header.findIndex(c => c.toLowerCase().includes('name'));
+  const roleCol = header.findIndex(c => c.toLowerCase() === 'role' || c.toLowerCase().includes('role'));
+  const rateCol = header.findIndex(c => c.toLowerCase().includes('rate'));
+  const ptCol   = header.findIndex(c => c.toLowerCase() === 'pt?' || c.toLowerCase() === 'pt');
+
+  // Month columns are between rate and "Total Hours" / "Total $"
+  const monthCols = [];
+  const monthLabels = [];
+  for (let c = Math.max(roleCol, rateCol) + 1; c < header.length; c++) {
+    const h = header[c];
+    if (!h) continue;
+    const lh = h.toLowerCase();
+    if (lh.includes('total') || lh === 'pt' || lh === 'pt?') break;
+    monthCols.push(c);
+    monthLabels.push(h);
+  }
+
+  // Parse team rows
+  const team = [];
+  let totalBudget = 0;
+  let projectName = '';
+  let startMonth = '';
+  let duration = monthCols.length || 6;
+  let dealStatus = 'Draft';
+  let projectType = '';
+
+  // Scan top rows for project metadata
+  for (let i = 0; i < headerIdx; i++) {
+    for (let c = 0; c < rows[i].length; c++) {
+      const cell = String(rows[i][c] || '').trim();
+      if (!cell) continue;
+      if (cell.toLowerCase() === 'total budget' || cell.toLowerCase() === 'budget') {
+        const v = rows[i][c+1];
+        if (typeof v === 'number') totalBudget = v;
+        else if (v) totalBudget = parseFloat(String(v).replace(/[^0-9.]/g, '')) || 0;
+      } else if (cell.toLowerCase() === 'start') {
+        const v = rows[i][c+1];
+        startMonth = v ? String(v).slice(0, 7) : '';
+      } else if (cell.toLowerCase() === 'duration') {
+        const v = String(rows[i][c+1] || '');
+        const m = v.match(/(\d+)/);
+        if (m) duration = parseInt(m[1], 10);
+      } else if (cell.toLowerCase() === 'status') {
+        const v = String(rows[i][c+1] || '').trim();
+        if (['Draft', 'Sent', 'Negotiating', 'Signed', 'Lost'].includes(v)) dealStatus = v;
+      } else if (cell.toLowerCase() === 'project type') {
+        projectType = String(rows[i][c+1] || '').trim();
+      }
+      // First cell of first row = project name (heuristic)
+      if (i === 0 && c === 0 && cell.toLowerCase() !== 'total budget') {
+        projectName = cell;
+      }
+    }
+  }
+
+  // Parse labor rows below header
+  for (let i = headerIdx + 1; i < rows.length; i++) {
+    const row = rows[i];
+    if (!row || row.length === 0) continue;
+    const first = String(row[0] || '').trim();
+    if (!first) continue;
+    // Stop at summary/section markers
+    const lf = first.toLowerCase();
+    if (lf.startsWith('monthly') || lf.startsWith('summary') || lf.startsWith('passthrough') || lf.startsWith('fit') || lf.startsWith('phase') || lf.startsWith('payment') || lf.startsWith('total ') || lf === 'total') break;
+
+    const role = roleCol >= 0 ? String(row[roleCol] || '').trim() : '';
+    if (!role) continue;
+
+    const rate = parseFloat(String(row[rateCol] || '').replace(/[^0-9.]/g, '')) || RATE_LOOKUP[role] || 150;
+    const name = nameCol >= 0 ? String(row[nameCol] || '').trim() : '';
+    const isPT = ptCol >= 0 && String(row[ptCol] || '').toLowerCase().includes('pt');
+
+    const hours = {};
+    monthCols.forEach((c, mIdx) => {
+      const v = parseFloat(row[c]);
+      if (!isNaN(v) && v > 0) hours[mIdx] = v;
+    });
+
+    team.push({ id: genId(), name, role, rate, isPT, hours });
+  }
+
+  return {
+    sheetName,
+    projectName,
+    projectType,
+    dealStatus,
+    totalBudget,
+    startMonth,
+    duration,
+    team,
+    monthCount: monthCols.length,
+    monthLabels
+  };
+}
+
+function showImportPreview(parsed) {
+  const modal = document.getElementById('import-modal');
+  const body = document.getElementById('import-modal-body');
+  if (parsed.error) {
+    body.innerHTML = `<p style="color: var(--danger);">${parsed.error}</p><p>Sheet: <strong>${parsed.sheetName}</strong></p>`;
+    document.getElementById('import-confirm').style.display = 'none';
+  } else {
+    document.getElementById('import-confirm').style.display = 'inline-block';
+    let html = `<p><strong>From sheet:</strong> ${parsed.sheetName}</p>`;
+    if (parsed.projectName) html += `<p><strong>Project:</strong> ${parsed.projectName}</p>`;
+    if (parsed.totalBudget) html += `<p><strong>Budget:</strong> ${fmt(parsed.totalBudget)}</p>`;
+    if (parsed.startMonth) html += `<p><strong>Start:</strong> ${parsed.startMonth}</p>`;
+    html += `<p><strong>Duration:</strong> ${parsed.duration} months</p>`;
+    html += `<p><strong>Team rows found:</strong> ${parsed.team.length}</p>`;
+    if (parsed.team.length > 0) {
+      html += '<div style="margin-top: 12px; max-height: 240px; overflow: auto; border: 1px solid var(--border); border-radius: 6px;"><table style="width: 100%; font-size: 12px;">';
+      html += '<thead><tr style="background: var(--bg-elev-2);"><th style="text-align:left; padding: 6px;">Name</th><th style="text-align:left; padding: 6px;">Role</th><th style="text-align:right; padding: 6px;">Rate</th><th style="text-align:right; padding: 6px;">Hours</th><th style="padding: 6px;">PT</th></tr></thead><tbody>';
+      parsed.team.forEach(t => {
+        const totalHrs = Object.values(t.hours).reduce((s, h) => s + (h||0), 0);
+        html += `<tr><td style="padding: 6px;">${t.name || '—'}</td><td style="padding: 6px;">${t.role}</td><td style="padding: 6px; text-align:right;">$${t.rate}</td><td style="padding: 6px; text-align:right;">${totalHrs}</td><td style="padding: 6px; text-align:center;">${t.isPT ? 'PT' : ''}</td></tr>`;
+      });
+      html += '</tbody></table></div>';
+    }
+    html += '<p style="color: var(--text-muted); margin-top: 12px; font-size: 12px;"><em>Import replaces current working state. Save your current deal first if you want to keep it.</em></p>';
+    body.innerHTML = html;
+    // stash for confirm
+    window.__pendingImport = parsed;
+  }
+  modal.classList.add('show');
+}
+
+function applyImport() {
+  const parsed = window.__pendingImport;
+  if (!parsed) return;
+  pushHistory(); // so undo can revert the import
+  state.projectName = parsed.projectName || state.projectName;
+  state.projectType = parsed.projectType || state.projectType;
+  state.dealStatus = parsed.dealStatus || 'Draft';
+  if (parsed.totalBudget) state.totalBudget = parsed.totalBudget;
+  if (parsed.startMonth) state.startMonth = parsed.startMonth;
+  if (parsed.duration) state.duration = parsed.duration;
+  state.team = parsed.team;
+  state.currentDealKey = null; // imported as fresh working deal
+  document.getElementById('import-modal').classList.remove('show');
+  window.__pendingImport = null;
+  applyAllUIFromState();
+  renderFitScore();
+  renderAll();
+  showToast(`Imported ${parsed.team.length} rows from "${parsed.sheetName}"`);
+}
 
 // ============== UTILS ==============
 const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
@@ -1500,11 +1923,57 @@ function buildRoleSelectHTML(currentRole, includeBlank) {
 }
 
 // ============== RENDER: SCHEDULE ==============
+function buildScheduleFooterHTML(months) {
+  const totalsAll = totalLabor();
+  const ptLabor = totalPassthroughLabor();
+  const clipPerMonth = avgMonthlyClip();
+  let html = '';
+  html += '<tr class="label-row">';
+  html += `<td colspan="5" class="text-right">Monthly labor</td>`;
+  months.forEach(m => {
+    const cost = monthLaborCost(m.idx);
+    html += `<td class="text-center summary-cell purple">${cost > 0 ? fmtShort(cost) : '—'}</td>`;
+  });
+  html += `<td class="text-right summary-cell purple">${fmt(totalsAll)}</td>`;
+  html += '<td></td></tr>';
+
+  if (ptLabor > 0) {
+    html += '<tr>';
+    html += '<td colspan="5" class="text-right">PT labor</td>';
+    months.forEach(m => {
+      const cost = monthPassthroughLaborCost(m.idx);
+      html += `<td class="text-center summary-cell warn">${cost > 0 ? fmtShort(cost) : '—'}</td>`;
+    });
+    html += `<td class="text-right summary-cell warn">${fmt(ptLabor)}</td><td></td></tr>`;
+  }
+
+  html += '<tr>';
+  html += '<td colspan="5" class="text-right">Monthly clip</td>';
+  months.forEach(() => {
+    html += `<td class="text-center summary-cell lime">${clipPerMonth > 0 ? fmtShort(clipPerMonth) : '—'}</td>`;
+  });
+  html += `<td class="text-right summary-cell lime">${fmt(state.totalBudget)}</td><td></td></tr>`;
+
+  html += '<tr class="last-row">';
+  html += '<td colspan="5" class="text-right">Monthly profit</td>';
+  months.forEach(m => {
+    const monthCost = monthLaborCost(m.idx) + monthPassthroughLaborCost(m.idx) + (totalPassthroughHard() / Math.max(state.duration, 1));
+    const profit = clipPerMonth - monthCost;
+    const cls = profit < 0 ? 'danger' : profit < clipPerMonth * 0.2 ? 'warn' : 'success';
+    html += `<td class="text-center summary-cell ${cls}">${fmtShort(profit)}</td>`;
+  });
+  const m = netMargin();
+  const totalCls = m.pct < 20 ? 'danger' : m.pct < 35 ? 'warn' : 'success';
+  html += `<td class="text-right summary-cell ${totalCls}">${fmt(m.dollars)}</td><td></td></tr>`;
+  return html;
+}
+
 function renderSchedule() {
   const months = getMonths();
   const table = document.getElementById('schedule-table');
 
   let html = '<thead><tr>';
+  html += '<th class="cell-drag" title="Drag to reorder"></th>';
   html += '<th class="cell-pt-toggle">PT</th>';
   html += '<th class="text-left cell-name">Name</th>';
   html += '<th class="text-left cell-role">Role</th>';
@@ -1519,13 +1988,21 @@ function renderSchedule() {
     const totals = teamRowTotal(member);
     const rowCls = member.isPT ? 'pt-row' : '';
     html += `<tr data-team-idx="${idx}" class="${rowCls}">`;
+    html += `<td class="cell-drag">`;
+    html += `<button class="drag-handle" data-drag="${idx}" title="Drag to reorder">⋮⋮</button>`;
+    html += `<div class="move-row-buttons">`;
+    html += `<button class="move-btn" data-move-up="${idx}" title="Move up">▲</button>`;
+    html += `<button class="move-btn" data-move-down="${idx}" title="Move down">▼</button>`;
+    html += `</div>`;
+    html += `</td>`;
     html += `<td class="cell-pt-toggle"><button class="pt-btn ${member.isPT ? 'active' : ''}" data-pt-toggle="${idx}" title="Toggle passthrough">PT</button></td>`;
     html += `<td class="cell-name"><input class="row-input" data-field="name" value="${(member.name || '').replace(/"/g, '&quot;')}" placeholder="—"></td>`;
     html += `<td class="cell-role"><select class="role-select" data-field="role">${buildRoleSelectHTML(member.role, true)}</select></td>`;
     html += `<td class="cell-rate"><div class="rate-wrap"><span>$</span><input class="row-input" data-field="rate" type="number" value="${member.rate}" step="5"></div></td>`;
-    months.forEach(m => {
+    months.forEach((m, i) => {
       const h = member.hours[m.idx] || '';
-      html += `<td class="cell-month"><input class="row-input" data-month="${m.idx}" type="number" value="${h}" min="0" step="1" placeholder="—"></td>`;
+      const fillBtnHtml = (i === 0) ? `<button class="fill-btn" data-fill="${idx}" title="Copy this value to all months">→</button>` : '';
+      html += `<td class="cell-month"><div class="month-cell-wrap"><input class="row-input" data-month="${m.idx}" type="number" value="${h}" min="0" step="1" placeholder="—">${fillBtnHtml}</div></td>`;
     });
     html += `<td class="cell-total ${member.isPT ? 'pt-mode' : ''}">${totals.cost > 0 ? fmt(totals.cost) : '—'}</td>`;
     html += `<td class="cell-remove"><button class="btn-x" data-remove="${idx}" title="Remove">×</button></td>`;
@@ -1533,68 +2010,72 @@ function renderSchedule() {
   });
   html += '</tbody>';
 
-  const totalsAll = totalLabor();
-  const ptLabor = totalPassthroughLabor();
-  const clipPerMonth = avgMonthlyClip();
-  html += '<tfoot>';
-  html += '<tr class="label-row">';
-  html += `<td colspan="4" class="text-right">Monthly labor</td>`;
-  months.forEach(m => {
-    const cost = monthLaborCost(m.idx);
-    html += `<td class="text-center summary-cell purple">${cost > 0 ? fmtShort(cost) : '—'}</td>`;
-  });
-  html += `<td class="text-right summary-cell purple">${fmt(totalsAll)}</td>`;
-  html += '<td></td></tr>';
-
-  if (ptLabor > 0) {
-    html += '<tr>';
-    html += '<td colspan="4" class="text-right">PT labor</td>';
-    months.forEach(m => {
-      const cost = monthPassthroughLaborCost(m.idx);
-      html += `<td class="text-center summary-cell warn">${cost > 0 ? fmtShort(cost) : '—'}</td>`;
-    });
-    html += `<td class="text-right summary-cell warn">${fmt(ptLabor)}</td><td></td></tr>`;
-  }
-
-  html += '<tr>';
-  html += '<td colspan="4" class="text-right">Monthly clip</td>';
-  months.forEach(() => {
-    html += `<td class="text-center summary-cell lime">${clipPerMonth > 0 ? fmtShort(clipPerMonth) : '—'}</td>`;
-  });
-  html += `<td class="text-right summary-cell lime">${fmt(state.totalBudget)}</td><td></td></tr>`;
-
-  html += '<tr class="last-row">';
-  html += '<td colspan="4" class="text-right">Monthly profit</td>';
-  months.forEach(m => {
-    const monthCost = monthLaborCost(m.idx) + monthPassthroughLaborCost(m.idx) + (totalPassthroughHard() / Math.max(state.duration, 1));
-    const profit = clipPerMonth - monthCost;
-    const cls = profit < 0 ? 'danger' : profit < clipPerMonth * 0.2 ? 'warn' : 'success';
-    html += `<td class="text-center summary-cell ${cls}">${fmtShort(profit)}</td>`;
-  });
-  const m = netMargin();
-  const totalCls = m.pct < 20 ? 'danger' : m.pct < 35 ? 'warn' : 'success';
-  html += `<td class="text-right summary-cell ${totalCls}">${fmt(m.dollars)}</td><td></td></tr>`;
-  html += '</tfoot>';
+  html += '<tfoot>' + buildScheduleFooterHTML(months) + '</tfoot>';
 
   table.innerHTML = html;
 
   table.querySelectorAll('tbody tr').forEach(tr => {
     const idx = parseInt(tr.dataset.teamIdx, 10);
     const ptBtn = tr.querySelector('[data-pt-toggle]');
-    if (ptBtn) ptBtn.addEventListener('click', () => { state.team[idx].isPT = !state.team[idx].isPT; renderAll(); });
+    if (ptBtn) ptBtn.addEventListener('click', () => { state.team[idx].isPT = !state.team[idx].isPT; scheduleHistoryPush(); renderAll(); });
+
+    // Fill-across button: copy first month's value to all months
+    const fillBtn = tr.querySelector('[data-fill]');
+    if (fillBtn) fillBtn.addEventListener('click', () => {
+      const m = state.team[idx];
+      const firstVal = m.hours[0];
+      if (firstVal === undefined || firstVal === 0) {
+        showToast('Set hours for month 1 first', 'warn');
+        return;
+      }
+      for (let i = 0; i < state.duration; i++) m.hours[i] = firstVal;
+      scheduleHistoryPush();
+      renderAll();
+    });
+
+    // Move buttons (mobile / fallback for drag)
+    const upBtn = tr.querySelector('[data-move-up]');
+    if (upBtn) upBtn.addEventListener('click', () => {
+      if (idx === 0) return;
+      [state.team[idx-1], state.team[idx]] = [state.team[idx], state.team[idx-1]];
+      scheduleHistoryPush();
+      renderAll();
+    });
+    const downBtn = tr.querySelector('[data-move-down]');
+    if (downBtn) downBtn.addEventListener('click', () => {
+      if (idx === state.team.length - 1) return;
+      [state.team[idx+1], state.team[idx]] = [state.team[idx], state.team[idx+1]];
+      scheduleHistoryPush();
+      renderAll();
+    });
 
     tr.querySelectorAll('[data-field]').forEach(input => {
-      const handler = e => {
-        const field = e.target.dataset.field;
-        if (field === 'rate') state.team[idx].rate = parseFloat(e.target.value) || 0;
-        else if (field === 'role') {
+      const field = input.dataset.field;
+      if (field === 'name') {
+        // Name change: just update state + autosave. No render → no focus loss.
+        input.addEventListener('input', e => {
+          state.team[idx].name = e.target.value;
+          autosave();
+        });
+        input.addEventListener('change', () => scheduleHistoryPush());
+      } else if (field === 'rate') {
+        // Rate change: update state + lite re-render of totals (preserves focus)
+        input.addEventListener('input', e => {
+          state.team[idx].rate = parseFloat(e.target.value) || 0;
+          updateRowTotals();
+        });
+        input.addEventListener('change', () => scheduleHistoryPush());
+      } else if (field === 'role') {
+        // Role is <select>, fires change. Full render OK since user has committed.
+        input.addEventListener('change', e => {
           state.team[idx].role = e.target.value;
-          if (RATE_LOOKUP[e.target.value] !== undefined) state.team[idx].rate = RATE_LOOKUP[e.target.value];
-        } else state.team[idx][field] = e.target.value;
-        renderAll();
-      };
-      input.addEventListener('input', handler);
-      if (input.tagName === 'SELECT') input.addEventListener('change', handler);
+          if (RATE_LOOKUP[e.target.value] !== undefined) {
+            state.team[idx].rate = RATE_LOOKUP[e.target.value];
+          }
+          scheduleHistoryPush();
+          renderAll();
+        });
+      }
     });
 
     tr.querySelectorAll('[data-month]').forEach(input => {
@@ -1603,13 +2084,64 @@ function renderSchedule() {
         const v = parseFloat(e.target.value);
         if (isNaN(v) || v === 0) delete state.team[idx].hours[m];
         else state.team[idx].hours[m] = v;
-        renderAll();
+        updateRowTotals();
       });
+      input.addEventListener('change', () => scheduleHistoryPush());
     });
 
     const removeBtn = tr.querySelector('[data-remove]');
-    if (removeBtn) removeBtn.addEventListener('click', () => { state.team.splice(idx, 1); renderAll(); });
+    if (removeBtn) removeBtn.addEventListener('click', () => { state.team.splice(idx, 1); scheduleHistoryPush(); renderAll(); });
+
+    // ===== Drag and drop reorder =====
+    const dragHandle = tr.querySelector('[data-drag]');
+    if (dragHandle) {
+      dragHandle.addEventListener('mousedown', () => { tr.draggable = true; });
+      dragHandle.addEventListener('touchstart', () => { tr.draggable = true; }, { passive: true });
+      tr.addEventListener('dragstart', e => {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', String(idx));
+        tr.classList.add('dragging');
+      });
+      tr.addEventListener('dragend', () => { tr.classList.remove('dragging'); tr.draggable = false; });
+      tr.addEventListener('dragover', e => { e.preventDefault(); tr.classList.add('drag-over'); });
+      tr.addEventListener('dragleave', () => tr.classList.remove('drag-over'));
+      tr.addEventListener('drop', e => {
+        e.preventDefault();
+        tr.classList.remove('drag-over');
+        const fromIdx = parseInt(e.dataTransfer.getData('text/plain'), 10);
+        const toIdx = idx;
+        if (fromIdx === toIdx || isNaN(fromIdx)) return;
+        const [moved] = state.team.splice(fromIdx, 1);
+        state.team.splice(toIdx, 0, moved);
+        scheduleHistoryPush();
+        renderAll();
+      });
+    }
   });
+}
+
+// ===== LITE RENDER: update totals only, preserves focus =====
+function updateRowTotals() {
+  const table = document.getElementById('schedule-table');
+  if (!table) return;
+  // Update each row's total $ cell
+  state.team.forEach((m, idx) => {
+    const tr = table.querySelector(`tbody tr[data-team-idx="${idx}"]`);
+    if (!tr) return;
+    const tot = teamRowTotal(m);
+    const totalTd = tr.querySelector('.cell-total');
+    if (totalTd) totalTd.textContent = tot.cost > 0 ? fmt(tot.cost) : '—';
+  });
+  // Rebuild tfoot only (no inputs there, so safe)
+  const tfoot = table.querySelector('tfoot');
+  if (tfoot) {
+    const months = getMonths();
+    tfoot.innerHTML = buildScheduleFooterHTML(months);
+  }
+  // Lightweight summary updates
+  renderSummary();
+  renderCollapsedSummaries();
+  autosave();
 }
 
 // ============== RENDER: PASSTHROUGH ==============
@@ -1620,10 +2152,38 @@ function renderPassthrough() {
   headers.forEach(h => grid.appendChild(h));
 
   state.passthroughs.forEach((p, idx) => {
-    // Description (select preset OR custom input)
+    // Description cell — includes move buttons on the left
     const descWrap = document.createElement('div');
-    descWrap.style.display = 'flex';
-    descWrap.style.gap = '4px';
+    descWrap.style.cssText = 'display: flex; gap: 4px; align-items: stretch;';
+
+    // Move buttons (always visible — works on touch and desktop)
+    const moveWrap = document.createElement('div');
+    moveWrap.style.cssText = 'display: flex; flex-direction: column; gap: 1px;';
+    const upBtn = document.createElement('button');
+    upBtn.className = 'move-btn';
+    upBtn.style.cssText = 'width: 22px; height: 50%; min-height: 16px;';
+    upBtn.textContent = '▲';
+    upBtn.title = 'Move up';
+    upBtn.addEventListener('click', () => {
+      if (idx === 0) return;
+      [state.passthroughs[idx-1], state.passthroughs[idx]] = [state.passthroughs[idx], state.passthroughs[idx-1]];
+      scheduleHistoryPush();
+      renderAll();
+    });
+    const downBtn = document.createElement('button');
+    downBtn.className = 'move-btn';
+    downBtn.style.cssText = 'width: 22px; height: 50%; min-height: 16px;';
+    downBtn.textContent = '▼';
+    downBtn.title = 'Move down';
+    downBtn.addEventListener('click', () => {
+      if (idx === state.passthroughs.length - 1) return;
+      [state.passthroughs[idx+1], state.passthroughs[idx]] = [state.passthroughs[idx], state.passthroughs[idx+1]];
+      scheduleHistoryPush();
+      renderAll();
+    });
+    moveWrap.appendChild(upBtn);
+    moveWrap.appendChild(downBtn);
+
     const descSel = document.createElement('select');
     descSel.className = 'row-input';
     descSel.innerHTML = '<option value="">— Category —</option>' + PT_CATEGORIES.map(c => `<option value="${c}"${p.description === c ? ' selected' : ''}>${c}</option>`).join('');
@@ -1636,11 +2196,15 @@ function renderPassthrough() {
     descSel.addEventListener('change', e => {
       if (e.target.value) { state.passthroughs[idx].description = e.target.value; descInput.value = ''; }
       autosave();
+      scheduleHistoryPush();
     });
     descInput.addEventListener('input', e => {
       if (e.target.value.trim()) { state.passthroughs[idx].description = e.target.value; descSel.value = ''; }
       autosave();
     });
+    descInput.addEventListener('change', () => scheduleHistoryPush());
+
+    descWrap.appendChild(moveWrap);
     descWrap.appendChild(descSel);
     descWrap.appendChild(descInput);
 
@@ -1650,6 +2214,7 @@ function renderPassthrough() {
     noteInput.value = p.note || '';
     noteInput.placeholder = 'Note (optional)';
     noteInput.addEventListener('input', e => { state.passthroughs[idx].note = e.target.value; autosave(); });
+    noteInput.addEventListener('change', () => scheduleHistoryPush());
 
     // Amount
     const amtInput = document.createElement('input');
@@ -1659,12 +2224,13 @@ function renderPassthrough() {
     amtInput.placeholder = '0';
     amtInput.step = '1000';
     amtInput.addEventListener('input', e => { state.passthroughs[idx].amount = parseFloat(e.target.value) || 0; renderAll(); });
+    amtInput.addEventListener('change', () => scheduleHistoryPush());
 
     // Remove
     const removeBtn = document.createElement('button');
     removeBtn.className = 'btn-x';
     removeBtn.textContent = '×';
-    removeBtn.addEventListener('click', () => { state.passthroughs.splice(idx, 1); renderAll(); });
+    removeBtn.addEventListener('click', () => { state.passthroughs.splice(idx, 1); scheduleHistoryPush(); renderAll(); });
 
     grid.appendChild(descWrap);
     grid.appendChild(noteInput);
@@ -2113,6 +2679,9 @@ function initApp() {
   initCollapseButtons();
   renderFitScore();
   renderAll();
+  // Establish baseline for undo
+  lastSnapshot = snapshotState();
+  updateUndoRedoButtons();
 }
 
 function setProjectTypeUI(val) {
@@ -2358,6 +2927,8 @@ document.querySelectorAll('[data-pay-preset]').forEach(btn => {
 
 // HEADER ACTIONS
 document.getElementById('save-now-btn').addEventListener('click', saveNow);
+document.getElementById('undo-btn').addEventListener('click', undo);
+document.getElementById('redo-btn').addEventListener('click', redo);
 document.getElementById('help-btn').addEventListener('click', () => { document.getElementById('help-modal').classList.add('show'); });
 document.getElementById('help-close').addEventListener('click', () => { document.getElementById('help-modal').classList.remove('show'); });
 document.getElementById('help-modal').addEventListener('click', e => { if (e.target.id === 'help-modal') document.getElementById('help-modal').classList.remove('show'); });
@@ -2543,6 +3114,30 @@ document.getElementById('import-file').addEventListener('change', e => {
   };
   reader.readAsText(file);
 });
+
+// EXCEL IMPORT
+document.getElementById('import-excel-btn').addEventListener('click', () => { document.getElementById('import-excel-file').click(); });
+document.getElementById('import-excel-file').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  handleExcelUpload(file);
+  e.target.value = '';
+});
+document.getElementById('import-cancel').addEventListener('click', () => {
+  document.getElementById('import-modal').classList.remove('show');
+  window.__pendingImport = null;
+});
+document.getElementById('import-close').addEventListener('click', () => {
+  document.getElementById('import-modal').classList.remove('show');
+  window.__pendingImport = null;
+});
+document.getElementById('import-modal').addEventListener('click', e => {
+  if (e.target.id === 'import-modal') {
+    document.getElementById('import-modal').classList.remove('show');
+    window.__pendingImport = null;
+  }
+});
+document.getElementById('import-confirm').addEventListener('click', applyImport);
 
 // EXCEL EXPORT WITH FORMULAS
 document.getElementById('export-excel-btn').addEventListener('click', exportExcel);
