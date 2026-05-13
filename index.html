@@ -519,6 +519,84 @@ h1 em { color: var(--lime); font-style: italic; }
 .pay-totals .stat .val.warn { color: var(--warn); }
 .pay-totals .stat .val.success { color: var(--success); }
 
+/* ========== TIER CARDS ========== */
+.tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media (max-width: 760px) { .tier-grid { grid-template-columns: 1fr; } }
+.tier-card {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex; flex-direction: column;
+  transition: all 0.15s ease;
+}
+.tier-card.filled { border-color: var(--border-strong); }
+.tier-card.active { border-color: var(--lime); box-shadow: 0 0 0 1px var(--lime); }
+.tier-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.tier-card-label {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+.tier-card.active .tier-card-label { color: var(--lime); }
+.tier-active-badge {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  background: var(--lime); color: #0a0a0a;
+  padding: 2px 6px; border-radius: 3px;
+}
+.tier-budget {
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px; letter-spacing: -0.02em; line-height: 1;
+  color: var(--text); margin: 6px 0 12px;
+}
+.tier-card.active .tier-budget { color: var(--lime); }
+.tier-meta { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.tier-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); }
+.tier-row > span:last-child { color: var(--text); font-family: 'DM Serif Display', serif; }
+.tier-row > span.success { color: var(--success); }
+.tier-row > span.warn { color: var(--warn); }
+.tier-row > span.danger { color: var(--danger); }
+.tier-empty {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  color: var(--text-faint); font-style: italic; padding: 20px 0;
+  font-size: 12px;
+}
+.tier-timestamp { font-size: 10px; color: var(--text-faint); letter-spacing: 0.04em; margin-bottom: 10px; }
+.tier-card-actions {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  padding-top: 10px; border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+.tier-card-actions .btn-preset { flex: 1; padding: 8px 10px; text-align: center; }
+.tier-card-actions .btn-preset.danger-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+/* ========== BASELINE COLUMN ========== */
+.cell-baseline { min-width: 80px; padding: 6px 4px !important; text-align: center; }
+.cell-baseline .baseline-input {
+  background: var(--lime-dim);
+  border: 1px solid rgba(200, 241, 53, 0.25);
+  text-align: center;
+  font-weight: 500;
+  color: var(--lime);
+}
+.cell-baseline .baseline-input:focus {
+  background: var(--bg-elev-2);
+  border-color: var(--lime);
+  color: var(--text);
+}
+.schedule thead th.cell-baseline {
+  color: var(--lime);
+  font-weight: 600;
+}
+/* Highlight month cell when overriding baseline */
+.cell-month.override .row-input {
+  background: rgba(245, 194, 107, 0.08);
+  border-color: rgba(245, 194, 107, 0.25);
+}
+.cell-month.override .row-input:focus {
+  background: var(--bg-elev-2);
+  border-color: var(--warn);
+}
+
 /* ========== INTERNAL NOTES ========== */
 .notes-textarea {
   width: 100%;
@@ -784,6 +862,16 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
     </div>
 
     <div class="modal-section">
+      <h3>Baseline Mode (Retainer)</h3>
+      <p>Toggle <strong>Enable Baseline</strong> in the Mode bar. A new <em>Base/mo</em> column appears in the schedule — type how many hours per person should recur every month. Individual month cells then act as <em>overrides</em>. Empty month cell means "use the baseline." Type a number to override that specific month. Useful for steady-state retainers where most months look the same, with a few peak/quiet months mixed in.</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Pricing Tiers · Low / Medium / High</h3>
+      <p>Open the <strong>Pricing Tiers</strong> panel near the top. Build your recommended price (start with Medium), click <strong>Snapshot</strong>. Trim the team or hours, snap as <strong>Low</strong>. Add more scope or seniority, snap as <strong>High</strong>. The active tier is highlighted — that's the one your edits flow into. <strong>Load</strong> brings a saved tier back into the workspace. Each tier shows margin grade so you can see the tradeoff at a glance.</p>
+    </div>
+
+    <div class="modal-section">
       <h3>Undo / Redo</h3>
       <p>Big buttons in the header, or use keyboard: <strong>Cmd+Z</strong> to undo, <strong>Cmd+Shift+Z</strong> (or <strong>Cmd+Y</strong>) to redo. History persists for the session, up to 60 steps. Imports, deletes, preset applies — anything destructive can be reversed.</p>
     </div>
@@ -893,7 +981,7 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   </div>
   <div class="header-meta">
     <div><span class="autosave-dot" id="autosave-dot"></span><span id="autosave-text">Saved</span></div>
-    <div>v4.3 · 2025 Rate Card</div>
+    <div>v4.4 · 2025 Rate Card</div>
     <div class="header-actions">
       <button class="icon-btn" id="undo-btn" disabled>↶ Undo</button>
       <button class="icon-btn" id="redo-btn" disabled>↷ Redo</button>
@@ -985,6 +1073,14 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   </div>
 </div>
 
+<!-- BASELINE TOGGLE BAR -->
+<div class="deal-bar" style="margin-top: -8px; margin-bottom: 16px;">
+  <span class="deal-bar-label">Mode</span>
+  <button class="btn-mini-action" id="baseline-toggle">Enable Baseline (Retainer mode)</button>
+  <span id="baseline-help" style="font-size: 11px; color: var(--text-faint); font-style: italic;">— Set a recurring monthly hours profile; override specific months as needed.</span>
+  <div class="spacer"></div>
+</div>
+
 <!-- SUMMARY -->
 <div class="summary-grid">
   <div class="summary-card accent-lime">
@@ -1018,6 +1114,28 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
 </div>
 
 <div class="main-grid">
+
+  <!-- TIER COMPARISON -->
+  <div class="panel collapsed" id="panel-tiers">
+    <div class="panel-head">
+      <div class="panel-title">Pricing Tiers · Low / Medium / High</div>
+      <div class="panel-actions">
+        <span class="collapsed-summary" id="collapsed-tiers">— no tiers saved —</span>
+        <button class="btn-collapse" data-collapse="panel-tiers" title="Collapse"></button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size: 12px; color: var(--text-faint); margin-bottom: 14px; font-style: italic;">
+        Snapshot the current schedule into Low / Medium / High tiers. Switch between them anytime — the active one is what edits flow into. Use Snapshot to overwrite the current tier with what's on screen, or Load to bring a saved tier back into the workspace.
+      </p>
+      <div class="tier-grid" id="tier-grid"></div>
+      <div class="tier-actions">
+        <p style="font-size: 11px; color: var(--text-faint); margin-top: 12px; font-style: italic;">
+          <strong>Common pattern:</strong> Build the Medium tier first (your recommended price). Snapshot it. Then make a leaner version, snapshot as Low. Then add more hours / scope, snapshot as High.
+        </p>
+      </div>
+    </div>
+  </div>
 
   <!-- SCHEDULE -->
   <div class="panel" id="panel-schedule">
@@ -1436,14 +1554,21 @@ function freshState() {
     totalBudget: 142000,
     startMonth: new Date().toISOString().slice(0, 7),
     duration: 6,
-    team: PRESETS['lean'].map(m => ({ id: genId(), name: m.name, role: m.role, rate: m.rate || RATE_LOOKUP[m.role] || 150, isPT: m.isPT || false, hours: {} })),
+    // Baseline mode: when enabled, each team member has a baselineHours value
+    // that applies to every month, with per-month entries acting as overrides
+    baselineMode: false,
+    team: PRESETS['lean'].map(m => ({ id: genId(), name: m.name, role: m.role, rate: m.rate || RATE_LOOKUP[m.role] || 150, isPT: m.isPT || false, hours: {}, baselineHours: 0 })),
     passthroughs: [],
     phases: JSON.parse(JSON.stringify(DEFAULT_PHASES)),
     paymentSchedule: JSON.parse(JSON.stringify(DEFAULT_PAYMENT_SCHEDULE)),
     notes: '',
     fitScore: { budget: 0, culture: 0, decision: 0, strategic: 0, visibility: 0, retainer: 0 },
     currentDealKey: null,
-    collapsedPanels: {}
+    collapsedPanels: {},
+    // Tiers: snapshots of the deal at Low/Medium/High pricing
+    // null means "no snapshot saved yet for this tier"
+    tiers: { low: null, medium: null, high: null },
+    activeTier: null  // 'low' | 'medium' | 'high' | null (no tier active)
   };
 }
 
@@ -1520,6 +1645,11 @@ function loadFromStorage() {
       if (!state.collapsedPanels) state.collapsedPanels = {};
       if (state.notes === undefined) state.notes = '';
       if (state.projectType === undefined) state.projectType = '';
+      if (state.baselineMode === undefined) state.baselineMode = false;
+      if (!state.tiers) state.tiers = { low: null, medium: null, high: null };
+      if (state.activeTier === undefined) state.activeTier = null;
+      // Ensure every team row has baselineHours field
+      state.team.forEach(m => { if (m.baselineHours === undefined) m.baselineHours = 0; });
       state.schemaVersion = CURRENT_SCHEMA;
     }
   } catch (e) { console.error('Failed to load state:', e); }
@@ -1864,16 +1994,28 @@ function getMonths() {
   return result;
 }
 
+// In baseline mode, hoursForMonth = explicit override OR baselineHours
+// Outside baseline mode, hoursForMonth = hours[i] (or 0)
+function hoursForMonth(member, monthIdx) {
+  if (state.baselineMode) {
+    // Empty explicit override returns baseline; explicit 0 also means "no work this month"
+    // Convention: hours[i] when present (even if 0) overrides; absent = use baseline
+    if (member.hours[monthIdx] !== undefined) return member.hours[monthIdx];
+    return member.baselineHours || 0;
+  }
+  return member.hours[monthIdx] || 0;
+}
+
 function teamRowTotal(member) {
   let hrs = 0;
-  for (let i = 0; i < state.duration; i++) hrs += (member.hours[i] || 0);
+  for (let i = 0; i < state.duration; i++) hrs += hoursForMonth(member, i);
   return { hours: hrs, cost: hrs * member.rate };
 }
 function monthLaborCost(monthIdx) {
-  return state.team.filter(m => !m.isPT).reduce((sum, m) => sum + ((m.hours[monthIdx] || 0) * m.rate), 0);
+  return state.team.filter(m => !m.isPT).reduce((sum, m) => sum + (hoursForMonth(m, monthIdx) * m.rate), 0);
 }
 function monthPassthroughLaborCost(monthIdx) {
-  return state.team.filter(m => m.isPT).reduce((sum, m) => sum + ((m.hours[monthIdx] || 0) * m.rate), 0);
+  return state.team.filter(m => m.isPT).reduce((sum, m) => sum + (hoursForMonth(m, monthIdx) * m.rate), 0);
 }
 function totalLabor() {
   return state.team.filter(m => !m.isPT).reduce((sum, m) => sum + teamRowTotal(m).cost, 0);
@@ -1927,9 +2069,10 @@ function buildScheduleFooterHTML(months) {
   const totalsAll = totalLabor();
   const ptLabor = totalPassthroughLabor();
   const clipPerMonth = avgMonthlyClip();
+  const labelColspan = state.baselineMode ? 6 : 5;
   let html = '';
   html += '<tr class="label-row">';
-  html += `<td colspan="5" class="text-right">Monthly labor</td>`;
+  html += `<td colspan="${labelColspan}" class="text-right">Monthly labor</td>`;
   months.forEach(m => {
     const cost = monthLaborCost(m.idx);
     html += `<td class="text-center summary-cell purple">${cost > 0 ? fmtShort(cost) : '—'}</td>`;
@@ -1939,7 +2082,7 @@ function buildScheduleFooterHTML(months) {
 
   if (ptLabor > 0) {
     html += '<tr>';
-    html += '<td colspan="5" class="text-right">PT labor</td>';
+    html += `<td colspan="${labelColspan}" class="text-right">PT labor</td>`;
     months.forEach(m => {
       const cost = monthPassthroughLaborCost(m.idx);
       html += `<td class="text-center summary-cell warn">${cost > 0 ? fmtShort(cost) : '—'}</td>`;
@@ -1948,14 +2091,14 @@ function buildScheduleFooterHTML(months) {
   }
 
   html += '<tr>';
-  html += '<td colspan="5" class="text-right">Monthly clip</td>';
+  html += `<td colspan="${labelColspan}" class="text-right">Monthly clip</td>`;
   months.forEach(() => {
     html += `<td class="text-center summary-cell lime">${clipPerMonth > 0 ? fmtShort(clipPerMonth) : '—'}</td>`;
   });
   html += `<td class="text-right summary-cell lime">${fmt(state.totalBudget)}</td><td></td></tr>`;
 
   html += '<tr class="last-row">';
-  html += '<td colspan="5" class="text-right">Monthly profit</td>';
+  html += `<td colspan="${labelColspan}" class="text-right">Monthly profit</td>`;
   months.forEach(m => {
     const monthCost = monthLaborCost(m.idx) + monthPassthroughLaborCost(m.idx) + (totalPassthroughHard() / Math.max(state.duration, 1));
     const profit = clipPerMonth - monthCost;
@@ -1978,6 +2121,7 @@ function renderSchedule() {
   html += '<th class="text-left cell-name">Name</th>';
   html += '<th class="text-left cell-role">Role</th>';
   html += '<th class="text-right cell-rate">Rate</th>';
+  if (state.baselineMode) html += '<th class="cell-baseline" title="Recurring hours per month — override per-month below">Base/mo</th>';
   months.forEach(m => { html += `<th class="month-h cell-month">${m.label}</th>`; });
   html += '<th class="total-h text-right cell-total">Total $</th>';
   html += '<th class="cell-remove"></th>';
@@ -1999,10 +2143,17 @@ function renderSchedule() {
     html += `<td class="cell-name"><input class="row-input" data-field="name" value="${(member.name || '').replace(/"/g, '&quot;')}" placeholder="—"></td>`;
     html += `<td class="cell-role"><select class="role-select" data-field="role">${buildRoleSelectHTML(member.role, true)}</select></td>`;
     html += `<td class="cell-rate"><div class="rate-wrap"><span>$</span><input class="row-input" data-field="rate" type="number" value="${member.rate}" step="5"></div></td>`;
+    if (state.baselineMode) {
+      const bh = member.baselineHours || '';
+      html += `<td class="cell-baseline"><input class="row-input baseline-input" data-baseline="${idx}" type="number" value="${bh}" min="0" step="1" placeholder="—"></td>`;
+    }
     months.forEach((m, i) => {
-      const h = member.hours[m.idx] || '';
+      const overrideVal = member.hours[m.idx];
+      const displayVal = overrideVal !== undefined ? overrideVal : '';
+      const placeholderVal = state.baselineMode && member.baselineHours ? String(member.baselineHours) : '—';
       const fillBtnHtml = (i === 0) ? `<button class="fill-btn" data-fill="${idx}" title="Copy this value to all months">→</button>` : '';
-      html += `<td class="cell-month"><div class="month-cell-wrap"><input class="row-input" data-month="${m.idx}" type="number" value="${h}" min="0" step="1" placeholder="—">${fillBtnHtml}</div></td>`;
+      const cellCls = state.baselineMode && overrideVal !== undefined ? ' override' : '';
+      html += `<td class="cell-month${cellCls}"><div class="month-cell-wrap"><input class="row-input" data-month="${m.idx}" type="number" value="${displayVal}" min="0" step="1" placeholder="${placeholderVal}">${fillBtnHtml}</div></td>`;
     });
     html += `<td class="cell-total ${member.isPT ? 'pt-mode' : ''}">${totals.cost > 0 ? fmt(totals.cost) : '—'}</td>`;
     html += `<td class="cell-remove"><button class="btn-x" data-remove="${idx}" title="Remove">×</button></td>`;
@@ -2018,6 +2169,21 @@ function renderSchedule() {
     const idx = parseInt(tr.dataset.teamIdx, 10);
     const ptBtn = tr.querySelector('[data-pt-toggle]');
     if (ptBtn) ptBtn.addEventListener('click', () => { state.team[idx].isPT = !state.team[idx].isPT; scheduleHistoryPush(); renderAll(); });
+
+    // Baseline hours input (only present when baseline mode is on)
+    const baselineInput = tr.querySelector('[data-baseline]');
+    if (baselineInput) {
+      baselineInput.addEventListener('input', e => {
+        state.team[idx].baselineHours = parseFloat(e.target.value) || 0;
+        updateRowTotals();
+        // Re-render placeholders on month cells
+        const baseStr = state.team[idx].baselineHours ? String(state.team[idx].baselineHours) : '—';
+        tr.querySelectorAll('[data-month]').forEach(monthInp => {
+          if (!monthInp.value) monthInp.placeholder = baseStr;
+        });
+      });
+      baselineInput.addEventListener('change', () => scheduleHistoryPush());
+    }
 
     // Fill-across button: copy first month's value to all months
     const fillBtn = tr.querySelector('[data-fill]');
@@ -2469,13 +2635,30 @@ function renderAll() {
   renderPassthrough();
   renderPhases();
   renderPayments();
+  renderTiers();
   renderSummary();
   renderReminders();
   renderDealSelect();
   renderLastModified();
   renderCollapsedSummaries();
+  renderBaselineToggle();
   syncEndMonth();
   autosave();
+}
+
+function renderBaselineToggle() {
+  const btn = document.getElementById('baseline-toggle');
+  const helpEl = document.getElementById('baseline-help');
+  if (!btn) return;
+  if (state.baselineMode) {
+    btn.textContent = '✓ Baseline ON · Disable';
+    btn.classList.add('primary');
+    if (helpEl) helpEl.textContent = '— Baseline hours apply every month unless you type an override in a month cell.';
+  } else {
+    btn.textContent = 'Enable Baseline (Retainer mode)';
+    btn.classList.remove('primary');
+    if (helpEl) helpEl.textContent = '— Set a recurring monthly hours profile; override specific months as needed.';
+  }
 }
 
 function renderLastModified() {
@@ -2536,6 +2719,20 @@ function renderCollapsedSummaries() {
   if (remEl) {
     const count = document.getElementById('reminders').children.length;
     remEl.textContent = `${count} item${count !== 1 ? 's' : ''}`;
+  }
+  // Tiers
+  const tiersEl = document.getElementById('collapsed-tiers');
+  if (tiersEl) {
+    const filled = TIER_KEYS.filter(k => state.tiers[k]);
+    if (filled.length === 0) {
+      tiersEl.textContent = '— no tiers saved —';
+    } else {
+      const parts = filled.map(k => {
+        const metrics = tierMetrics(state.tiers[k]);
+        return `${TIER_LABELS[k]} ${fmt(metrics.budget)}${state.activeTier === k ? ' ★' : ''}`;
+      });
+      tiersEl.textContent = parts.join(' · ');
+    }
   }
 }
 
@@ -2614,6 +2811,140 @@ function renderPayments() {
   document.getElementById('pay-total-amt').textContent = fmt(totalAmt);
   document.getElementById('pay-paid').textContent = fmt(paidAmt);
   document.getElementById('pay-outstanding').textContent = fmt(outstanding);
+}
+
+// ============== RENDER: TIERS ==============
+const TIER_KEYS = ['low', 'medium', 'high'];
+const TIER_LABELS = { low: 'Low', medium: 'Medium', high: 'High' };
+
+function tierSnapshot() {
+  // Capture the live financial state of the deal — what changes between tiers
+  return {
+    totalBudget: state.totalBudget,
+    team: JSON.parse(JSON.stringify(state.team)),
+    passthroughs: JSON.parse(JSON.stringify(state.passthroughs)),
+    duration: state.duration,
+    startMonth: state.startMonth,
+    baselineMode: state.baselineMode,
+    phases: JSON.parse(JSON.stringify(state.phases)),
+    paymentSchedule: JSON.parse(JSON.stringify(state.paymentSchedule)),
+    capturedAt: Date.now()
+  };
+}
+
+function tierMetrics(snap) {
+  if (!snap) return null;
+  // Recompute metrics for a snapshot without disturbing state
+  const saved = {
+    team: state.team,
+    passthroughs: state.passthroughs,
+    duration: state.duration,
+    totalBudget: state.totalBudget,
+    baselineMode: state.baselineMode,
+    startMonth: state.startMonth
+  };
+  state.team = snap.team;
+  state.passthroughs = snap.passthroughs;
+  state.duration = snap.duration;
+  state.totalBudget = snap.totalBudget;
+  state.baselineMode = snap.baselineMode;
+  state.startMonth = snap.startMonth;
+  const labor = totalLabor();
+  const pt = totalPassthrough();
+  const fee = agencyFee();
+  const m = netMargin();
+  const clip = avgMonthlyClip();
+  // Restore
+  state.team = saved.team;
+  state.passthroughs = saved.passthroughs;
+  state.duration = saved.duration;
+  state.totalBudget = saved.totalBudget;
+  state.baselineMode = saved.baselineMode;
+  state.startMonth = saved.startMonth;
+  return { labor, pt, fee, margin: m, clip, budget: snap.totalBudget };
+}
+
+function renderTiers() {
+  const grid = document.getElementById('tier-grid');
+  if (!grid) return;
+  let html = '';
+  TIER_KEYS.forEach(key => {
+    const snap = state.tiers[key];
+    const metrics = tierMetrics(snap);
+    const isActive = state.activeTier === key;
+    const hasSnap = !!snap;
+    html += `<div class="tier-card ${hasSnap ? 'filled' : ''} ${isActive ? 'active' : ''}" data-tier="${key}">`;
+    html += `<div class="tier-card-head"><div class="tier-card-label">${TIER_LABELS[key]}</div>`;
+    if (isActive) html += `<div class="tier-active-badge">Active</div>`;
+    html += `</div>`;
+    if (hasSnap && metrics) {
+      const g = (metrics.fee > 0 && metrics.labor > 0) ? getMarginGrade(metrics.margin.pct) : null;
+      html += `<div class="tier-budget">${fmt(metrics.budget)}</div>`;
+      html += `<div class="tier-meta">`;
+      html += `<div class="tier-row"><span>Labor</span><span>${fmt(metrics.labor)}</span></div>`;
+      if (metrics.pt > 0) html += `<div class="tier-row"><span>Passthrough</span><span>${fmt(metrics.pt)}</span></div>`;
+      html += `<div class="tier-row"><span>Agency Fee</span><span>${fmt(metrics.fee)}</span></div>`;
+      html += `<div class="tier-row"><span>Margin</span><span class="${g ? g.color : ''}">${metrics.margin.pct.toFixed(0)}% ${g ? `· ${g.grade}` : ''}</span></div>`;
+      html += `<div class="tier-row"><span>Avg/mo</span><span>${fmt(metrics.clip)}</span></div>`;
+      html += `</div>`;
+      const captured = new Date(snap.capturedAt);
+      html += `<div class="tier-timestamp">Snapped ${captured.toLocaleDateString()} ${captured.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>`;
+    } else {
+      html += `<div class="tier-empty">No snapshot yet</div>`;
+    }
+    html += `<div class="tier-card-actions">`;
+    html += `<button class="btn-preset" data-tier-snap="${key}">${hasSnap ? 'Re-snap' : 'Snapshot'}</button>`;
+    if (hasSnap) html += `<button class="btn-preset" data-tier-load="${key}">Load</button>`;
+    if (hasSnap) html += `<button class="btn-preset danger-btn" data-tier-clear="${key}">Clear</button>`;
+    html += `</div></div>`;
+  });
+  grid.innerHTML = html;
+
+  grid.querySelectorAll('[data-tier-snap]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.tierSnap;
+      if (state.tiers[key] && !confirm(`Replace the saved "${TIER_LABELS[key]}" tier with the current state?`)) return;
+      state.tiers[key] = tierSnapshot();
+      state.activeTier = key;
+      scheduleHistoryPush();
+      renderAll();
+      showToast(`Snapped to ${TIER_LABELS[key]}`);
+    });
+  });
+  grid.querySelectorAll('[data-tier-load]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.tierLoad;
+      const snap = state.tiers[key];
+      if (!snap) return;
+      if (state.activeTier !== key && !confirm(`Load the "${TIER_LABELS[key]}" tier? This replaces the current schedule. The currently-active tier won't be overwritten.`)) return;
+      // Apply snapshot
+      state.totalBudget = snap.totalBudget;
+      state.team = JSON.parse(JSON.stringify(snap.team));
+      state.passthroughs = JSON.parse(JSON.stringify(snap.passthroughs));
+      state.duration = snap.duration;
+      state.startMonth = snap.startMonth;
+      state.baselineMode = snap.baselineMode;
+      if (snap.phases) state.phases = JSON.parse(JSON.stringify(snap.phases));
+      if (snap.paymentSchedule) state.paymentSchedule = JSON.parse(JSON.stringify(snap.paymentSchedule));
+      state.activeTier = key;
+      applyAllUIFromState();
+      renderFitScore();
+      scheduleHistoryPush();
+      renderAll();
+      showToast(`Loaded ${TIER_LABELS[key]}`);
+    });
+  });
+  grid.querySelectorAll('[data-tier-clear]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.tierClear;
+      if (!confirm(`Clear the saved "${TIER_LABELS[key]}" tier?`)) return;
+      state.tiers[key] = null;
+      if (state.activeTier === key) state.activeTier = null;
+      scheduleHistoryPush();
+      renderAll();
+      showToast(`Cleared ${TIER_LABELS[key]}`);
+    });
+  });
 }
 
 // ============== END MONTH / DURATION SYNC ==============
@@ -2774,7 +3105,7 @@ document.getElementById('add-team-btn').addEventListener('click', () => {
   if (!role) { roleEl.focus(); return; }
   let rate = parseFloat(rateEl.value);
   if (!rate || isNaN(rate)) rate = RATE_LOOKUP[role] || 150;
-  state.team.push({ id: genId(), name, role, rate, isPT: false, hours: {} });
+  state.team.push({ id: genId(), name, role, rate, isPT: false, hours: {}, baselineHours: 0 });
   nameEl.value = ''; roleEl.value = ''; rateEl.value = '';
   renderAll();
 });
@@ -2786,10 +3117,10 @@ document.querySelectorAll('[data-preset]').forEach(btn => {
     else if (p === 'freelancers') {
       // Append to current team rather than replace
       PRESETS['freelancers'].forEach(m => {
-        state.team.push({ id: genId(), name: m.name, role: m.role, rate: m.rate || RATE_LOOKUP[m.role] || 150, isPT: m.isPT || true, hours: {} });
+        state.team.push({ id: genId(), name: m.name, role: m.role, rate: m.rate || RATE_LOOKUP[m.role] || 150, isPT: m.isPT || true, hours: {}, baselineHours: 0 });
       });
     } else if (PRESETS[p]) {
-      state.team = PRESETS[p].map(m => ({ id: genId(), name: m.name, role: m.role, rate: m.rate || RATE_LOOKUP[m.role] || 150, isPT: m.isPT || false, hours: {} }));
+      state.team = PRESETS[p].map(m => ({ id: genId(), name: m.name, role: m.role, rate: m.rate || RATE_LOOKUP[m.role] || 150, isPT: m.isPT || false, hours: {}, baselineHours: 0 }));
     }
     renderAll();
   });
@@ -2828,6 +3159,21 @@ document.getElementById('deal-status').addEventListener('change', e => {
   state.dealStatus = e.target.value;
   applyDealStatusColor();
   autosave();
+});
+
+document.getElementById('baseline-toggle').addEventListener('click', () => {
+  state.baselineMode = !state.baselineMode;
+  if (state.baselineMode) {
+    // First-time enable: if any team member has hours in month 0, suggest using that as baseline
+    const candidates = state.team.filter(m => (m.hours[0] || 0) > 0 && !m.baselineHours);
+    if (candidates.length > 0) {
+      if (confirm(`Use month-1 values as the baseline for ${candidates.length} row${candidates.length === 1 ? '' : 's'} that have hours set but no baseline yet?`)) {
+        candidates.forEach(m => { m.baselineHours = m.hours[0]; m.hours = {}; });
+      }
+    }
+  }
+  scheduleHistoryPush();
+  renderAll();
 });
 
 document.getElementById('notes-textarea').addEventListener('input', e => {
