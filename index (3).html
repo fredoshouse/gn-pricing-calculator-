@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghost Note · BD Pricing Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg-elev: #141414;
+  --bg-elev-2: #1c1c1c;
+  --bg-elev-3: #232323;
+  --bg-elev-4: #2a2a2a;
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.18);
+  --text: #f5f5f5;
+  --text-muted: #8a8a8a;
+  --text-faint: #5a5a5a;
+  --lime: #C8F135;
+  --lime-dim: rgba(200, 241, 53, 0.12);
+  --purple: #8B7FD9;
+  --purple-dim: rgba(139, 127, 217, 0.12);
+  --danger: #E87A6F;
+  --danger-dim: rgba(232, 122, 111, 0.12);
+  --warn: #F5C26B;
+  --warn-dim: rgba(245, 194, 107, 0.12);
+  --warn-bright: #FFD66B;
+  --success: #7FD9A8;
+  --success-dim: rgba(127, 217, 168, 0.12);
+  --success-bright: #5FE89A;
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+  font-feature-settings: 'ss01', 'ss02';
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1520px; margin: 0 auto; padding: 28px 24px 80px; }
+
+/* HEADER */
+header { display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 20px; margin-bottom: 22px; border-bottom: 1px solid var(--border); gap: 24px; }
+.brand-mark { display: flex; align-items: center; gap: 12px; }
+.brand-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--lime); }
+.brand-name { font-family: 'DM Serif Display', serif; font-size: 20px; letter-spacing: -0.01em; }
+.brand-sep { color: var(--text-faint); font-size: 14px; }
+.brand-tool { font-size: 14px; color: var(--text-muted); }
+h1 { font-family: 'DM Serif Display', serif; font-size: 38px; line-height: 1; letter-spacing: -0.02em; font-weight: 400; margin-top: 14px; }
+h1 em { color: var(--lime); font-style: italic; }
+.tagline { color: var(--text-muted); font-size: 13px; max-width: 460px; margin-top: 8px; }
+.header-meta { text-align: right; font-size: 11px; color: var(--text-faint); letter-spacing: 0.04em; text-transform: uppercase; flex-shrink: 0; }
+.autosave-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--success); margin-right: 6px; vertical-align: middle; transition: background 0.3s ease; }
+.autosave-dot.saving { background: var(--warn); }
+
+/* DEAL SWITCHER */
+.deal-bar { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.deal-bar-label { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+.deal-bar select {
+  background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text); font: inherit; font-size: 13px; padding: 7px 10px; border-radius: 7px; outline: none; cursor: pointer; min-width: 180px;
+}
+.deal-bar select:focus { border-color: var(--lime); }
+.deal-bar input[type=text] {
+  background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text); font: inherit; font-size: 13px; padding: 7px 10px; border-radius: 7px; outline: none;
+}
+.deal-bar input[type=text]:focus { border-color: var(--lime); }
+.deal-bar .spacer { flex: 1; }
+.deal-bar .btn-mini-action {
+  background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text-muted); font: inherit; font-size: 12px; padding: 7px 12px; border-radius: 6px; cursor: pointer; letter-spacing: 0.02em; transition: all 0.15s ease;
+}
+.deal-bar .btn-mini-action:hover { border-color: var(--lime); color: var(--lime); }
+.deal-bar .btn-mini-action.primary { background: var(--lime); color: #0a0a0a; border-color: var(--lime); font-weight: 500; }
+.deal-bar .btn-mini-action.primary:hover { background: #b6dc1f; }
+
+/* PROJECT SETUP */
+.project-bar { display: grid; grid-template-columns: 2fr 1.2fr 0.9fr 0.9fr; gap: 14px; margin-bottom: 18px; }
+.field { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; }
+.field-label { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.field-label::before { content: ''; width: 12px; height: 1px; background: var(--lime); }
+.field-input { width: 100%; background: transparent; border: none; color: var(--text); font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.01em; outline: none; padding: 0; }
+.field-input::placeholder { color: var(--text-faint); }
+.field-input:focus { color: var(--lime); }
+.field-prefix { color: var(--text-muted); margin-right: 4px; font-family: 'DM Serif Display', serif; font-size: 22px; }
+.field-suffix { font-size: 12px; color: var(--text-muted); font-family: 'DM Sans', sans-serif; margin-left: 6px; letter-spacing: 0; }
+.duration-control { display: flex; align-items: center; gap: 6px; }
+.duration-control button { background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text); width: 26px; height: 26px; border-radius: 6px; cursor: pointer; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center; padding: 0; }
+.duration-control button:hover { border-color: var(--lime); color: var(--lime); }
+
+/* SUMMARY CARDS */
+.summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 22px; }
+.summary-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; position: relative; }
+.summary-card.accent-lime { border-left: 3px solid var(--lime); }
+.summary-card.accent-purple { border-left: 3px solid var(--purple); }
+.summary-card.accent-warn { border-left: 3px solid var(--warn); }
+.summary-card.accent-success { border-left: 3px solid var(--success); }
+.summary-card.accent-danger { border-left: 3px solid var(--danger); }
+.summary-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+.summary-value { font-family: 'DM Serif Display', serif; font-size: 24px; letter-spacing: -0.02em; line-height: 1; color: var(--text); }
+.summary-value.lime { color: var(--lime); }
+.summary-value.purple { color: var(--purple); }
+.summary-value.warn { color: var(--warn); }
+.summary-value.success { color: var(--success); }
+.summary-value.danger { color: var(--danger); }
+.summary-sub { font-size: 11px; color: var(--text-faint); margin-top: 5px; letter-spacing: 0.02em; }
+
+/* MARGIN CARD with GRADE */
+.margin-grade-row { display: flex; align-items: baseline; gap: 8px; margin-top: 2px; }
+.margin-grade-row .summary-value { font-size: 28px; }
+.grade-badge {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--bg-elev-2);
+}
+.grade-badge.A { background: var(--success-dim); color: var(--success-bright); }
+.grade-badge.B { background: rgba(184, 217, 127, 0.15); color: #b8d97f; }
+.grade-badge.C { background: var(--warn-dim); color: var(--warn-bright); }
+.grade-badge.D { background: rgba(245, 152, 107, 0.18); color: #F59B6B; }
+.grade-badge.F { background: var(--danger-dim); color: var(--danger); }
+.grade-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.02em; }
+
+/* MAIN LAYOUT */
+.main-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+
+/* PANELS */
+.panel { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+.panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+.panel-title { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
+.panel-title::before { content: ''; width: 16px; height: 1px; background: var(--lime); }
+.panel-title.purple-prefix::before { background: var(--purple); }
+.panel-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* SCHEDULE TABLE */
+.schedule-scroll { overflow-x: auto; margin: -20px; padding: 20px; }
+.schedule-scroll::-webkit-scrollbar { height: 8px; }
+.schedule-scroll::-webkit-scrollbar-track { background: transparent; }
+.schedule-scroll::-webkit-scrollbar-thumb { background: var(--bg-elev-3); border-radius: 4px; }
+.schedule { border-collapse: separate; border-spacing: 0; font-size: 12px; min-width: 100%; }
+.schedule th, .schedule td { padding: 0; vertical-align: middle; }
+.schedule thead th {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 0 6px 10px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.schedule thead th.text-left { text-align: left; }
+.schedule thead th.text-right { text-align: right; }
+.schedule thead th.month-h { color: var(--text-muted); }
+.schedule thead th.total-h { color: var(--lime); }
+
+.row-input { width: 100%; background: transparent; border: 1px solid transparent; color: var(--text); font: inherit; font-size: 13px; padding: 6px 8px; border-radius: 5px; outline: none; }
+.row-input:hover { background: rgba(255,255,255,0.03); }
+.row-input:focus { background: var(--bg-elev-2); border-color: var(--lime); }
+
+.role-select {
+  width: 100%; background: transparent; border: 1px solid transparent; color: var(--text); font: inherit; font-size: 12px; padding: 6px 6px; border-radius: 5px; outline: none; cursor: pointer; appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a8a8a' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 22px;
+}
+.role-select:hover { background-color: rgba(255,255,255,0.03); }
+.role-select:focus { background-color: var(--bg-elev-2); border-color: var(--lime); }
+.role-select option, .role-select optgroup { background: var(--bg-elev-2); color: var(--text); }
+.role-select optgroup { font-weight: 600; font-style: normal; color: var(--lime); }
+
+.cell-pt-toggle { width: 30px; padding: 6px 2px 6px 4px !important; text-align: center; }
+.cell-pt-toggle .pt-btn {
+  background: transparent; border: 1px solid var(--border); color: var(--text-faint); width: 22px; height: 22px; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; padding: 0; display: inline-flex; align-items: center; justify-content: center;
+  transition: all 0.15s ease;
+}
+.pt-btn:hover { border-color: var(--warn); color: var(--warn); }
+.pt-btn.active { background: var(--warn); border-color: var(--warn); color: #0a0a0a; }
+
+.cell-name { min-width: 160px; padding: 6px 0 6px 4px !important; }
+.cell-role { min-width: 170px; padding: 6px 4px !important; }
+.cell-rate { min-width: 76px; padding: 6px 4px !important; }
+.cell-rate .row-input { text-align: right; }
+.cell-rate .rate-wrap { display: flex; align-items: center; gap: 2px; background: transparent; border-radius: 5px; }
+.cell-rate .rate-wrap span { color: var(--text-faint); font-size: 11px; padding-left: 4px; }
+.cell-rate .row-input { width: 54px; padding: 6px 6px; }
+
+.cell-month { min-width: 58px; padding: 6px 3px !important; }
+.cell-month .row-input { text-align: center; padding: 6px 4px; font-size: 13px; }
+
+.cell-total { min-width: 90px; padding: 6px 4px !important; text-align: right; font-family: 'DM Serif Display', serif; font-size: 14px; color: var(--text); white-space: nowrap; }
+.cell-total.pt-mode { color: var(--warn); }
+
+.cell-remove { width: 24px; padding: 0 0 0 4px !important; }
+.btn-x { background: transparent; border: none; color: var(--text-faint); font-size: 16px; cursor: pointer; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; line-height: 1; }
+.btn-x:hover { background: var(--danger-dim); color: var(--danger); }
+
+.schedule tbody tr { transition: background 0.1s ease; }
+.schedule tbody tr:hover { background: rgba(255,255,255,0.015); }
+.schedule tbody tr.pt-row { background: rgba(245, 194, 107, 0.04); }
+.schedule tbody tr.pt-row:hover { background: rgba(245, 194, 107, 0.07); }
+.schedule tbody tr + tr td { border-top: 1px dashed var(--border); }
+
+.schedule tfoot td { padding: 12px 4px 6px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); border-top: 1px solid var(--border-strong); }
+.schedule tfoot td.text-right { text-align: right; }
+.schedule tfoot td.text-center { text-align: center; }
+.schedule tfoot td.summary-cell { font-family: 'DM Serif Display', serif; font-size: 14px; letter-spacing: -0.01em; text-transform: none; color: var(--text); }
+.schedule tfoot td.summary-cell.lime { color: var(--lime); }
+.schedule tfoot td.summary-cell.purple { color: var(--purple); }
+.schedule tfoot td.summary-cell.warn { color: var(--warn); }
+.schedule tfoot td.summary-cell.success { color: var(--success); }
+.schedule tfoot td.summary-cell.danger { color: var(--danger); }
+.schedule tfoot tr.label-row td { border-top: 1px solid var(--border); padding: 8px 4px 8px; }
+.schedule tfoot tr.last-row td { padding-bottom: 8px; border-top: 1px solid var(--border-strong); }
+
+/* ADD ROW */
+.add-row { display: flex; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); align-items: center; flex-wrap: wrap; }
+.add-input { background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text); font: inherit; font-size: 13px; padding: 8px 10px; border-radius: 6px; outline: none; }
+.add-input:focus { border-color: var(--lime); }
+.btn-add { background: transparent; border: 1px dashed var(--border-strong); color: var(--text-muted); font: inherit; font-size: 12px; padding: 8px 14px; border-radius: 6px; cursor: pointer; letter-spacing: 0.04em; white-space: nowrap; }
+.btn-add:hover { border-color: var(--lime); color: var(--lime); border-style: solid; }
+.preset-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn-preset { background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text-muted); font: inherit; font-size: 11px; padding: 6px 12px; border-radius: 6px; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; }
+.btn-preset:hover { border-color: var(--lime); color: var(--lime); }
+
+/* PASSTHROUGH (NON-LABOR) */
+.passthrough-grid { display: grid; grid-template-columns: 1fr 140px 24px; gap: 8px; align-items: center; }
+.passthrough-row { display: contents; }
+.passthrough-row .row-input { background: var(--bg-elev-2); border: 1px solid var(--border); padding: 8px 10px; font-size: 13px; }
+.passthrough-row .row-input:focus { border-color: var(--lime); }
+.passthrough-row .row-input.amount { text-align: right; font-family: 'DM Serif Display', serif; font-size: 14px; }
+.passthrough-grid .header-row { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); padding: 4px 0 8px; border-bottom: 1px solid var(--border); }
+.passthrough-grid .header-row.amount { text-align: right; }
+.passthrough-total {
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-strong);
+  display: flex; align-items: baseline; justify-content: space-between;
+}
+.passthrough-total .label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.passthrough-total .value { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--warn); }
+.passthrough-breakdown { margin-top: 10px; font-size: 12px; color: var(--text-faint); display: flex; justify-content: space-between; }
+
+/* FIT SCORE */
+.fit-grid { display: grid; grid-template-columns: 1fr 200px; gap: 28px; align-items: center; }
+.fit-list { display: flex; flex-direction: column; gap: 10px; }
+.fit-row { display: grid; grid-template-columns: 1fr 200px 40px; gap: 14px; align-items: center; }
+.fit-name { font-size: 13px; color: var(--text); }
+.fit-slider { -webkit-appearance: none; appearance: none; background: transparent; width: 100%; height: 24px; }
+.fit-slider::-webkit-slider-runnable-track { background: var(--bg-elev-2); height: 4px; border-radius: 2px; }
+.fit-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--lime); margin-top: -6px; cursor: pointer; }
+.fit-slider::-moz-range-track { background: var(--bg-elev-2); height: 4px; border-radius: 2px; }
+.fit-slider::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--lime); border: none; cursor: pointer; }
+.fit-value { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--lime); text-align: right; }
+.fit-summary {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+}
+.fit-pct { font-family: 'DM Serif Display', serif; font-size: 30px; letter-spacing: -0.02em; line-height: 1; }
+.fit-pct.success { color: var(--success); }
+.fit-pct.warn { color: var(--warn); }
+.fit-pct.danger { color: var(--danger); }
+.fit-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-top: 8px; }
+.fit-score-text { font-size: 13px; color: var(--text); margin-top: 4px; }
+
+/* REMINDERS */
+.reminders { display: flex; flex-direction: column; gap: 8px; }
+.reminder { background: var(--bg-elev-2); border-left: 2px solid var(--purple); padding: 12px 14px; border-radius: 0 var(--radius) var(--radius) 0; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.reminder strong { font-weight: 500; }
+.reminder.warn { border-left-color: var(--warn); }
+.reminder.warn strong { color: var(--warn); }
+.reminder.danger { border-left-color: var(--danger); }
+.reminder.danger strong { color: var(--danger); }
+.reminder.success { border-left-color: var(--success); }
+.reminder.success strong { color: var(--success); }
+.reminder.default strong { color: var(--purple); }
+
+/* ACTIONS */
+.actions-bar { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+.btn { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 11px 18px; font: inherit; font-size: 13px; border-radius: var(--radius); cursor: pointer; transition: all 0.15s ease; }
+.btn:hover { border-color: var(--border-strong); }
+.btn.primary { background: var(--lime); color: #0a0a0a; border-color: var(--lime); font-weight: 500; }
+.btn.primary:hover { background: #b6dc1f; border-color: #b6dc1f; }
+.btn.secondary { background: var(--bg-elev-2); }
+.btn.flex { flex: 1; min-width: 140px; }
+
+/* COLLAPSIBLE */
+.collapsible-toggle { background: none; border: none; color: var(--text-muted); font: inherit; font-size: 12px; cursor: pointer; padding: 0; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--text-faint); }
+.collapsible-toggle:hover { color: var(--lime); }
+.collapsible { display: none; }
+.collapsible.open { display: block; }
+
+/* TWO-COLUMN ROW */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 1100px) { .two-col { grid-template-columns: 1fr; } }
+
+/* TOAST */
+.copy-toast { position: fixed; bottom: 24px; right: 24px; background: var(--lime); color: #0a0a0a; padding: 12px 18px; border-radius: var(--radius); font-size: 13px; font-weight: 500; opacity: 0; transform: translateY(20px); pointer-events: none; transition: all 0.25s ease; z-index: 100; }
+.copy-toast.show { opacity: 1; transform: translateY(0); }
+.copy-toast.warn { background: var(--warn); }
+.copy-toast.danger { background: var(--danger); color: #fff; }
+
+footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-faint); letter-spacing: 0.04em; display: flex; justify-content: space-between; text-transform: uppercase; }
+
+@media (max-width: 900px) {
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .project-bar { grid-template-columns: 1fr 1fr; }
+  h1 { font-size: 30px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="brand-mark">
+      <div class="brand-dot"></div>
+      <div class="brand-name">Ghost Note</div>
+      <div class="brand-sep">/</div>
+      <div class="brand-tool">BD Pricing Calculator</div>
+    </div>
+    <h1>Build the <em>schedule.</em> Hold the margin.</h1>
+    <p class="tagline">Bottom-up labor schedule, real GN rate card, deal-fit scoring, and a margin grade you can see at a glance.</p>
+  </div>
+  <div class="header-meta">
+    <div><span class="autosave-dot" id="autosave-dot"></span><span id="autosave-text">Saved</span></div>
+    <div style="margin-top: 4px;">v4.0 · 2025 Rate Card</div>
+  </div>
+</header>
+
+<!-- DEAL SWITCHER -->
+<div class="deal-bar">
+  <span class="deal-bar-label">Current Deal</span>
+  <select id="deal-select">
+    <option value="__current__">(unsaved working deal)</option>
+  </select>
+  <input type="text" id="save-as-name" placeholder="Save as…" style="width: 180px;">
+  <button class="btn-mini-action" id="save-deal-btn">Save</button>
+  <button class="btn-mini-action" id="delete-deal-btn" style="display:none;">Delete</button>
+  <div class="spacer"></div>
+  <button class="btn-mini-action" id="export-json-btn">Export JSON</button>
+  <button class="btn-mini-action" id="import-json-btn">Import JSON</button>
+  <input type="file" id="import-file" accept=".json,application/json" style="display: none;">
+  <button class="btn-mini-action primary" id="export-excel-btn">Export Excel</button>
+</div>
+
+<!-- PROJECT SETUP -->
+<div class="project-bar">
+  <div class="field">
+    <div class="field-label">Project / Client</div>
+    <input class="field-input" id="project-name" placeholder="New project" value="">
+  </div>
+  <div class="field">
+    <div class="field-label">Total Budget</div>
+    <div style="display: flex; align-items: baseline;">
+      <span class="field-prefix">$</span>
+      <input class="field-input" id="total-budget" type="number" placeholder="0" value="142000" step="1000">
+    </div>
+  </div>
+  <div class="field">
+    <div class="field-label">Start Month</div>
+    <input class="field-input" id="start-month" type="month" value="" style="font-size: 18px;">
+  </div>
+  <div class="field">
+    <div class="field-label">Duration</div>
+    <div class="duration-control">
+      <button id="dec-duration">−</button>
+      <input class="field-input" id="duration" type="number" min="1" max="24" value="6" style="text-align: center;">
+      <button id="inc-duration">+</button>
+      <span class="field-suffix">mo</span>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="summary-grid">
+  <div class="summary-card accent-lime">
+    <div class="summary-label">Total Budget</div>
+    <div class="summary-value lime" id="s-budget">$0</div>
+    <div class="summary-sub" id="s-budget-sub">—</div>
+  </div>
+  <div class="summary-card accent-purple">
+    <div class="summary-label">Total Labor</div>
+    <div class="summary-value purple" id="s-labor">$0</div>
+    <div class="summary-sub" id="s-labor-sub">—</div>
+  </div>
+  <div class="summary-card accent-warn">
+    <div class="summary-label">Passthrough</div>
+    <div class="summary-value warn" id="s-passthrough">$0</div>
+    <div class="summary-sub" id="s-passthrough-sub">—</div>
+  </div>
+  <div class="summary-card" id="margin-card">
+    <div class="summary-label">Net Margin</div>
+    <div class="margin-grade-row">
+      <div class="summary-value" id="s-margin">—</div>
+      <div class="grade-badge" id="s-grade" style="display:none;">—</div>
+    </div>
+    <div class="summary-sub" id="s-margin-sub">Budget minus all cost</div>
+  </div>
+  <div class="summary-card accent-lime" id="clip-card">
+    <div class="summary-label">Avg Monthly Clip</div>
+    <div class="summary-value" id="s-clip">$0</div>
+    <div class="summary-sub" id="s-clip-sub">Revenue per month</div>
+  </div>
+</div>
+
+<div class="main-grid">
+
+  <!-- SCHEDULE -->
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title purple-prefix">Labor Schedule</div>
+      <div class="panel-actions">
+        <button class="btn-preset" id="distribute-evenly">Even distribute</button>
+        <button class="btn-preset" id="clear-hours">Clear hours</button>
+      </div>
+    </div>
+
+    <div class="schedule-scroll">
+      <table class="schedule" id="schedule-table"></table>
+    </div>
+
+    <div class="add-row">
+      <input class="add-input" id="add-name" placeholder="Name (optional)" style="width: 140px;">
+      <select class="add-input" id="add-role" style="width: 200px;"></select>
+      <div style="display: flex; align-items: center; gap: 4px;">
+        <span style="color: var(--text-faint); font-size: 13px;">$</span>
+        <input class="add-input" id="add-rate" type="number" placeholder="rate" style="width: 80px;" step="25">
+        <span style="color: var(--text-faint); font-size: 11px;">/hr</span>
+      </div>
+      <button class="btn-add" id="add-team-btn">+ Add row</button>
+      <div style="flex: 1;"></div>
+      <div class="preset-buttons">
+        <span style="font-size: 10px; color: var(--text-faint); letter-spacing: 0.08em; text-transform: uppercase; align-self: center; margin-right: 4px;">Presets:</span>
+        <button class="btn-preset" data-preset="full-team">Full GN team</button>
+        <button class="btn-preset" data-preset="lean">Lean</button>
+        <button class="btn-preset" data-preset="strategy">Strategy-only</button>
+        <button class="btn-preset" data-preset="creative">Creative-only</button>
+        <button class="btn-preset" data-preset="reset">Clear all</button>
+      </div>
+    </div>
+
+    <p style="font-size: 11px; color: var(--text-faint); margin-top: 10px; font-style: italic;">
+      <strong style="color: var(--warn);">PT</strong> toggle on the right of each row flags that person as passthrough (freelancer / external). Their cost flows into Passthrough instead of Labor.
+    </p>
+  </div>
+
+  <div class="two-col">
+
+    <!-- PASSTHROUGH (non-labor) -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Passthrough · Non-Labor</div>
+      </div>
+      <p style="font-size: 11px; color: var(--text-faint); margin-bottom: 12px; font-style: italic;">
+        Hard costs: production, talent, paid media, seeding, licensing. Freelance labor goes in the schedule above (toggle PT).
+      </p>
+      <div class="passthrough-grid" id="passthrough-grid">
+        <div class="header-row">Description</div>
+        <div class="header-row amount">Amount</div>
+        <div class="header-row"></div>
+      </div>
+      <div class="add-row" style="margin-top: 10px; padding-top: 10px;">
+        <input class="add-input" id="pt-desc" placeholder="Description" style="flex: 1;">
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <span style="color: var(--text-faint); font-size: 13px;">$</span>
+          <input class="add-input" id="pt-amount" type="number" placeholder="amount" style="width: 100px;" step="1000">
+        </div>
+        <button class="btn-add" id="add-pt-btn">+ Add</button>
+      </div>
+      <div class="passthrough-breakdown" id="passthrough-breakdown"></div>
+      <div class="passthrough-total">
+        <div class="label">Total Passthrough</div>
+        <div class="value" id="pt-total">$0</div>
+      </div>
+    </div>
+
+    <!-- FIT SCORE -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Deal Fit Score</div>
+        <button class="collapsible-toggle" id="fit-toggle">Show</button>
+      </div>
+      <div class="collapsible" id="fit-collapsible">
+        <div class="fit-grid">
+          <div class="fit-list" id="fit-list"></div>
+          <div class="fit-summary">
+            <div class="fit-pct" id="fit-pct">—</div>
+            <div class="fit-score-text" id="fit-score-text">0 / 30</div>
+            <div class="fit-label">Overall fit</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- REMINDERS -->
+  <div class="panel" id="reminders-panel">
+    <div class="panel-head">
+      <div class="panel-title">Pricing Discipline</div>
+    </div>
+    <div class="reminders" id="reminders"></div>
+  </div>
+
+</div>
+
+<div class="actions-bar">
+  <button class="btn flex secondary" onclick="resetAll()">Reset all</button>
+  <button class="btn flex primary" onclick="copyToClipboard()">Copy summary to clipboard</button>
+</div>
+
+<footer>
+  <span>Ghost Note · BD Pricing v4.0 · 2025 Rate Card</span>
+  <span>Build the schedule. Hold the margin.</span>
+</footer>
+
+</div>
+
+<div class="copy-toast" id="copy-toast">Copied to clipboard</div>
+
+<script>
+// ============== 2025 RATE CARD ==============
+const RATE_CARD = [
+  { group: 'C-Suite', items: [
+    { title: 'CEO/President',          rate: 315, note: 'Executive visibility, present at milestones on T1 and priority T2' }
+  ]},
+  { group: 'Strategy', items: [
+    { title: 'Director of Strategy',   rate: 275 },
+    { title: 'Sr Strategist',          rate: 190 },
+    { title: 'Strategist',             rate: 150 }
+  ]},
+  { group: 'Creative', items: [
+    { title: 'Head of Creative',       rate: 300, note: 'T1 and T2 clients in collab with a CD or CL' },
+    { title: 'Creative Director',      rate: 275, note: 'Head of Creative on lower tier/budget engagements' },
+    { title: 'Creative Lead',          rate: 200 },
+    { title: 'Senior Designer',        rate: 175 },
+    { title: 'Designer',               rate: 125 },
+    { title: 'UX/UI Designer',         rate: 175 },
+    { title: 'Motion Designer',        rate: 165 },
+    { title: 'Web Developer',          rate: 175 }
+  ]},
+  { group: 'Ops / Account', items: [
+    { title: 'Sr. Project Manager',    rate: 150 },
+    { title: 'Project Manager',        rate: 125 },
+    { title: 'Account Director',       rate: 175 },
+    { title: 'Account Manager',        rate: 125 }
+  ]}
+];
+
+const RATE_LOOKUP = {};
+RATE_CARD.forEach(g => g.items.forEach(it => { RATE_LOOKUP[it.title] = it.rate; }));
+
+// ============== PRESETS ==============
+const PRESETS = {
+  'full-team': [
+    { name: 'Steven Jumper',             role: 'CEO/President',          isPT: false },
+    { name: 'Reggie Snowden',            role: 'CEO/President',          isPT: false },
+    { name: 'Sarah Duarte',              role: 'Director of Strategy',   isPT: false },
+    { name: 'Quinnton Harris',           role: 'Head of Creative',       isPT: false },
+    { name: 'Fredo Adarkwah',            role: 'Account Director',       isPT: false },
+    { name: 'Nadja Boncoeur-Creavalle',  role: 'Sr. Project Manager',    isPT: false },
+    { name: 'Adam Akisanya',             role: 'Sr. Project Manager',    isPT: false },
+    { name: 'Natalia Celine Arias',      role: 'Senior Designer',        isPT: false },
+    { name: 'Latrice Wooden',            role: 'Sr Strategist',          isPT: false }
+  ],
+  'lean': [
+    { name: 'Reggie Snowden',            role: 'CEO/President',          isPT: false },
+    { name: 'Quinnton Harris',           role: 'Creative Director',      isPT: false },
+    { name: 'Fredo Adarkwah',            role: 'Account Director',       isPT: false },
+    { name: 'Adam Akisanya',             role: 'Sr. Project Manager',    isPT: false },
+    { name: 'Natalia Celine Arias',      role: 'Senior Designer',        isPT: false }
+  ],
+  'strategy': [
+    { name: 'Reggie Snowden',            role: 'CEO/President',          isPT: false },
+    { name: 'Sarah Duarte',              role: 'Director of Strategy',   isPT: false },
+    { name: 'Latrice Wooden',            role: 'Sr Strategist',          isPT: false },
+    { name: 'Fredo Adarkwah',            role: 'Account Director',       isPT: false },
+    { name: 'Adam Akisanya',             role: 'Sr. Project Manager',    isPT: false }
+  ],
+  'creative': [
+    { name: 'Quinnton Harris',           role: 'Head of Creative',       isPT: false },
+    { name: '',                          role: 'Creative Director',      isPT: false },
+    { name: 'Natalia Celine Arias',      role: 'Senior Designer',        isPT: false },
+    { name: '',                          role: 'Motion Designer',        isPT: false },
+    { name: 'Jahred Corbin',             role: 'UX/UI Designer',         isPT: false },
+    { name: 'Adam Akisanya',             role: 'Sr. Project Manager',    isPT: false }
+  ]
+};
+
+const FIT_CRITERIA = [
+  { key: 'budget',    label: 'Budget Alignment' },
+  { key: 'culture',   label: 'Culture Fit' },
+  { key: 'decision',  label: 'Decision Maker Access' },
+  { key: 'strategic', label: 'Strategic Need' },
+  { key: 'visibility',label: 'Visibility' },
+  { key: 'retainer',  label: 'Retainer Potential' }
+];
+
+// ============== STATE ==============
+const STORAGE_KEY = 'gn-pricing-calculator-v4';
+const STORAGE_DEALS_KEY = 'gn-pricing-calculator-v4-deals';
+
+function freshState() {
+  return {
+    projectName: '',
+    totalBudget: 142000,
+    startMonth: new Date().toISOString().slice(0, 7),
+    duration: 6,
+    team: PRESETS['lean'].map(m => ({ id: genId(), name: m.name, role: m.role, rate: RATE_LOOKUP[m.role] || 150, isPT: false, hours: {} })),
+    passthroughs: [],
+    fitScore: { budget: 0, culture: 0, decision: 0, strategic: 0, visibility: 0, retainer: 0 },
+    currentDealKey: null   // null = unsaved working deal
+  };
+}
+
+let state = freshState();
+
+function genId() { return 'r_' + Math.random().toString(36).slice(2, 10); }
+
+// ============== PERSISTENCE ==============
+let autosaveTimer = null;
+function autosave() {
+  const dot = document.getElementById('autosave-dot');
+  const text = document.getElementById('autosave-text');
+  dot.classList.add('saving');
+  text.textContent = 'Saving';
+  clearTimeout(autosaveTimer);
+  autosaveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      // If we have a current named deal, also update it
+      if (state.currentDealKey) {
+        const deals = loadDeals();
+        if (deals[state.currentDealKey]) {
+          deals[state.currentDealKey].state = state;
+          deals[state.currentDealKey].updatedAt = Date.now();
+          localStorage.setItem(STORAGE_DEALS_KEY, JSON.stringify(deals));
+        }
+      }
+      dot.classList.remove('saving');
+      text.textContent = 'Saved';
+    } catch (e) {
+      console.error('Autosave failed:', e);
+      text.textContent = 'Save failed';
+    }
+  }, 400);
+}
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const loaded = JSON.parse(raw);
+      // merge to handle missing fields in older versions
+      state = { ...freshState(), ...loaded };
+      // ensure each team member has isPT field
+      state.team.forEach(m => { if (m.isPT === undefined) m.isPT = false; });
+    }
+  } catch (e) {
+    console.error('Failed to load state:', e);
+  }
+}
+
+function loadDeals() {
+  try {
+    const raw = localStorage.getItem(STORAGE_DEALS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveDeals(deals) {
+  localStorage.setItem(STORAGE_DEALS_KEY, JSON.stringify(deals));
+}
+
+// ============== UTILS ==============
+const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+const fmtShort = n => {
+  if (Math.abs(n) >= 1000000) return '$' + (n / 1000000).toFixed(2).replace(/\.?0+$/, '') + 'M';
+  if (Math.abs(n) >= 1000)    return '$' + Math.round(n / 1000) + 'K';
+  return '$' + Math.round(n);
+};
+const slugify = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
+
+function getMonths() {
+  const result = [];
+  if (!state.startMonth) return result;
+  const [y, m] = state.startMonth.split('-').map(Number);
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  for (let i = 0; i < state.duration; i++) {
+    const date = new Date(y, m - 1 + i, 1);
+    result.push({
+      idx: i,
+      label: monthNames[date.getMonth()],
+      year: date.getFullYear(),
+      key: date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0'),
+      fullLabel: monthNames[date.getMonth()] + ' ' + date.getFullYear()
+    });
+  }
+  return result;
+}
+
+function teamRowTotal(member) {
+  let hrs = 0;
+  for (let i = 0; i < state.duration; i++) hrs += (member.hours[i] || 0);
+  return { hours: hrs, cost: hrs * member.rate };
+}
+
+function monthLaborCost(monthIdx) {
+  return state.team
+    .filter(m => !m.isPT)
+    .reduce((sum, m) => sum + ((m.hours[monthIdx] || 0) * m.rate), 0);
+}
+
+function monthPassthroughLaborCost(monthIdx) {
+  return state.team
+    .filter(m => m.isPT)
+    .reduce((sum, m) => sum + ((m.hours[monthIdx] || 0) * m.rate), 0);
+}
+
+function totalLabor() {
+  return state.team
+    .filter(m => !m.isPT)
+    .reduce((sum, m) => sum + teamRowTotal(m).cost, 0);
+}
+
+function totalPassthroughLabor() {
+  return state.team
+    .filter(m => m.isPT)
+    .reduce((sum, m) => sum + teamRowTotal(m).cost, 0);
+}
+
+function totalPassthroughHard() {
+  return state.passthroughs.reduce((sum, p) => sum + (p.amount || 0), 0);
+}
+
+function totalPassthrough() {
+  return totalPassthroughLabor() + totalPassthroughHard();
+}
+
+function agencyFee() {
+  return state.totalBudget - totalPassthrough();
+}
+
+function netMargin() {
+  const fee = agencyFee();
+  const labor = totalLabor();
+  return { dollars: fee - labor, pct: fee > 0 ? ((fee - labor) / fee) * 100 : 0 };
+}
+
+function avgMonthlyClip() {
+  return state.duration > 0 ? state.totalBudget / state.duration : 0;
+}
+
+function fitScoreTotal() {
+  return Object.values(state.fitScore).reduce((a, b) => a + b, 0);
+}
+
+function getMarginGrade(pct) {
+  if (pct < 0)  return { grade: 'F', label: 'Loss',           color: 'danger', cls: 'F' };
+  if (pct < 10) return { grade: 'F', label: 'Below target',   color: 'danger', cls: 'F' };
+  if (pct < 20) return { grade: 'D', label: 'Risk',           color: 'danger', cls: 'D' };
+  if (pct < 30) return { grade: 'C', label: 'Compressed',     color: 'warn',   cls: 'C' };
+  if (pct < 40) return { grade: 'B', label: 'OK',             color: 'warn',   cls: 'B' };
+  if (pct < 50) return { grade: 'A', label: 'Healthy',        color: 'success',cls: 'A' };
+  return            { grade: 'A+',label: 'Excellent',       color: 'success',cls: 'A' };
+}
+
+// ============== RENDER: ROLE DROPDOWN ==============
+function buildRoleSelectHTML(currentRole, includeBlank) {
+  let html = '';
+  if (includeBlank) html += '<option value="">Select role…</option>';
+  RATE_CARD.forEach(group => {
+    html += `<optgroup label="${group.group}">`;
+    group.items.forEach(it => {
+      const sel = it.title === currentRole ? ' selected' : '';
+      html += `<option value="${it.title}"${sel}>${it.title} — $${it.rate}/hr</option>`;
+    });
+    html += '</optgroup>';
+  });
+  return html;
+}
+
+// ============== RENDER: SCHEDULE ==============
+function renderSchedule() {
+  const months = getMonths();
+  const table = document.getElementById('schedule-table');
+
+  let html = '<thead><tr>';
+  html += '<th class="cell-pt-toggle">PT</th>';
+  html += '<th class="text-left cell-name">Name</th>';
+  html += '<th class="text-left cell-role">Role</th>';
+  html += '<th class="text-right cell-rate">Rate</th>';
+  months.forEach(m => { html += `<th class="month-h cell-month">${m.label}</th>`; });
+  html += '<th class="total-h text-right cell-total">Total $</th>';
+  html += '<th class="cell-remove"></th>';
+  html += '</tr></thead>';
+
+  html += '<tbody>';
+  state.team.forEach((member, idx) => {
+    const totals = teamRowTotal(member);
+    const rowCls = member.isPT ? 'pt-row' : '';
+    html += `<tr data-team-idx="${idx}" class="${rowCls}">`;
+    html += `<td class="cell-pt-toggle"><button class="pt-btn ${member.isPT ? 'active' : ''}" data-pt-toggle="${idx}" title="Toggle passthrough">PT</button></td>`;
+    html += `<td class="cell-name"><input class="row-input" data-field="name" value="${(member.name || '').replace(/"/g, '&quot;')}" placeholder="—"></td>`;
+    html += `<td class="cell-role"><select class="role-select" data-field="role">${buildRoleSelectHTML(member.role, true)}</select></td>`;
+    html += `<td class="cell-rate"><div class="rate-wrap"><span>$</span><input class="row-input" data-field="rate" type="number" value="${member.rate}" step="25"></div></td>`;
+    months.forEach(m => {
+      const h = member.hours[m.idx] || '';
+      html += `<td class="cell-month"><input class="row-input" data-month="${m.idx}" type="number" value="${h}" min="0" step="1" placeholder="—"></td>`;
+    });
+    html += `<td class="cell-total ${member.isPT ? 'pt-mode' : ''}">${totals.cost > 0 ? fmt(totals.cost) : '—'}</td>`;
+    html += `<td class="cell-remove"><button class="btn-x" data-remove="${idx}" title="Remove">×</button></td>`;
+    html += '</tr>';
+  });
+  html += '</tbody>';
+
+  // FOOTER
+  const totalsAll = totalLabor();
+  const ptLabor = totalPassthroughLabor();
+  const clipPerMonth = avgMonthlyClip();
+  html += '<tfoot>';
+
+  html += '<tr class="label-row">';
+  html += `<td colspan="4" class="text-right">Monthly labor</td>`;
+  months.forEach(m => {
+    const cost = monthLaborCost(m.idx);
+    html += `<td class="text-center summary-cell purple">${cost > 0 ? fmtShort(cost) : '—'}</td>`;
+  });
+  html += `<td class="text-right summary-cell purple">${fmt(totalsAll)}</td>`;
+  html += '<td></td>';
+  html += '</tr>';
+
+  if (ptLabor > 0) {
+    html += '<tr>';
+    html += '<td colspan="4" class="text-right">PT labor</td>';
+    months.forEach(m => {
+      const cost = monthPassthroughLaborCost(m.idx);
+      html += `<td class="text-center summary-cell warn">${cost > 0 ? fmtShort(cost) : '—'}</td>`;
+    });
+    html += `<td class="text-right summary-cell warn">${fmt(ptLabor)}</td>`;
+    html += '<td></td>';
+    html += '</tr>';
+  }
+
+  html += '<tr>';
+  html += '<td colspan="4" class="text-right">Monthly clip</td>';
+  months.forEach(() => {
+    html += `<td class="text-center summary-cell lime">${clipPerMonth > 0 ? fmtShort(clipPerMonth) : '—'}</td>`;
+  });
+  html += `<td class="text-right summary-cell lime">${fmt(state.totalBudget)}</td>`;
+  html += '<td></td>';
+  html += '</tr>';
+
+  html += '<tr class="last-row">';
+  html += '<td colspan="4" class="text-right">Monthly profit</td>';
+  months.forEach(m => {
+    const monthCost = monthLaborCost(m.idx) + monthPassthroughLaborCost(m.idx) + (totalPassthroughHard() / Math.max(state.duration, 1));
+    const profit = clipPerMonth - monthCost;
+    const cls = profit < 0 ? 'danger' : profit < clipPerMonth * 0.2 ? 'warn' : 'success';
+    html += `<td class="text-center summary-cell ${cls}">${fmtShort(profit)}</td>`;
+  });
+  const m = netMargin();
+  const totalCls = m.pct < 20 ? 'danger' : m.pct < 35 ? 'warn' : 'success';
+  html += `<td class="text-right summary-cell ${totalCls}">${fmt(m.dollars)}</td>`;
+  html += '<td></td>';
+  html += '</tr>';
+
+  html += '</tfoot>';
+
+  table.innerHTML = html;
+
+  // BIND
+  table.querySelectorAll('tbody tr').forEach(tr => {
+    const idx = parseInt(tr.dataset.teamIdx, 10);
+
+    const ptBtn = tr.querySelector('[data-pt-toggle]');
+    if (ptBtn) {
+      ptBtn.addEventListener('click', () => {
+        state.team[idx].isPT = !state.team[idx].isPT;
+        renderAll();
+      });
+    }
+
+    tr.querySelectorAll('[data-field]').forEach(input => {
+      input.addEventListener('input', e => {
+        const field = e.target.dataset.field;
+        if (field === 'rate') {
+          state.team[idx].rate = parseFloat(e.target.value) || 0;
+        } else if (field === 'role') {
+          state.team[idx].role = e.target.value;
+          // Auto-apply rate from rate card when role changes
+          if (RATE_LOOKUP[e.target.value] !== undefined) {
+            state.team[idx].rate = RATE_LOOKUP[e.target.value];
+          }
+        } else {
+          state.team[idx][field] = e.target.value;
+        }
+        renderAll();
+      });
+      if (input.tagName === 'SELECT') {
+        input.addEventListener('change', e => {
+          state.team[idx].role = e.target.value;
+          if (RATE_LOOKUP[e.target.value] !== undefined) {
+            state.team[idx].rate = RATE_LOOKUP[e.target.value];
+          }
+          renderAll();
+        });
+      }
+    });
+
+    tr.querySelectorAll('[data-month]').forEach(input => {
+      input.addEventListener('input', e => {
+        const m = parseInt(e.target.dataset.month, 10);
+        const v = parseFloat(e.target.value);
+        if (isNaN(v) || v === 0) delete state.team[idx].hours[m];
+        else state.team[idx].hours[m] = v;
+        renderAll();
+      });
+    });
+
+    const removeBtn = tr.querySelector('[data-remove]');
+    if (removeBtn) {
+      removeBtn.addEventListener('click', () => {
+        state.team.splice(idx, 1);
+        renderAll();
+      });
+    }
+  });
+}
+
+// ============== RENDER: PASSTHROUGH ==============
+function renderPassthrough() {
+  const grid = document.getElementById('passthrough-grid');
+  const headers = grid.querySelectorAll('.header-row');
+  grid.innerHTML = '';
+  headers.forEach(h => grid.appendChild(h));
+
+  state.passthroughs.forEach((p, idx) => {
+    const descInput = document.createElement('input');
+    descInput.className = 'row-input';
+    descInput.value = p.description || '';
+    descInput.placeholder = 'Item';
+    descInput.addEventListener('input', e => {
+      state.passthroughs[idx].description = e.target.value;
+      autosave();
+    });
+
+    const amtInput = document.createElement('input');
+    amtInput.className = 'row-input amount';
+    amtInput.type = 'number';
+    amtInput.value = p.amount || '';
+    amtInput.placeholder = '0';
+    amtInput.step = '1000';
+    amtInput.addEventListener('input', e => {
+      state.passthroughs[idx].amount = parseFloat(e.target.value) || 0;
+      renderAll();
+    });
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'btn-x';
+    removeBtn.textContent = '×';
+    removeBtn.addEventListener('click', () => {
+      state.passthroughs.splice(idx, 1);
+      renderAll();
+    });
+
+    grid.appendChild(descInput);
+    grid.appendChild(amtInput);
+    grid.appendChild(removeBtn);
+  });
+
+  const ptHard = totalPassthroughHard();
+  const ptLabor = totalPassthroughLabor();
+  const ptTotal = ptHard + ptLabor;
+  document.getElementById('pt-total').textContent = fmt(ptTotal);
+
+  const breakdown = document.getElementById('passthrough-breakdown');
+  if (ptLabor > 0) {
+    breakdown.innerHTML = `
+      <span>Hard cost: ${fmt(ptHard)}</span>
+      <span>Freelance labor: ${fmt(ptLabor)}</span>
+    `;
+  } else {
+    breakdown.innerHTML = '';
+  }
+}
+
+// ============== RENDER: FIT SCORE ==============
+function renderFitScore() {
+  const list = document.getElementById('fit-list');
+  list.innerHTML = '';
+  FIT_CRITERIA.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'fit-row';
+    row.innerHTML = `
+      <div class="fit-name">${c.label}</div>
+      <input class="fit-slider" type="range" min="0" max="5" step="1" value="${state.fitScore[c.key]}" data-fit="${c.key}">
+      <div class="fit-value" data-fit-val="${c.key}">${state.fitScore[c.key]}/5</div>
+    `;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('[data-fit]').forEach(slider => {
+    slider.addEventListener('input', e => {
+      const k = e.target.dataset.fit;
+      state.fitScore[k] = parseInt(e.target.value, 10);
+      document.querySelector(`[data-fit-val="${k}"]`).textContent = state.fitScore[k] + '/5';
+      renderFitSummary();
+      renderReminders();
+      autosave();
+    });
+  });
+  renderFitSummary();
+}
+
+function renderFitSummary() {
+  const total = fitScoreTotal();
+  const pct = (total / 30) * 100;
+  const pctEl = document.getElementById('fit-pct');
+  pctEl.textContent = pct === 0 ? '—' : Math.round(pct) + '%';
+  pctEl.className = 'fit-pct';
+  if (pct >= 75) pctEl.classList.add('success');
+  else if (pct >= 50) pctEl.classList.add('warn');
+  else if (pct > 0) pctEl.classList.add('danger');
+  document.getElementById('fit-score-text').textContent = `${total} / 30`;
+}
+
+// ============== RENDER: SUMMARY ==============
+function renderSummary() {
+  document.getElementById('s-budget').textContent = fmt(state.totalBudget);
+  const months = state.duration;
+  document.getElementById('s-budget-sub').textContent = `${months} month${months !== 1 ? 's' : ''} · ${state.startMonth}`;
+
+  const labor = totalLabor();
+  document.getElementById('s-labor').textContent = fmt(labor);
+  const fee = agencyFee();
+  const laborPctOfFee = fee > 0 ? (labor / fee) * 100 : 0;
+  document.getElementById('s-labor-sub').textContent = labor > 0 ? `${laborPctOfFee.toFixed(0)}% of agency fee · ${fmt(fee)} fee` : 'Add hours to schedule';
+
+  const pt = totalPassthrough();
+  document.getElementById('s-passthrough').textContent = fmt(pt);
+  const ptPctOfBudget = state.totalBudget > 0 ? (pt / state.totalBudget) * 100 : 0;
+  const ptLabor = totalPassthroughLabor();
+  const ptSub = ptLabor > 0
+    ? `${ptPctOfBudget.toFixed(0)}% of budget · ${fmt(ptLabor)} freelance labor`
+    : (pt > 0 ? `${ptPctOfBudget.toFixed(0)}% of total budget` : 'None added');
+  document.getElementById('s-passthrough-sub').textContent = ptSub;
+
+  const m = netMargin();
+  const marginCard = document.getElementById('margin-card');
+  const marginEl = document.getElementById('s-margin');
+  const gradeEl = document.getElementById('s-grade');
+  marginCard.className = 'summary-card';
+  marginEl.className = 'summary-value';
+  gradeEl.className = 'grade-badge';
+  if (fee <= 0 || labor === 0) {
+    marginEl.textContent = '—';
+    gradeEl.style.display = 'none';
+    marginCard.classList.add('accent-warn');
+    document.getElementById('s-margin-sub').textContent = 'Budget minus all cost';
+  } else {
+    const g = getMarginGrade(m.pct);
+    marginEl.textContent = m.pct.toFixed(0) + '%';
+    marginEl.classList.add(g.color);
+    gradeEl.style.display = 'inline-block';
+    gradeEl.textContent = g.grade + ' · ' + g.label;
+    gradeEl.classList.add(g.cls);
+    marginCard.classList.add('accent-' + g.color);
+    document.getElementById('s-margin-sub').textContent = `${fmt(m.dollars)} of ${fmt(fee)} agency fee`;
+  }
+
+  document.getElementById('s-clip').textContent = fmt(avgMonthlyClip());
+  document.getElementById('s-clip-sub').textContent = `Over ${months} month${months !== 1 ? 's' : ''}`;
+}
+
+// ============== RENDER: REMINDERS ==============
+function renderReminders() {
+  const el = document.getElementById('reminders');
+  const reminders = [];
+  const labor = totalLabor();
+  const fee = agencyFee();
+  const m = netMargin();
+  const pt = totalPassthrough();
+  const monthlyClip = avgMonthlyClip();
+
+  if (labor === 0 && state.totalBudget === 0) {
+    reminders.push({ type: 'default', title: 'Start with the budget', body: 'Set a total budget, then build the labor schedule. Match hours to the months work actually happens.' });
+  }
+
+  if (labor > 0 && fee > 0) {
+    const g = getMarginGrade(m.pct);
+    if (m.pct < 0) {
+      reminders.push({ type: 'danger', title: 'F · Loss', body: `Labor exceeds agency fee by ${fmt(Math.abs(m.dollars))}. You're losing money. Cut hours, raise budget, or walk away.` });
+    } else if (m.pct < 20) {
+      reminders.push({ type: 'danger', title: `${g.grade} · ${g.label}`, body: `Net margin is ${m.pct.toFixed(0)}%. Below GN's target. Cut hours, push for more budget, or rescope before sending.` });
+    } else if (m.pct < 30) {
+      reminders.push({ type: 'warn', title: `${g.grade} · ${g.label}`, body: `${m.pct.toFixed(0)}% margin. Tight but workable. No room for scope creep — protect the line.` });
+    } else if (m.pct < 40) {
+      reminders.push({ type: 'warn', title: `${g.grade} · ${g.label}`, body: `${m.pct.toFixed(0)}% margin is short of the 40% Healthy threshold. Worth tuning before it becomes a problem.` });
+    } else if (m.pct < 50) {
+      reminders.push({ type: 'success', title: `${g.grade} · ${g.label}`, body: `${m.pct.toFixed(0)}% margin. Solid place to be.` });
+    } else {
+      reminders.push({ type: 'success', title: `${g.grade} · ${g.label}`, body: `${m.pct.toFixed(0)}% margin. Either lean scope or conservative tier — sanity check before quoting.` });
+    }
+  }
+
+  if (labor > 0 && monthlyClip > 0) {
+    const negativeMonths = [];
+    const months = getMonths();
+    months.forEach(mo => {
+      const monthCost = monthLaborCost(mo.idx) + monthPassthroughLaborCost(mo.idx);
+      if (monthCost > monthlyClip) negativeMonths.push(mo.label);
+    });
+    if (negativeMonths.length > 0) {
+      reminders.push({
+        type: 'warn',
+        title: 'Cash-negative months',
+        body: `Cost exceeds clip in ${negativeMonths.join(', ')}. Total margin can still be fine, but cash tightens — front-load invoicing or flatten the curve.`
+      });
+    }
+  }
+
+  if (pt > 0 && state.totalBudget > 0) {
+    const ptPct = (pt / state.totalBudget) * 100;
+    if (ptPct > 50) {
+      reminders.push({ type: 'warn', title: 'Heavy passthrough load', body: `${ptPct.toFixed(0)}% of budget is passthrough. Make sure agency fee covers PM, oversight, and risk — those scale with passthrough.` });
+    }
+  }
+
+  const fitTotal = fitScoreTotal();
+  if (fitTotal > 0) {
+    const fitPct = (fitTotal / 30) * 100;
+    if (fitPct < 50) {
+      reminders.push({ type: 'danger', title: 'Low deal fit', body: `${fitPct.toFixed(0)}% fit. Strong margin won't fix wrong-fit work. Spend the energy on something with better strategic, visibility, or retainer upside.` });
+    } else if (fitPct < 65) {
+      reminders.push({ type: 'warn', title: 'Fit needs a closer look', body: `${fitPct.toFixed(0)}% fit. Look at what's scoring lowest — can you upgrade access, scope, or visibility before signing?` });
+    } else if (fitPct >= 85) {
+      reminders.push({ type: 'success', title: 'High-fit deal', body: `${fitPct.toFixed(0)}% fit. Over-invest here — make sure pricing reflects strategic value, not just hours.` });
+    }
+  }
+
+  if (state.team.length === 0) {
+    reminders.push({ type: 'default', title: 'Add the team', body: 'Pick a preset or add roles one at a time. Hours flow in once the team is set.' });
+  } else if (labor > 0 && !state.team.some(t => !t.isPT && (t.role.toLowerCase().includes('project manager') || t.role.toLowerCase().includes('pm')))) {
+    reminders.push({ type: 'warn', title: 'No PM on the schedule', body: 'Every engagement needs project management. Either add a PM explicitly or be honest that someone senior is absorbing that work.' });
+  }
+
+  if (reminders.length === 0 && labor > 0) {
+    reminders.push({ type: 'default', title: 'Hold the line', body: 'Margin healthy, schedule clean. Lock the scope before you send. Every concession changes the math — re-run the schedule, don\'t eyeball it.' });
+  }
+
+  el.innerHTML = reminders.map(r => `<div class="reminder ${r.type}"><strong>${r.title}.</strong> ${r.body}</div>`).join('');
+}
+
+// ============== RENDER ALL ==============
+function renderAll() {
+  renderSchedule();
+  renderPassthrough();
+  renderSummary();
+  renderReminders();
+  renderDealSelect();
+  autosave();
+}
+
+// ============== DEAL SWITCHER ==============
+function renderDealSelect() {
+  const sel = document.getElementById('deal-select');
+  const deals = loadDeals();
+  const keys = Object.keys(deals).sort((a, b) => (deals[b].updatedAt || 0) - (deals[a].updatedAt || 0));
+  const currentKey = state.currentDealKey;
+  sel.innerHTML = '';
+  const opt0 = document.createElement('option');
+  opt0.value = '__current__';
+  opt0.textContent = currentKey ? '(switch back to working deal)' : '(unsaved working deal)';
+  sel.appendChild(opt0);
+  keys.forEach(k => {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = deals[k].name;
+    if (k === currentKey) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  document.getElementById('delete-deal-btn').style.display = currentKey && deals[currentKey] ? 'inline-block' : 'none';
+}
+
+// ============== EVENTS ==============
+document.getElementById('project-name').addEventListener('input', e => {
+  state.projectName = e.target.value;
+  autosave();
+});
+document.getElementById('total-budget').addEventListener('input', e => {
+  state.totalBudget = parseFloat(e.target.value) || 0;
+  renderAll();
+});
+document.getElementById('start-month').addEventListener('input', e => {
+  state.startMonth = e.target.value;
+  renderAll();
+});
+const durationInput = document.getElementById('duration');
+function setDuration(val) {
+  state.duration = Math.max(1, Math.min(24, val));
+  durationInput.value = state.duration;
+  state.team.forEach(m => {
+    Object.keys(m.hours).forEach(k => {
+      if (parseInt(k, 10) >= state.duration) delete m.hours[k];
+    });
+  });
+  renderAll();
+}
+durationInput.addEventListener('input', e => setDuration(parseInt(e.target.value, 10) || 1));
+document.getElementById('inc-duration').addEventListener('click', () => setDuration(state.duration + 1));
+document.getElementById('dec-duration').addEventListener('click', () => setDuration(state.duration - 1));
+
+// Populate add-role dropdown
+function initAddRole() {
+  const sel = document.getElementById('add-role');
+  sel.innerHTML = '<option value="">Select role…</option>' + buildRoleSelectHTML('', false).replace(/<option value="">Select role…<\/option>/, '');
+  sel.addEventListener('change', e => {
+    const r = e.target.value;
+    if (RATE_LOOKUP[r] !== undefined) {
+      document.getElementById('add-rate').value = RATE_LOOKUP[r];
+    }
+  });
+}
+
+document.getElementById('add-team-btn').addEventListener('click', () => {
+  const nameEl = document.getElementById('add-name');
+  const roleEl = document.getElementById('add-role');
+  const rateEl = document.getElementById('add-rate');
+  const name = nameEl.value.trim();
+  const role = roleEl.value.trim();
+  if (!role) { roleEl.focus(); return; }
+  let rate = parseFloat(rateEl.value);
+  if (!rate || isNaN(rate)) rate = RATE_LOOKUP[role] || 150;
+  state.team.push({ id: genId(), name, role, rate, isPT: false, hours: {} });
+  nameEl.value = ''; roleEl.value = ''; rateEl.value = '';
+  renderAll();
+});
+
+document.querySelectorAll('[data-preset]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const p = btn.dataset.preset;
+    if (p === 'reset') {
+      state.team = [];
+    } else if (PRESETS[p]) {
+      state.team = PRESETS[p].map(m => ({ id: genId(), name: m.name, role: m.role, rate: RATE_LOOKUP[m.role] || 150, isPT: m.isPT || false, hours: {} }));
+    }
+    renderAll();
+  });
+});
+
+document.getElementById('distribute-evenly').addEventListener('click', () => {
+  state.team.forEach(m => {
+    const totalHrs = Object.values(m.hours).reduce((s, h) => s + (h || 0), 0);
+    if (totalHrs === 0) return;
+    const per = Math.round((totalHrs / state.duration) * 10) / 10;
+    m.hours = {};
+    for (let i = 0; i < state.duration; i++) m.hours[i] = per;
+  });
+  renderAll();
+});
+
+document.getElementById('clear-hours').addEventListener('click', () => {
+  if (!confirm('Clear all hours? Team and rates will remain.')) return;
+  state.team.forEach(m => { m.hours = {}; });
+  renderAll();
+});
+
+document.getElementById('add-pt-btn').addEventListener('click', () => {
+  const descEl = document.getElementById('pt-desc');
+  const amtEl = document.getElementById('pt-amount');
+  const description = descEl.value.trim();
+  const amount = parseFloat(amtEl.value) || 0;
+  if (!description) { descEl.focus(); return; }
+  state.passthroughs.push({ id: genId(), description, amount });
+  descEl.value = ''; amtEl.value = '';
+  renderAll();
+});
+
+document.getElementById('fit-toggle').addEventListener('click', () => {
+  const el = document.getElementById('fit-collapsible');
+  el.classList.toggle('open');
+  document.getElementById('fit-toggle').textContent = el.classList.contains('open') ? 'Hide' : 'Show';
+});
+
+// DEAL MANAGEMENT
+document.getElementById('save-deal-btn').addEventListener('click', () => {
+  const nameInput = document.getElementById('save-as-name');
+  let name = nameInput.value.trim();
+  if (!name) name = state.projectName.trim();
+  if (!name) {
+    showToast('Name the deal first', 'warn');
+    nameInput.focus();
+    return;
+  }
+  const key = slugify(name) || ('deal_' + Date.now());
+  const deals = loadDeals();
+  // If overwriting existing, confirm
+  if (deals[key] && deals[key].name !== name) {
+    if (!confirm(`A deal named "${deals[key].name}" already exists at that slug. Overwrite?`)) return;
+  }
+  deals[key] = { name, state: { ...state, currentDealKey: key }, updatedAt: Date.now() };
+  saveDeals(deals);
+  state.currentDealKey = key;
+  if (!state.projectName) state.projectName = name;
+  document.getElementById('project-name').value = state.projectName;
+  nameInput.value = '';
+  renderDealSelect();
+  autosave();
+  showToast(`Saved as "${name}"`);
+});
+
+document.getElementById('deal-select').addEventListener('change', e => {
+  const k = e.target.value;
+  if (k === '__current__') {
+    // Load the autosaved working state
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const loaded = JSON.parse(raw);
+      // Only load it if it's NOT the same as a saved deal we just exited
+      state = { ...freshState(), ...loaded };
+      state.currentDealKey = null;
+    }
+    document.getElementById('project-name').value = state.projectName || '';
+    document.getElementById('total-budget').value = state.totalBudget;
+    document.getElementById('duration').value = state.duration;
+    document.getElementById('start-month').value = state.startMonth || '';
+    renderFitScore();
+    renderAll();
+    return;
+  }
+  const deals = loadDeals();
+  if (deals[k]) {
+    state = { ...freshState(), ...deals[k].state, currentDealKey: k };
+    document.getElementById('project-name').value = state.projectName || '';
+    document.getElementById('total-budget').value = state.totalBudget;
+    document.getElementById('duration').value = state.duration;
+    document.getElementById('start-month').value = state.startMonth || '';
+    renderFitScore();
+    renderAll();
+    showToast(`Loaded "${deals[k].name}"`);
+  }
+});
+
+document.getElementById('delete-deal-btn').addEventListener('click', () => {
+  const k = state.currentDealKey;
+  if (!k) return;
+  const deals = loadDeals();
+  if (!deals[k]) return;
+  if (!confirm(`Delete saved deal "${deals[k].name}"? This cannot be undone.`)) return;
+  delete deals[k];
+  saveDeals(deals);
+  state.currentDealKey = null;
+  renderDealSelect();
+  autosave();
+  showToast('Deal deleted', 'warn');
+});
+
+// EXPORT/IMPORT JSON
+document.getElementById('export-json-btn').addEventListener('click', () => {
+  const data = {
+    version: '4.0',
+    exportedAt: new Date().toISOString(),
+    state: state,
+    savedDeals: loadDeals()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `gn-pricing-${slugify(state.projectName || 'export')}-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('JSON exported');
+});
+
+document.getElementById('import-json-btn').addEventListener('click', () => {
+  document.getElementById('import-file').click();
+});
+
+document.getElementById('import-file').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.state) {
+        if (data.savedDeals && confirm('Import saved deals too? They will merge with your existing saved deals.')) {
+          const existing = loadDeals();
+          saveDeals({ ...existing, ...data.savedDeals });
+        }
+        state = { ...freshState(), ...data.state, currentDealKey: null };
+        document.getElementById('project-name').value = state.projectName || '';
+        document.getElementById('total-budget').value = state.totalBudget;
+        document.getElementById('duration').value = state.duration;
+        document.getElementById('start-month').value = state.startMonth || '';
+        renderFitScore();
+        renderAll();
+        showToast('Import complete');
+      } else {
+        showToast('Invalid file format', 'danger');
+      }
+    } catch (err) {
+      showToast('Could not parse JSON', 'danger');
+      console.error(err);
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+});
+
+// EXPORT EXCEL
+document.getElementById('export-excel-btn').addEventListener('click', exportExcel);
+
+function exportExcel() {
+  if (typeof XLSX === 'undefined') {
+    showToast('Excel library not loaded', 'danger');
+    return;
+  }
+  const months = getMonths();
+  const wb = XLSX.utils.book_new();
+  const rows = [];
+
+  // Header section
+  rows.push([state.projectName || 'GN Pricing', '', '', 'Total Budget', state.totalBudget]);
+  rows.push(['', '', '', 'Duration', state.duration + ' months']);
+  rows.push(['', '', '', 'Start', state.startMonth]);
+  rows.push([]);
+
+  // Schedule header
+  const hdr = ['Name', 'Role', 'Rate'];
+  months.forEach(m => hdr.push(m.fullLabel));
+  hdr.push('Total Hours', 'Total $', 'Passthrough?');
+  rows.push(hdr);
+
+  // Schedule rows (non-PT)
+  state.team.filter(t => !t.isPT).forEach(t => {
+    const tot = teamRowTotal(t);
+    const r = [t.name || '', t.role || '', t.rate];
+    months.forEach(m => r.push(t.hours[m.idx] || 0));
+    r.push(tot.hours, tot.cost, '');
+    rows.push(r);
+  });
+
+  // PT rows
+  state.team.filter(t => t.isPT).forEach(t => {
+    const tot = teamRowTotal(t);
+    const r = [t.name || '', t.role || '', t.rate];
+    months.forEach(m => r.push(t.hours[m.idx] || 0));
+    r.push(tot.hours, tot.cost, 'PT');
+    rows.push(r);
+  });
+
+  rows.push([]);
+
+  // Monthly labor row
+  const monLabor = ['Monthly Labor', '', ''];
+  months.forEach(m => monLabor.push(monthLaborCost(m.idx)));
+  monLabor.push('', totalLabor(), '');
+  rows.push(monLabor);
+
+  // Monthly PT labor
+  if (totalPassthroughLabor() > 0) {
+    const monPT = ['Monthly PT Labor', '', ''];
+    months.forEach(m => monPT.push(monthPassthroughLaborCost(m.idx)));
+    monPT.push('', totalPassthroughLabor(), 'PT');
+    rows.push(monPT);
+  }
+
+  // Monthly clip
+  const monClip = ['Monthly Clip', '', ''];
+  const clip = avgMonthlyClip();
+  months.forEach(() => monClip.push(clip));
+  monClip.push('', state.totalBudget, '');
+  rows.push(monClip);
+
+  // Monthly profit
+  const monProfit = ['Monthly Profit', '', ''];
+  months.forEach(m => {
+    const cost = monthLaborCost(m.idx) + monthPassthroughLaborCost(m.idx) + (totalPassthroughHard() / Math.max(state.duration, 1));
+    monProfit.push(clip - cost);
+  });
+  monProfit.push('', netMargin().dollars, '');
+  rows.push(monProfit);
+
+  rows.push([]);
+
+  // Passthrough
+  if (state.passthroughs.length > 0) {
+    rows.push(['PASSTHROUGH (Non-Labor)']);
+    state.passthroughs.forEach(p => {
+      rows.push([p.description, '', p.amount]);
+    });
+    rows.push(['Total Passthrough Hard', '', totalPassthroughHard()]);
+    rows.push([]);
+  }
+
+  // Summary
+  const m = netMargin();
+  const g = labelGrade(m.pct, totalLabor(), agencyFee());
+  rows.push(['SUMMARY']);
+  rows.push(['Total Budget', '', state.totalBudget]);
+  rows.push(['Total Labor', '', totalLabor()]);
+  rows.push(['Total Passthrough', '', totalPassthrough()]);
+  rows.push(['Agency Fee', '', agencyFee()]);
+  rows.push(['Net Margin', '', m.dollars]);
+  rows.push(['Margin %', '', (m.pct / 100)]);
+  rows.push(['Grade', '', g]);
+  rows.push(['Avg Monthly Clip', '', avgMonthlyClip()]);
+  rows.push([]);
+
+  // Fit score
+  if (fitScoreTotal() > 0) {
+    rows.push(['FIT SCORE']);
+    FIT_CRITERIA.forEach(c => rows.push([c.label, '', state.fitScore[c.key] + '/5']));
+    rows.push(['Total', '', fitScoreTotal() + '/30']);
+    rows.push(['Fit %', '', (fitScoreTotal() / 30)]);
+  }
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+
+  // Column widths
+  ws['!cols'] = [
+    { wch: 24 }, // Name
+    { wch: 22 }, // Role
+    { wch: 8 },  // Rate
+    ...months.map(() => ({ wch: 11 })),
+    { wch: 12 }, // Total Hours
+    { wch: 14 }, // Total $
+    { wch: 12 }  // PT
+  ];
+
+  // Format currency for dollar columns
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let R = range.s.r; R <= range.e.r; ++R) {
+    // Rate column (C, index 2)
+    const rateCell = ws[XLSX.utils.encode_cell({ r: R, c: 2 })];
+    if (rateCell && typeof rateCell.v === 'number' && R > 3) rateCell.z = '"$"#,##0';
+    // Monthly columns (D onward)
+    for (let C = 3; C < 3 + months.length; ++C) {
+      const cell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
+      if (cell && typeof cell.v === 'number' && cell.v !== 0) {
+        // hours rows shouldn't get $; but the summary rows should
+        // Heuristic: if name col cell starts with "Monthly", format as currency
+        const nameCell = ws[XLSX.utils.encode_cell({ r: R, c: 0 })];
+        if (nameCell && typeof nameCell.v === 'string' && nameCell.v.startsWith('Monthly')) {
+          cell.z = '"$"#,##0';
+        }
+      }
+    }
+    // Total $ column
+    const totDol = ws[XLSX.utils.encode_cell({ r: R, c: 3 + months.length + 1 })];
+    if (totDol && typeof totDol.v === 'number') totDol.z = '"$"#,##0';
+  }
+
+  XLSX.utils.book_append_sheet(wb, ws, (state.projectName || 'Pricing').slice(0, 30));
+  XLSX.writeFile(wb, `gn-pricing-${slugify(state.projectName || 'export')}-${new Date().toISOString().slice(0,10)}.xlsx`);
+  showToast('Excel exported');
+}
+
+function labelGrade(pct, labor, fee) {
+  if (fee <= 0 || labor === 0) return '—';
+  const g = getMarginGrade(pct);
+  return g.grade + ' · ' + g.label;
+}
+
+// ============== TOAST ==============
+function showToast(msg, level) {
+  const toast = document.getElementById('copy-toast');
+  toast.textContent = msg;
+  toast.className = 'copy-toast';
+  if (level === 'warn') toast.classList.add('warn');
+  if (level === 'danger') toast.classList.add('danger');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1800);
+}
+
+// ============== RESET / COPY ==============
+function resetAll() {
+  if (!confirm('Reset everything? Clears project name, team, hours, passthrough, and fit score. Saved deals are kept.')) return;
+  state = freshState();
+  state.team = [];
+  document.getElementById('project-name').value = '';
+  document.getElementById('total-budget').value = 0;
+  document.getElementById('duration').value = 6;
+  document.getElementById('start-month').value = state.startMonth;
+  renderFitScore();
+  renderAll();
+}
+
+function copyToClipboard() {
+  const months = getMonths();
+  const labor = totalLabor();
+  const pt = totalPassthrough();
+  const fee = agencyFee();
+  const m = netMargin();
+  const clip = avgMonthlyClip();
+  const fitTotal = fitScoreTotal();
+  const g = (fee > 0 && labor > 0) ? getMarginGrade(m.pct) : null;
+  const SEP = '─'.repeat(60);
+
+  let text = `GHOST NOTE — BD PRICING\n${SEP}\n\n`;
+  text += `Project:        ${state.projectName || '(unnamed)'}\n`;
+  text += `Budget:         ${fmt(state.totalBudget)}\n`;
+  text += `Duration:       ${state.duration} months\n`;
+  if (state.startMonth) text += `Start:          ${state.startMonth}\n`;
+  text += `\n`;
+
+  text += `SUMMARY\n`;
+  text += `  Total budget:    ${fmt(state.totalBudget)}\n`;
+  text += `  Total labor:     ${fmt(labor)}\n`;
+  text += `  Passthrough:     ${fmt(pt)}`;
+  if (totalPassthroughLabor() > 0) text += `  (incl. ${fmt(totalPassthroughLabor())} freelance labor)`;
+  text += `\n`;
+  text += `  Agency fee:      ${fmt(fee)}\n`;
+  text += `  Net margin:      ${fmt(m.dollars)}  (${m.pct.toFixed(0)}%)`;
+  if (g) text += `  [${g.grade} · ${g.label}]`;
+  text += `\n`;
+  text += `  Avg monthly:     ${fmt(clip)}\n\n`;
+
+  const inhouse = state.team.filter(t => !t.isPT && teamRowTotal(t).hours > 0);
+  const pteam = state.team.filter(t => t.isPT && teamRowTotal(t).hours > 0);
+
+  if (inhouse.length > 0) {
+    text += `LABOR SCHEDULE (In-House)\n`;
+    inhouse.forEach(t => {
+      const tot = teamRowTotal(t);
+      const nameStr = t.name ? `${t.name} — ${t.role}` : t.role;
+      text += `  ${nameStr} ($${t.rate}/hr)\n`;
+      months.forEach(mo => {
+        const h = t.hours[mo.idx] || 0;
+        if (h > 0) text += `    ${mo.label}: ${h} hrs · ${fmt(h * t.rate)}\n`;
+      });
+      text += `    Total: ${tot.hours} hrs · ${fmt(tot.cost)}\n\n`;
+    });
+  }
+
+  if (pteam.length > 0) {
+    text += `LABOR SCHEDULE (Passthrough / Freelance)\n`;
+    pteam.forEach(t => {
+      const tot = teamRowTotal(t);
+      const nameStr = t.name ? `${t.name} — ${t.role}` : t.role;
+      text += `  ${nameStr} ($${t.rate}/hr) [PT]\n`;
+      months.forEach(mo => {
+        const h = t.hours[mo.idx] || 0;
+        if (h > 0) text += `    ${mo.label}: ${h} hrs · ${fmt(h * t.rate)}\n`;
+      });
+      text += `    Total: ${tot.hours} hrs · ${fmt(tot.cost)}\n\n`;
+    });
+  }
+
+  if (state.passthroughs.length > 0) {
+    text += `PASSTHROUGH (Non-Labor)\n`;
+    state.passthroughs.forEach(p => {
+      if (p.amount > 0) text += `  ${p.description || '(item)'}: ${fmt(p.amount)}\n`;
+    });
+    text += `  Total: ${fmt(totalPassthroughHard())}\n\n`;
+  }
+
+  if (fitTotal > 0) {
+    text += `DEAL FIT (${fitTotal}/30 = ${Math.round(fitTotal/30*100)}%)\n`;
+    FIT_CRITERIA.forEach(c => {
+      text += `  ${c.label}: ${state.fitScore[c.key]}/5\n`;
+    });
+    text += `\n`;
+  }
+
+  text += `MONTHLY BREAKDOWN\n`;
+  months.forEach(mo => {
+    const monLabor = monthLaborCost(mo.idx);
+    const monPT = monthPassthroughLaborCost(mo.idx);
+    const monCost = monLabor + monPT + (totalPassthroughHard() / Math.max(state.duration, 1));
+    const monProfit = clip - monCost;
+    text += `  ${mo.fullLabel}: clip ${fmt(clip)} − cost ${fmt(monCost)} = ${fmt(monProfit)}\n`;
+  });
+
+  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard'));
+}
+
+// ============== INIT ==============
+loadFromStorage();
+document.getElementById('start-month').value = state.startMonth;
+document.getElementById('total-budget').value = state.totalBudget;
+document.getElementById('duration').value = state.duration;
+document.getElementById('project-name').value = state.projectName || '';
+initAddRole();
+renderFitScore();
+renderAll();
+</script>
+</body>
+</html>
