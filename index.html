@@ -588,6 +588,394 @@ h1 em { color: var(--lime); font-style: italic; }
 .pay-totals .stat .val.warn { color: var(--warn); }
 .pay-totals .stat .val.success { color: var(--success); }
 
+/* ========== PRICING MODE TOGGLE ========== */
+.mode-switcher { padding: 10px 16px; }
+.mode-toggle {
+  display: inline-flex; gap: 2px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 3px;
+}
+.mode-btn {
+  background: transparent; border: none;
+  color: var(--text-muted);
+  font: inherit; font-size: 12.5px; font-weight: 500; letter-spacing: 0.02em;
+  padding: 7px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.mode-btn:hover { color: var(--text); }
+.mode-btn.active {
+  background: var(--lime);
+  color: #0a0a0a;
+  font-weight: 600;
+}
+
+/* Mode visibility — show appropriate panels for the active mode */
+body[data-mode="project"] .retainer-mode-only,
+body[data-mode="retainer"] .project-mode-only { display: none !important; }
+
+/* Lime panel-title prefix accent */
+.panel-title.lime-prefix::before { background: var(--lime); }
+
+/* ========== RETAINER MODE PANELS ========== */
+.retainer-preset-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+@media (max-width: 900px) { .retainer-preset-grid { grid-template-columns: 1fr; } }
+.retainer-preset-card {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.retainer-preset-card:hover { border-color: var(--lime); background: var(--bg-elev-3); transform: translateY(-2px); }
+.retainer-preset-card.active { border-color: var(--lime); box-shadow: 0 0 0 1px var(--lime); }
+.retainer-preset-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 18px; letter-spacing: -0.01em; color: var(--text);
+  line-height: 1.1;
+}
+.retainer-preset-tagline {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--lime);
+}
+.retainer-preset-desc {
+  font-size: 12px; color: var(--text-muted); line-height: 1.5;
+}
+.retainer-preset-layers {
+  display: flex; gap: 4px; margin-top: auto; padding-top: 8px;
+}
+.layer-pill {
+  font-size: 9px; font-weight: 500; letter-spacing: 0.06em;
+  padding: 3px 7px; border-radius: 3px;
+  background: var(--bg-elev-3);
+  color: var(--text-faint);
+}
+.layer-pill.on { background: var(--lime-dim); color: var(--lime); }
+
+/* Engagement summary grid */
+.retainer-summary-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+}
+@media (max-width: 1100px) { .retainer-summary-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 700px) { .retainer-summary-grid { grid-template-columns: 1fr 1fr; } }
+.retainer-summary-card {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  min-width: 0;
+}
+.retainer-summary-card.accent-lime { border-left: 3px solid var(--lime); }
+.retainer-summary-card.accent-purple { border-left: 3px solid var(--purple); }
+.retainer-summary-card.accent-warn { border-left: 3px solid var(--warn); }
+.retainer-summary-card.accent-success { border-left: 3px solid var(--success); }
+.retainer-summary-card.accent-danger { border-left: 3px solid var(--danger); }
+.retainer-summary-label {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 5px;
+}
+.retainer-summary-value {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px; letter-spacing: -0.02em; line-height: 1;
+  color: var(--text);
+  word-break: break-all;
+}
+.retainer-summary-value.lime { color: var(--lime); }
+.retainer-summary-value.purple { color: var(--purple); }
+.retainer-summary-value.warn { color: var(--warn); }
+.retainer-summary-value.success { color: var(--success); }
+.retainer-summary-value.danger { color: var(--danger); }
+.retainer-summary-sub {
+  font-size: 11px; color: var(--text-faint);
+  margin-top: 5px; letter-spacing: 0.02em;
+}
+
+/* Pricing Layers */
+.layer-block {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: all 0.18s ease;
+}
+.layer-block.disabled { opacity: 0.45; }
+.layer-block.disabled .layer-block-body { display: none; }
+.layer-block-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elev-3);
+}
+.layer-block.disabled .layer-block-head { border-bottom: none; background: transparent; }
+.layer-toggle {
+  width: 38px; height: 22px;
+  border-radius: 12px;
+  background: var(--bg-elev-4);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  transition: background 0.18s ease;
+  flex-shrink: 0;
+}
+.layer-toggle::before {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.layer-block:not(.disabled) .layer-toggle { background: var(--lime); border-color: var(--lime); }
+.layer-block:not(.disabled) .layer-toggle::before { transform: translateX(16px); background: #0a0a0a; }
+.layer-block-title { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+.layer-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px; line-height: 1;
+  color: var(--lime);
+  width: 28px; text-align: center;
+  flex-shrink: 0;
+}
+.layer-block.disabled .layer-num { color: var(--text-faint); }
+.layer-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 16px; letter-spacing: -0.01em; color: var(--text);
+  line-height: 1.2;
+}
+.layer-tag {
+  font-size: 11px; color: var(--text-muted); margin-top: 2px;
+  letter-spacing: 0.02em;
+}
+.layer-margin-summary {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: right;
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+.layer-margin-summary .val {
+  font-family: 'DM Serif Display', serif;
+  font-size: 14px;
+  display: block;
+  color: var(--text);
+}
+.layer-block-body { padding: 16px; }
+.layer-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  margin-bottom: 14px;
+}
+@media (max-width: 700px) { .layer-row { grid-template-columns: 1fr; } }
+.layer-field {
+  display: flex; flex-direction: column; gap: 6px;
+  background: var(--bg-elev-3);
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+.layer-field .field-label { margin-bottom: 0; }
+.layer-field .field-input {
+  width: 100%; font-size: 18px;
+  background: transparent; border: none; color: var(--text);
+  font-family: 'DM Serif Display', serif;
+  letter-spacing: -0.01em;
+  outline: none;
+}
+.layer-field .field-input:focus { color: var(--lime); }
+.layer-stat {
+  font-family: 'DM Serif Display', serif;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.layer-stat.lime { color: var(--lime); }
+.layer-stat.warn { color: var(--warn); }
+.layer-stat.danger { color: var(--danger); }
+.layer-stat.success { color: var(--success); }
+.layer-subhead {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 10px 0 8px;
+}
+.layer-subhead-hint {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+  font-weight: 400;
+}
+
+/* Baseline roles list */
+.baseline-roles-list {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.baseline-role-row {
+  display: grid; grid-template-columns: 1fr 1.4fr 90px 90px 24px;
+  gap: 8px;
+  align-items: center;
+}
+.baseline-role-row .row-input,
+.baseline-role-row select {
+  background: var(--bg-elev-3); border: 1px solid var(--border); color: var(--text);
+  font: inherit; font-size: 13px; padding: 7px 10px; border-radius: 6px; outline: none;
+}
+.baseline-role-row .row-input:focus,
+.baseline-role-row select:focus { border-color: var(--lime); }
+.baseline-role-row .hours-input { text-align: right; }
+.baseline-role-row .role-cost {
+  text-align: right;
+  font-family: 'DM Serif Display', serif;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Role mix list */
+.role-mix-list {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.role-mix-row {
+  display: grid; grid-template-columns: 1.4fr 90px 100px 24px;
+  gap: 8px;
+  align-items: center;
+}
+.role-mix-row select, .role-mix-row .row-input {
+  background: var(--bg-elev-3); border: 1px solid var(--border); color: var(--text);
+  font: inherit; font-size: 13px; padding: 7px 10px; border-radius: 6px; outline: none;
+}
+.role-mix-row .pct-input { text-align: right; }
+.role-mix-row .mix-stat {
+  text-align: right;
+  font-family: 'DM Serif Display', serif;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Switch label */
+.switch-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+}
+.switch-label input[type="checkbox"] {
+  width: 36px; height: 20px;
+  appearance: none; -webkit-appearance: none;
+  background: var(--bg-elev-4);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  outline: none;
+  transition: background 0.18s ease;
+  margin: 0;
+}
+.switch-label input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.switch-label input[type="checkbox"]:checked { background: var(--lime); border-color: var(--lime); }
+.switch-label input[type="checkbox"]:checked::before { transform: translateX(15px); background: #0a0a0a; }
+
+/* Reporting cadence */
+.reporting-cadence-list {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.reporting-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.reporting-row:hover { border-color: var(--border-strong); }
+.reporting-row.checked { border-color: var(--lime); background: var(--lime-dim); }
+.reporting-row .check-indicator {
+  width: 18px; height: 18px;
+  border-radius: 5px;
+  border: 1px solid var(--border-strong);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 12px;
+  color: transparent;
+  transition: all 0.18s ease;
+}
+.reporting-row.checked .check-indicator {
+  background: var(--lime);
+  border-color: var(--lime);
+  color: #0a0a0a;
+}
+.reporting-row-label {
+  font-size: 13px;
+  color: var(--text);
+  flex: 1;
+}
+
+/* Utilization tracker */
+.util-scroll {
+  overflow-x: auto;
+  margin: -16px;
+  padding: 16px;
+}
+.util-table { border-collapse: separate; border-spacing: 0; font-size: 12px; min-width: 100%; }
+.util-table th, .util-table td { padding: 8px 10px; vertical-align: middle; }
+.util-table thead th {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-faint);
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.util-table thead th.left { text-align: left; }
+.util-table tbody td { border-top: 1px dashed var(--border); }
+.util-table tbody tr:first-child td { border-top: none; }
+.util-table tbody td.center { text-align: center; }
+.util-table tbody td.left { text-align: left; }
+.util-table tbody input {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text);
+  font: inherit; font-size: 13px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  outline: none;
+  text-align: center;
+  width: 70px;
+}
+.util-table tbody input:hover { background: rgba(255,255,255,0.03); }
+.util-table tbody input:focus { background: var(--bg-elev-2); border-color: var(--lime); }
+.util-pct {
+  font-family: 'DM Serif Display', serif;
+  font-size: 13px;
+}
+.util-pct.over { color: var(--danger); }
+.util-pct.warn { color: var(--warn); }
+.util-pct.healthy { color: var(--success); }
+.util-totals {
+  display: flex; gap: 24px; flex-wrap: wrap;
+  padding-top: 14px; border-top: 1px solid var(--border-strong);
+}
+.util-totals .stat { display: flex; flex-direction: column; gap: 2px; }
+.util-totals .stat .lbl { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); }
+.util-totals .stat .val { font-family: 'DM Serif Display', serif; font-size: 18px; }
+.util-totals .stat .val.danger { color: var(--danger); }
+.util-totals .stat .val.warn { color: var(--warn); }
+.util-totals .stat .val.success { color: var(--success); }
+
 /* ========== TIER CARDS ========== */
 /* Auto-generate tier action bar */
 .tier-auto-bar {
@@ -1101,6 +1489,17 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
     </div>
 
     <div class="modal-section">
+      <h3>Retainer Mode (Layered Pricing)</h3>
+      <p>Toggle <strong>Retainer (Layered)</strong> at the top of the page for engagements that aren't a hour-by-hour project — retainers, AOR relationships, embedded teams. Three stackable layers replace the labor schedule:</p>
+      <p><strong>Layer 1 · Baseline Retainer.</strong> A flat monthly fee covering senior team capacity (CEO, President, AD, Sr. PM). Paid every month whether 30 hours or 130 are consumed. The implied blended rate and capacity coverage help you sanity-check the fee against the roster.</p>
+      <p><strong>Layer 2 · Allocated Hours Pool.</strong> A bucket of hours per month at a blended rate (e.g., 360 hrs × $250). Rollover toggle for "use it or lose it" vs. carry-forward. Optional collapsible role-mix sub-panel documents the intended staffing (Creative Lead 45% / UX/UI 45% / etc.) without affecting price — it just sharpens the implied margin.</p>
+      <p><strong>Layer 3 · Development Rider.</strong> A capped T&amp;M pool for specialty work (Web Dev, etc.) routed inside the same engagement without renegotiating scope.</p>
+      <p><strong>Rush rate</strong> sits above all three (default 1.5× blended). <strong>NTE Ceiling</strong> can be set explicitly or auto-computed from engagement total. <strong>Reporting cadence</strong> picker captures the touchpoints committed in the SOW.</p>
+      <p><strong>Utilization Tracker</strong> lets you log planned vs. actual hours per month — manual today, will pull from Harvest in Phase 3.</p>
+      <p>Three archetypes baked in: <strong>Strategic Stewardship</strong> (Tenure Facility, Layer 1 only), <strong>Creative AOR</strong> (AFSP, Layers 1+2), <strong>Embedded Pod</strong> (Pfizer, all three).</p>
+    </div>
+
+    <div class="modal-section">
       <h3>Similar Deals · Reference Library</h3>
       <p>Open the <strong>Similar Deals</strong> panel to browse every saved deal as a card. Filter by project type, status, budget range, or search across name / team / notes. Sort by recency, budget, margin, or name. Click a card to open it; click <strong>Use as template</strong> to clone the schedule (team, hours, passthrough, phases, payment schedule, tiers) into a fresh deal — name and notes get reset so you start clean. The more you save and tag with Project Type, the more useful this gets.</p>
     </div>
@@ -1228,7 +1627,7 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   </div>
   <div class="header-meta">
     <div><span class="autosave-dot" id="autosave-dot"></span><span id="autosave-text">Saved</span></div>
-    <div>v4.6 · 2025 Rate Card</div>
+    <div>v4.7 · 2025 Rate Card</div>
     <div class="header-actions">
       <button class="icon-btn" id="undo-btn" disabled>↶ Undo</button>
       <button class="icon-btn" id="redo-btn" disabled>↷ Redo</button>
@@ -1320,10 +1719,21 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   </div>
 </div>
 
-<!-- BASELINE TOGGLE BAR -->
-<div class="deal-bar" style="margin-top: -8px; margin-bottom: 16px;">
-  <span class="deal-bar-label">Mode</span>
-  <button class="btn-mini-action" id="baseline-toggle">Enable Baseline (Retainer mode)</button>
+<!-- PRICING MODE TOGGLE -->
+<div class="deal-bar mode-switcher" style="margin-top: -8px; margin-bottom: 12px;">
+  <span class="deal-bar-label">Pricing Mode</span>
+  <div class="mode-toggle">
+    <button class="mode-btn active" data-mode="project">📅 Project Schedule</button>
+    <button class="mode-btn" data-mode="retainer">🔄 Retainer (Layered)</button>
+  </div>
+  <span id="mode-help" style="font-size: 11px; color: var(--text-faint); font-style: italic; margin-left: 8px;">— Hour-by-hour delivery scoping. Best for defined projects.</span>
+  <div class="spacer"></div>
+</div>
+
+<!-- BASELINE TOGGLE BAR (project mode only) -->
+<div class="deal-bar project-mode-only" id="baseline-bar" style="margin-top: -4px; margin-bottom: 16px;">
+  <span class="deal-bar-label">Sub-Mode</span>
+  <button class="btn-mini-action" id="baseline-toggle">Enable Baseline (Recurring hours)</button>
   <span id="baseline-help" style="font-size: 11px; color: var(--text-faint); font-style: italic;">— Set a recurring monthly hours profile; override specific months as needed.</span>
   <div class="spacer"></div>
 </div>
@@ -1459,8 +1869,309 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
     </div>
   </div>
 
+  <!-- ============== RETAINER MODE PANELS ============== -->
+  <!-- Retainer Preset Picker -->
+  <div class="panel retainer-mode-only" id="panel-retainer-preset">
+    <div class="panel-head">
+      <div class="panel-title lime-prefix">Retainer Archetype</div>
+      <div class="panel-actions">
+        <span class="collapsed-summary" id="collapsed-retainer-preset">— pick an archetype to start —</span>
+        <button class="btn-collapse" data-collapse="panel-retainer-preset" title="Collapse"></button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size: 12px; color: var(--text-faint); margin-bottom: 14px; font-style: italic;">
+        Pick a structural archetype from Ghost Note's retainer playbook, or build a custom configuration below.
+      </p>
+      <div class="retainer-preset-grid">
+        <div class="retainer-preset-card" data-retainer-preset="strategic-stewardship">
+          <div class="retainer-preset-name">Strategic Stewardship</div>
+          <div class="retainer-preset-tagline">Tenure Facility style</div>
+          <div class="retainer-preset-desc">Baseline retainer only. Senior team as strategic counsel. $15–25K/month.</div>
+          <div class="retainer-preset-layers">
+            <span class="layer-pill on">Baseline</span>
+            <span class="layer-pill">Allocated</span>
+            <span class="layer-pill">Rider</span>
+          </div>
+        </div>
+        <div class="retainer-preset-card" data-retainer-preset="creative-aor">
+          <div class="retainer-preset-name">Creative AOR</div>
+          <div class="retainer-preset-tagline">AFSP style</div>
+          <div class="retainer-preset-desc">Baseline + allocated hours pool. Full agency-of-record relationship.</div>
+          <div class="retainer-preset-layers">
+            <span class="layer-pill on">Baseline</span>
+            <span class="layer-pill on">Allocated</span>
+            <span class="layer-pill">Rider</span>
+          </div>
+        </div>
+        <div class="retainer-preset-card" data-retainer-preset="embedded-pod">
+          <div class="retainer-preset-name">Embedded Pod</div>
+          <div class="retainer-preset-tagline">Pfizer style</div>
+          <div class="retainer-preset-desc">All three layers. Embedded delivery team with dev rider for production builds.</div>
+          <div class="retainer-preset-layers">
+            <span class="layer-pill on">Baseline</span>
+            <span class="layer-pill on">Allocated</span>
+            <span class="layer-pill on">Rider</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Engagement Total / NTE Summary -->
+  <div class="panel retainer-mode-only" id="panel-retainer-summary">
+    <div class="panel-head">
+      <div class="panel-title lime-prefix">Engagement Total</div>
+      <div class="panel-actions">
+        <span class="collapsed-summary" id="collapsed-retainer-summary">— configure layers below —</span>
+        <button class="btn-collapse" data-collapse="panel-retainer-summary" title="Collapse"></button>
+      </div>
+    </div>
+    <div>
+      <div class="retainer-summary-grid">
+        <div class="retainer-summary-card accent-lime">
+          <div class="retainer-summary-label">Monthly Run Rate</div>
+          <div class="retainer-summary-value lime" id="ret-monthly-rev">$0</div>
+          <div class="retainer-summary-sub" id="ret-monthly-cost">Cost: $0</div>
+        </div>
+        <div class="retainer-summary-card accent-purple">
+          <div class="retainer-summary-label">Engagement Total</div>
+          <div class="retainer-summary-value" id="ret-engagement-total">$0</div>
+          <div class="retainer-summary-sub" id="ret-engagement-sub">— months</div>
+        </div>
+        <div class="retainer-summary-card accent-warn">
+          <div class="retainer-summary-label">NTE Ceiling</div>
+          <div class="retainer-summary-value warn">
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <span style="font-size: 18px;">$</span>
+              <input class="field-input" id="ret-nte-input" type="number" placeholder="auto" step="10000" style="font-size: 22px; padding: 0; background: transparent; border: none; color: var(--warn); width: 100%;">
+            </div>
+          </div>
+          <div class="retainer-summary-sub" id="ret-nte-sub">Auto = engagement total</div>
+        </div>
+        <div class="retainer-summary-card" id="ret-margin-card">
+          <div class="retainer-summary-label">Net Margin</div>
+          <div class="margin-grade-row">
+            <div class="retainer-summary-value" id="ret-margin-pct">—</div>
+            <div class="grade-badge" id="ret-margin-grade" style="display:none;">—</div>
+          </div>
+          <div class="retainer-summary-sub" id="ret-margin-sub">Revenue minus delivery cost</div>
+        </div>
+        <div class="retainer-summary-card accent-purple">
+          <div class="retainer-summary-label">Rush Rate</div>
+          <div class="retainer-summary-value purple" id="ret-rush-rate">$0/hr</div>
+          <div class="retainer-summary-sub" id="ret-rush-sub">— blended × 1.5</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing Layers -->
+  <div class="panel retainer-mode-only" id="panel-retainer-layers">
+    <div class="panel-head">
+      <div class="panel-title purple-prefix">Pricing Layers</div>
+      <div class="panel-actions">
+        <span class="collapsed-summary" id="collapsed-retainer-layers">— hidden —</span>
+        <button class="btn-collapse" data-collapse="panel-retainer-layers" title="Collapse"></button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size: 12px; color: var(--text-faint); margin-bottom: 14px; font-style: italic;">
+        Three stackable layers. Toggle each on/off depending on the deal. Each shows its own revenue, delivery cost, and margin.
+      </p>
+
+      <!-- Layer 1: Baseline Retainer -->
+      <div class="layer-block" id="layer-baseline">
+        <div class="layer-block-head">
+          <button class="layer-toggle" data-layer-toggle="enableBaseline" title="Toggle layer on/off"></button>
+          <div class="layer-block-title">
+            <span class="layer-num">1</span>
+            <div>
+              <div class="layer-name">Baseline Retainer</div>
+              <div class="layer-tag">Senior team on tap · Flat monthly fee</div>
+            </div>
+          </div>
+          <div class="layer-margin-summary" id="layer-baseline-summary">—</div>
+        </div>
+        <div class="layer-block-body" id="layer-baseline-body">
+          <div class="layer-row">
+            <div class="layer-field">
+              <div class="field-label">Monthly Fee</div>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <span class="field-prefix">$</span>
+                <input class="field-input" id="ret-baseline-fee" type="number" step="500" placeholder="0">
+              </div>
+            </div>
+            <div class="layer-field">
+              <div class="field-label">Implied Blended Rate</div>
+              <div class="layer-stat" id="ret-baseline-blended">—</div>
+            </div>
+            <div class="layer-field">
+              <div class="field-label">Capacity Coverage</div>
+              <div class="layer-stat" id="ret-baseline-coverage">—</div>
+            </div>
+          </div>
+          <div class="layer-subhead">Roles Included <span class="layer-subhead-hint">(capacity hours per month)</span></div>
+          <div class="baseline-roles-list" id="baseline-roles-list"></div>
+          <div class="add-row" style="margin-top: 10px; padding-top: 10px;">
+            <input class="add-input" id="add-baseline-name" placeholder="Name (optional)" style="width: 140px;">
+            <select class="add-input" id="add-baseline-role" style="min-width: 200px;"></select>
+            <input class="add-input" id="add-baseline-hours" type="number" placeholder="hrs/mo" style="width: 80px;" step="5" min="0">
+            <button class="btn-add" id="add-baseline-btn">+ Add role</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layer 2: Allocated Hours Pool -->
+      <div class="layer-block" id="layer-allocated">
+        <div class="layer-block-head">
+          <button class="layer-toggle" data-layer-toggle="enableAllocated" title="Toggle layer on/off"></button>
+          <div class="layer-block-title">
+            <span class="layer-num">2</span>
+            <div>
+              <div class="layer-name">Allocated Hours Pool</div>
+              <div class="layer-tag">Delivery pod · Blended rate × hours</div>
+            </div>
+          </div>
+          <div class="layer-margin-summary" id="layer-allocated-summary">—</div>
+        </div>
+        <div class="layer-block-body" id="layer-allocated-body">
+          <div class="layer-row">
+            <div class="layer-field">
+              <div class="field-label">Hours / Month</div>
+              <input class="field-input" id="ret-allocated-hours" type="number" step="10" min="0" placeholder="0">
+            </div>
+            <div class="layer-field">
+              <div class="field-label">Blended Rate</div>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <span class="field-prefix">$</span>
+                <input class="field-input" id="ret-blended-rate" type="number" step="5" min="0" placeholder="0">
+              </div>
+            </div>
+            <div class="layer-field">
+              <div class="field-label">Monthly Revenue</div>
+              <div class="layer-stat lime" id="ret-allocated-monthly-rev">—</div>
+            </div>
+          </div>
+          <div class="layer-row">
+            <div class="layer-field">
+              <div class="field-label">Rollover</div>
+              <label class="switch-label">
+                <input type="checkbox" id="ret-rollover-toggle">
+                <span id="ret-rollover-text">No rollover (use it or lose it)</span>
+              </label>
+            </div>
+            <div class="layer-field">
+              <div class="field-label">Rush Multiplier</div>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <input class="field-input" id="ret-rush-mult" type="number" step="0.1" min="1" placeholder="1.5" style="width: 80px;">
+                <span class="field-suffix">×</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="collapsible-toggle" id="role-mix-toggle" style="margin-top: 12px; margin-bottom: 8px;">▸ Show intended role mix (optional documentation)</button>
+          <div class="role-mix-section" id="role-mix-section" style="display: none;">
+            <p style="font-size: 11px; color: var(--text-faint); font-style: italic; margin-bottom: 8px;">
+              Documenting staffing intent. Doesn't affect pricing, but informs the implied delivery cost / margin.
+            </p>
+            <div class="role-mix-list" id="role-mix-list"></div>
+            <div class="add-row" style="margin-top: 10px; padding-top: 10px;">
+              <select class="add-input" id="add-mix-role" style="min-width: 200px;"></select>
+              <input class="add-input" id="add-mix-pct" type="number" placeholder="%" style="width: 80px;" step="5" min="0" max="100">
+              <button class="btn-add" id="add-mix-btn">+ Add role mix</button>
+              <div class="layer-stat" id="ret-mix-total" style="margin-left: auto;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layer 3: Development Rider -->
+      <div class="layer-block" id="layer-rider">
+        <div class="layer-block-head">
+          <button class="layer-toggle" data-layer-toggle="enableRider" title="Toggle layer on/off"></button>
+          <div class="layer-block-title">
+            <span class="layer-num">3</span>
+            <div>
+              <div class="layer-name">Development Rider</div>
+              <div class="layer-tag">Specialty capacity · T&amp;M against capped pool</div>
+            </div>
+          </div>
+          <div class="layer-margin-summary" id="layer-rider-summary">—</div>
+        </div>
+        <div class="layer-block-body" id="layer-rider-body">
+          <div class="layer-row">
+            <div class="layer-field">
+              <div class="field-label">Role</div>
+              <select class="add-input" id="ret-rider-role" style="width: 100%;"></select>
+            </div>
+            <div class="layer-field">
+              <div class="field-label">Rate</div>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <span class="field-prefix">$</span>
+                <input class="field-input" id="ret-rider-rate" type="number" step="5" min="0" placeholder="0">
+              </div>
+            </div>
+            <div class="layer-field">
+              <div class="field-label">Max Hours / Month</div>
+              <input class="field-input" id="ret-rider-hours" type="number" step="5" min="0" placeholder="0">
+            </div>
+          </div>
+          <div class="layer-row">
+            <div class="layer-field">
+              <div class="field-label">Reserved Monthly Pool</div>
+              <div class="layer-stat lime" id="ret-rider-monthly-rev">—</div>
+            </div>
+            <div class="layer-field">
+              <div class="field-label">Engagement Total</div>
+              <div class="layer-stat" id="ret-rider-total">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Reporting Cadence -->
+  <div class="panel retainer-mode-only collapsed" id="panel-retainer-reporting">
+    <div class="panel-head">
+      <div class="panel-title">Reporting Cadence</div>
+      <div class="panel-actions">
+        <span class="collapsed-summary" id="collapsed-retainer-reporting">— none selected —</span>
+        <button class="btn-collapse" data-collapse="panel-retainer-reporting" title="Collapse"></button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size: 12px; color: var(--text-faint); margin-bottom: 14px; font-style: italic;">
+        Which reporting touchpoints are committed in this engagement? These get surfaced in the SOW.
+      </p>
+      <div class="reporting-cadence-list" id="reporting-cadence-list"></div>
+    </div>
+  </div>
+
+  <!-- Utilization Tracker -->
+  <div class="panel retainer-mode-only collapsed" id="panel-retainer-utilization">
+    <div class="panel-head">
+      <div class="panel-title warn-prefix">Utilization Tracker</div>
+      <div class="panel-actions">
+        <span class="collapsed-summary" id="collapsed-retainer-utilization">— no usage logged —</span>
+        <button class="btn-collapse" data-collapse="panel-retainer-utilization" title="Collapse"></button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size: 12px; color: var(--text-faint); margin-bottom: 14px; font-style: italic;">
+        Track planned vs. actual hours used each month. Manual entry today; future versions will pull from Harvest.
+      </p>
+      <div class="util-scroll">
+        <table class="util-table" id="util-table"></table>
+      </div>
+      <div class="util-totals" id="util-totals" style="margin-top: 14px;"></div>
+    </div>
+  </div>
+
   <!-- SCHEDULE -->
-  <div class="panel" id="panel-schedule">
+  <div class="panel project-mode-only" id="panel-schedule">
     <div class="panel-head">
       <div class="panel-title purple-prefix">Labor Schedule</div>
       <div class="panel-actions">
@@ -1505,7 +2216,7 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   <div class="two-col">
 
     <!-- PASSTHROUGH (non-labor) -->
-    <div class="panel" id="panel-passthrough">
+    <div class="panel project-mode-only" id="panel-passthrough">
       <div class="panel-head">
         <div class="panel-title warn-prefix">Passthrough · Non-Labor</div>
         <div class="panel-actions">
@@ -1859,6 +2570,126 @@ const DEFAULT_PAYMENT_SCHEDULE = [
 
 const PAY_STATUSES = ['Pending', 'Invoiced', 'Paid', 'Overdue'];
 
+// ============== RETAINER MODE: PRESETS & CONSTANTS ==============
+const RETAINER_PRESETS = {
+  'strategic-stewardship': {
+    name: 'Strategic Stewardship',
+    description: 'Tenure Facility / executive advisory model. Layer 1 only — senior team on tap as strategic counsel. No allocated pool.',
+    enableBaseline: true,
+    enableAllocated: false,
+    enableRider: false,
+    baselineFee: 20000,
+    baselineRoles: [
+      { name: 'Reggie Snowden', role: 'CEO/President', capacityHours: 15 },
+      { name: 'Sarah Duarte', role: 'Director of Strategy', capacityHours: 20 },
+      { name: 'Fredo Adarkwah', role: 'Account Director', capacityHours: 25 }
+    ],
+    allocatedHours: 0,
+    blendedRate: 0,
+    roleMix: [],
+    riderRole: '',
+    riderRate: 0,
+    riderHoursMax: 0,
+    rushMultiplier: 1.5,
+    rolloverAllowed: false,
+    reportingCadence: ['Monthly partnership review', 'Quarterly business review']
+  },
+  'creative-aor': {
+    name: 'Creative AOR',
+    description: 'AFSP model. Baseline retainer + allocated hours pool. No rollover, 1.5× rush. Full agency-of-record relationship.',
+    enableBaseline: true,
+    enableAllocated: true,
+    enableRider: false,
+    baselineFee: 25000,
+    baselineRoles: [
+      { name: 'Reggie Snowden', role: 'CEO/President', capacityHours: 10 },
+      { name: 'Quinnton Harris', role: 'Creative Director', capacityHours: 20 },
+      { name: 'Fredo Adarkwah', role: 'Account Director', capacityHours: 30 },
+      { name: 'Adam Akisanya', role: 'Sr. Project Manager', capacityHours: 40 }
+    ],
+    allocatedHours: 280,
+    blendedRate: 200,
+    roleMix: [
+      { role: 'Creative Lead', pct: 50 },
+      { role: 'Senior Designer', pct: 30 },
+      { role: 'Designer', pct: 20 }
+    ],
+    riderRole: '',
+    riderRate: 0,
+    riderHoursMax: 0,
+    rushMultiplier: 1.5,
+    rolloverAllowed: false,
+    reportingCadence: ['Weekly written report', 'Biweekly stand-up', 'Monthly partnership review']
+  },
+  'embedded-pod': {
+    name: 'Embedded Pod',
+    description: 'Pfizer model. Baseline + allocated pool + dev rider. Embedded delivery team operating as Pfizer\'s AI design agency of record.',
+    enableBaseline: true,
+    enableAllocated: true,
+    enableRider: true,
+    baselineFee: 30000,
+    baselineRoles: [
+      { name: 'Reggie Snowden', role: 'CEO/President', capacityHours: 10 },
+      { name: 'Quinnton Harris', role: 'Head of Creative', capacityHours: 20 },
+      { name: 'Fredo Adarkwah', role: 'Account Director', capacityHours: 30 },
+      { name: 'Adam Akisanya', role: 'Sr. Project Manager', capacityHours: 60 }
+    ],
+    allocatedHours: 360,
+    blendedRate: 250,
+    roleMix: [
+      { role: 'Creative Lead', pct: 45 },
+      { role: 'UX/UI Designer', pct: 45 },
+      { role: 'Senior Designer', pct: 10 }
+    ],
+    riderRole: 'Web Developer',
+    riderRate: 175,
+    riderHoursMax: 30,
+    rushMultiplier: 1.5,
+    rolloverAllowed: false,
+    reportingCadence: ['Weekly written report', 'Biweekly stand-up', 'Monthly partnership review', 'Quarterly business review']
+  }
+};
+
+const REPORTING_CADENCE_OPTIONS = [
+  'Weekly written report',
+  'Biweekly stand-up',
+  'Monthly partnership review',
+  'Quarterly business review',
+  'Ad-hoc strategic check-in'
+];
+
+function freshRetainer() {
+  return {
+    enableBaseline: true,
+    enableAllocated: true,
+    enableRider: false,
+    baselineFee: 25000,
+    baselineRoles: [
+      { name: 'Reggie Snowden', role: 'CEO/President', capacityHours: 10 },
+      { name: 'Fredo Adarkwah', role: 'Account Director', capacityHours: 30 },
+      { name: 'Adam Akisanya', role: 'Sr. Project Manager', capacityHours: 40 }
+    ],
+    allocatedHours: 280,
+    blendedRate: 200,
+    roleMixCollapsed: true,
+    roleMix: [
+      { role: 'Creative Lead', pct: 50 },
+      { role: 'Senior Designer', pct: 30 },
+      { role: 'Designer', pct: 20 }
+    ],
+    riderRole: 'Web Developer',
+    riderRate: 175,
+    riderHoursMax: 30,
+    rushMultiplier: 1.5,
+    rolloverAllowed: false,
+    reportingCadence: ['Weekly written report', 'Monthly partnership review'],
+    // Utilization tracking — { monthIdx: { allocatedUsed, riderUsed } }
+    utilization: {},
+    // NTE override — if 0, computed from layers × duration
+    nteOverride: 0
+  };
+}
+
 // ============== STATE ==============
 // Stable storage keys — DO NOT change across versions; use schema migrations inside the JSON instead
 const STORAGE_KEY = 'gn-bd-pricing-state';
@@ -1866,18 +2697,19 @@ const STORAGE_DEALS_KEY = 'gn-bd-pricing-deals';
 // Legacy keys to migrate from on first load (newest first)
 const LEGACY_STATE_KEYS = ['gn-pricing-calculator-v4-2', 'gn-pricing-calculator-v4-1'];
 const LEGACY_DEALS_KEYS = ['gn-pricing-calculator-v4-2-deals', 'gn-pricing-calculator-v4-1-deals'];
-const CURRENT_SCHEMA = 5;
+const CURRENT_SCHEMA = 6;
 
 function freshState() {
   return {
     projectName: '',
     projectType: '',
     dealStatus: 'Draft',
+    // Pricing mode: 'project' (labor schedule) or 'retainer' (layered model)
+    pricingMode: 'project',
     totalBudget: 142000,
     startMonth: new Date().toISOString().slice(0, 7),
     duration: 6,
-    // Baseline mode: when enabled, each team member has a baselineHours value
-    // that applies to every month, with per-month entries acting as overrides
+    // Baseline mode (within project mode): recurring monthly hours per team member
     baselineMode: false,
     team: PRESETS['lean'].map(m => ({ id: genId(), name: m.name, role: m.role, rate: m.rate || RATE_LOOKUP[m.role] || 150, isPT: m.isPT || false, hours: {}, baselineHours: 0 })),
     passthroughs: [],
@@ -1888,9 +2720,10 @@ function freshState() {
     currentDealKey: null,
     collapsedPanels: {},
     // Tiers: snapshots of the deal at Low/Medium/High pricing
-    // null means "no snapshot saved yet for this tier"
     tiers: { low: null, medium: null, high: null },
-    activeTier: null  // 'low' | 'medium' | 'high' | null (no tier active)
+    activeTier: null,
+    // Retainer-mode state (only used when pricingMode === 'retainer')
+    retainer: freshRetainer()
   };
 }
 
@@ -1972,6 +2805,14 @@ function loadFromStorage() {
       if (state.activeTier === undefined) state.activeTier = null;
       // Ensure every team row has baselineHours field
       state.team.forEach(m => { if (m.baselineHours === undefined) m.baselineHours = 0; });
+      // Retainer mode migration
+      if (!state.pricingMode) state.pricingMode = 'project';
+      if (!state.retainer) state.retainer = freshRetainer();
+      else {
+        // Backfill any missing retainer fields
+        const def = freshRetainer();
+        Object.keys(def).forEach(k => { if (state.retainer[k] === undefined) state.retainer[k] = def[k]; });
+      }
       state.schemaVersion = CURRENT_SCHEMA;
     }
   } catch (e) { console.error('Failed to load state:', e); }
@@ -2360,6 +3201,125 @@ function budgetRemaining() {
 }
 function avgMonthlyClip() { return state.duration > 0 ? state.totalBudget / state.duration : 0; }
 function fitScoreTotal() { return Object.values(state.fitScore).reduce((a, b) => a + b, 0); }
+
+// ============== RETAINER MATH ==============
+// Cost (delivery) for the baseline retainer = sum of (capacityHours × role rate)
+function retainerBaselineCost() {
+  const r = state.retainer || {};
+  if (!r.enableBaseline) return 0;
+  return (r.baselineRoles || []).reduce((sum, br) => {
+    const rate = RATE_LOOKUP[br.role] || 0;
+    return sum + (br.capacityHours || 0) * rate;
+  }, 0);
+}
+
+// Cost (delivery) for the allocated pool at the configured role mix
+// If mix doesn't total 100% or is empty, falls back to a sensible mid-rate
+function retainerAllocatedCost() {
+  const r = state.retainer || {};
+  if (!r.enableAllocated) return 0;
+  const mix = r.roleMix || [];
+  const totalPct = mix.reduce((s, m) => s + (m.pct || 0), 0);
+  let weightedRate = 0;
+  if (mix.length > 0 && totalPct > 0) {
+    mix.forEach(m => {
+      const rate = RATE_LOOKUP[m.role] || 0;
+      weightedRate += rate * (m.pct / totalPct);
+    });
+  } else {
+    // Default assumption when no mix is set: average of Sr Designer / Creative Lead
+    weightedRate = 175;
+  }
+  return (r.allocatedHours || 0) * weightedRate;
+}
+
+// Rider cost is straight rate × hours
+function retainerRiderCost() {
+  const r = state.retainer || {};
+  if (!r.enableRider) return 0;
+  return (r.riderRate || 0) * (r.riderHoursMax || 0);
+}
+
+// Monthly run rate (revenue): what client pays per month if fully utilized
+function retainerMonthlyRevenue() {
+  const r = state.retainer || {};
+  let total = 0;
+  if (r.enableBaseline) total += (r.baselineFee || 0);
+  if (r.enableAllocated) total += (r.allocatedHours || 0) * (r.blendedRate || 0);
+  if (r.enableRider) total += (r.riderRate || 0) * (r.riderHoursMax || 0);
+  return total;
+}
+
+// Monthly cost (delivery): what it costs Ghost Note to deliver per month if fully utilized
+function retainerMonthlyCost() {
+  return retainerBaselineCost() + retainerAllocatedCost() + retainerRiderCost();
+}
+
+// Engagement totals
+function retainerEngagementRevenue() {
+  return retainerMonthlyRevenue() * state.duration;
+}
+function retainerEngagementCost() {
+  return retainerMonthlyCost() * state.duration;
+}
+
+// Margin
+function retainerMargin() {
+  const rev = retainerEngagementRevenue();
+  const cost = retainerEngagementCost();
+  return {
+    dollars: rev - cost,
+    pct: rev > 0 ? ((rev - cost) / rev) * 100 : 0
+  };
+}
+
+// Per-layer margin breakdowns (revenue, cost, margin %)
+function retainerLayerMargins() {
+  const r = state.retainer || {};
+  const dur = state.duration;
+  const baselineRev = r.enableBaseline ? (r.baselineFee || 0) * dur : 0;
+  const baselineCost = retainerBaselineCost() * dur;
+  const allocRev = r.enableAllocated ? (r.allocatedHours || 0) * (r.blendedRate || 0) * dur : 0;
+  const allocCost = retainerAllocatedCost() * dur;
+  const riderRev = r.enableRider ? (r.riderRate || 0) * (r.riderHoursMax || 0) * dur : 0;
+  const riderCost = retainerRiderCost() * dur;
+  return {
+    baseline: { rev: baselineRev, cost: baselineCost, margin: baselineRev - baselineCost, pct: baselineRev > 0 ? ((baselineRev - baselineCost) / baselineRev) * 100 : 0 },
+    allocated: { rev: allocRev, cost: allocCost, margin: allocRev - allocCost, pct: allocRev > 0 ? ((allocRev - allocCost) / allocRev) * 100 : 0 },
+    rider: { rev: riderRev, cost: riderCost, margin: riderRev - riderCost, pct: riderRev > 0 ? ((riderRev - riderCost) / riderRev) * 100 : 0 }
+  };
+}
+
+// NTE (Not To Exceed) — explicit override or computed from engagement revenue
+function retainerNTE() {
+  const r = state.retainer || {};
+  if (r.nteOverride && r.nteOverride > 0) return r.nteOverride;
+  return retainerEngagementRevenue();
+}
+
+// Rush rate (blended × multiplier)
+function retainerRushRate() {
+  const r = state.retainer || {};
+  return (r.blendedRate || 0) * (r.rushMultiplier || 1);
+}
+
+// Utilization summary across all months
+function retainerUtilization() {
+  const r = state.retainer || {};
+  const util = r.utilization || {};
+  let allocPlanned = 0, allocUsed = 0, riderPlanned = 0, riderUsed = 0;
+  for (let i = 0; i < state.duration; i++) {
+    allocPlanned += (r.allocatedHours || 0);
+    riderPlanned += (r.riderHoursMax || 0);
+    const m = util[i] || {};
+    allocUsed += (m.allocatedUsed || 0);
+    riderUsed += (m.riderUsed || 0);
+  }
+  return {
+    alloc: { planned: allocPlanned, used: allocUsed, pct: allocPlanned > 0 ? (allocUsed / allocPlanned) * 100 : 0 },
+    rider: { planned: riderPlanned, used: riderUsed, pct: riderPlanned > 0 ? (riderUsed / riderPlanned) * 100 : 0 }
+  };
+}
 
 function getMarginGrade(pct) {
   if (pct < 0)  return { grade: 'F', label: 'Loss',           color: 'danger', cls: 'F' };
@@ -2953,6 +3913,7 @@ function renderReminders() {
 
 // ============== RENDER ALL ==============
 function renderAll() {
+  applyModeVisibility();
   renderSchedule();
   renderPassthrough();
   renderPhases();
@@ -2965,8 +3926,466 @@ function renderAll() {
   renderLastModified();
   renderCollapsedSummaries();
   renderBaselineToggle();
+  renderModeToggle();
+  renderRetainerPreset();
+  renderRetainerSummary();
+  renderRetainerLayers();
+  renderReportingCadence();
+  renderUtilization();
   syncEndMonth();
   autosave();
+}
+
+function applyModeVisibility() {
+  document.body.setAttribute('data-mode', state.pricingMode || 'project');
+}
+
+function renderModeToggle() {
+  const mode = state.pricingMode || 'project';
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+  const help = document.getElementById('mode-help');
+  if (help) {
+    help.textContent = mode === 'retainer'
+      ? '— Layered baseline + allocated pool. Best for retainers, AOR engagements, embedded teams.'
+      : '— Hour-by-hour delivery scoping. Best for defined projects.';
+  }
+}
+
+function renderRetainerPreset() {
+  // Highlight active preset card if the current config matches one
+  const r = state.retainer || {};
+  let activePreset = null;
+  for (const [k, p] of Object.entries(RETAINER_PRESETS)) {
+    if (p.enableBaseline === r.enableBaseline &&
+        p.enableAllocated === r.enableAllocated &&
+        p.enableRider === r.enableRider) {
+      activePreset = k;
+      break;
+    }
+  }
+  document.querySelectorAll('[data-retainer-preset]').forEach(card => {
+    card.classList.toggle('active', card.dataset.retainerPreset === activePreset);
+  });
+  const summary = document.getElementById('collapsed-retainer-preset');
+  if (summary) {
+    if (activePreset) {
+      summary.textContent = RETAINER_PRESETS[activePreset].name;
+    } else {
+      summary.textContent = 'Custom configuration';
+    }
+  }
+}
+
+function renderRetainerSummary() {
+  if (state.pricingMode !== 'retainer') return;
+  const monthlyRev = retainerMonthlyRevenue();
+  const monthlyCost = retainerMonthlyCost();
+  const totalRev = retainerEngagementRevenue();
+  const totalCost = retainerEngagementCost();
+  const margin = retainerMargin();
+  const nte = retainerNTE();
+  const rushRate = retainerRushRate();
+  const r = state.retainer || {};
+
+  setText('ret-monthly-rev', fmt(monthlyRev));
+  setText('ret-monthly-cost', `Cost: ${fmt(monthlyCost)} · Margin ${monthlyRev > 0 ? (((monthlyRev - monthlyCost) / monthlyRev) * 100).toFixed(0) : 0}%`);
+  setText('ret-engagement-total', fmt(totalRev));
+  setText('ret-engagement-sub', `${state.duration} month${state.duration !== 1 ? 's' : ''} · Cost: ${fmt(totalCost)}`);
+
+  // NTE input
+  const nteInput = document.getElementById('ret-nte-input');
+  if (nteInput && document.activeElement !== nteInput) {
+    nteInput.value = r.nteOverride && r.nteOverride > 0 ? r.nteOverride : '';
+    nteInput.placeholder = fmt(totalRev).replace('$','');
+  }
+  const nteSub = document.getElementById('ret-nte-sub');
+  if (nteSub) {
+    if (r.nteOverride && r.nteOverride > 0) {
+      const diff = r.nteOverride - totalRev;
+      nteSub.textContent = diff >= 0
+        ? `${fmt(diff)} headroom above engagement total`
+        : `${fmt(Math.abs(diff))} over engagement total`;
+    } else {
+      nteSub.textContent = 'Auto = engagement total';
+    }
+  }
+
+  // Margin
+  const card = document.getElementById('ret-margin-card');
+  const pctEl = document.getElementById('ret-margin-pct');
+  const gradeEl = document.getElementById('ret-margin-grade');
+  if (card && pctEl && gradeEl) {
+    card.className = 'retainer-summary-card';
+    pctEl.className = 'retainer-summary-value';
+    gradeEl.className = 'grade-badge';
+    if (totalRev <= 0) {
+      pctEl.textContent = '—';
+      gradeEl.style.display = 'none';
+      card.classList.add('accent-warn');
+    } else {
+      const g = getMarginGrade(margin.pct);
+      pctEl.textContent = margin.pct.toFixed(0) + '%';
+      pctEl.classList.add(g.color);
+      gradeEl.style.display = 'inline-block';
+      gradeEl.textContent = g.grade + ' · ' + g.label;
+      gradeEl.classList.add(g.cls);
+      card.classList.add('accent-' + g.color);
+      setText('ret-margin-sub', `${fmt(margin.dollars)} margin · ${fmt(totalRev)} rev`);
+    }
+  }
+
+  setText('ret-rush-rate', `$${Math.round(rushRate)}/hr`);
+  setText('ret-rush-sub', `${r.blendedRate || 0} × ${r.rushMultiplier || 1.5}`);
+}
+
+function renderRetainerLayers() {
+  if (state.pricingMode !== 'retainer') return;
+  const r = state.retainer || {};
+  const layerMargins = retainerLayerMargins();
+
+  // Layer 1: Baseline
+  document.getElementById('layer-baseline').classList.toggle('disabled', !r.enableBaseline);
+  setVal('ret-baseline-fee', r.baselineFee || '');
+  const baselineCapacity = (r.baselineRoles || []).reduce((s, x) => s + (x.capacityHours || 0), 0);
+  const baselineImpliedRate = baselineCapacity > 0 ? (r.baselineFee || 0) / baselineCapacity : 0;
+  const baselineDeliveryCost = retainerBaselineCost();
+  setText('ret-baseline-blended', baselineCapacity > 0 ? `$${Math.round(baselineImpliedRate)}/hr` : '—');
+  setText('ret-baseline-coverage', `${baselineCapacity} hrs/mo · ${baselineDeliveryCost > 0 ? fmt(baselineDeliveryCost) : '—'} delivery cost`);
+  const baselineSumEl = document.getElementById('layer-baseline-summary');
+  if (baselineSumEl) {
+    if (r.enableBaseline && layerMargins.baseline.rev > 0) {
+      baselineSumEl.innerHTML = `<span class="val">${fmt(layerMargins.baseline.rev)}</span>Margin ${layerMargins.baseline.pct.toFixed(0)}%`;
+    } else {
+      baselineSumEl.innerHTML = '—';
+    }
+  }
+  renderBaselineRolesList();
+
+  // Layer 2: Allocated
+  document.getElementById('layer-allocated').classList.toggle('disabled', !r.enableAllocated);
+  setVal('ret-allocated-hours', r.allocatedHours || '');
+  setVal('ret-blended-rate', r.blendedRate || '');
+  setVal('ret-rush-mult', r.rushMultiplier || '');
+  const allocMonthlyRev = (r.allocatedHours || 0) * (r.blendedRate || 0);
+  setText('ret-allocated-monthly-rev', allocMonthlyRev > 0 ? fmt(allocMonthlyRev) : '—');
+  const rolloverEl = document.getElementById('ret-rollover-toggle');
+  if (rolloverEl && document.activeElement !== rolloverEl) rolloverEl.checked = !!r.rolloverAllowed;
+  setText('ret-rollover-text', r.rolloverAllowed ? 'Rollover allowed' : 'No rollover (use it or lose it)');
+  const allocSumEl = document.getElementById('layer-allocated-summary');
+  if (allocSumEl) {
+    if (r.enableAllocated && layerMargins.allocated.rev > 0) {
+      allocSumEl.innerHTML = `<span class="val">${fmt(layerMargins.allocated.rev)}</span>Margin ${layerMargins.allocated.pct.toFixed(0)}%`;
+    } else {
+      allocSumEl.innerHTML = '—';
+    }
+  }
+  renderRoleMixList();
+
+  // Layer 3: Rider
+  document.getElementById('layer-rider').classList.toggle('disabled', !r.enableRider);
+  // Populate rider role dropdown if empty
+  const riderRoleSel = document.getElementById('ret-rider-role');
+  if (riderRoleSel && !riderRoleSel.options.length) {
+    riderRoleSel.innerHTML = '<option value="">Select role…</option>' + buildRoleSelectHTML('', false);
+  }
+  if (riderRoleSel && document.activeElement !== riderRoleSel) riderRoleSel.value = r.riderRole || '';
+  setVal('ret-rider-rate', r.riderRate || '');
+  setVal('ret-rider-hours', r.riderHoursMax || '');
+  const riderMonthlyRev = (r.riderRate || 0) * (r.riderHoursMax || 0);
+  setText('ret-rider-monthly-rev', riderMonthlyRev > 0 ? fmt(riderMonthlyRev) : '—');
+  setText('ret-rider-total', riderMonthlyRev > 0 ? fmt(riderMonthlyRev * state.duration) : '—');
+  const riderSumEl = document.getElementById('layer-rider-summary');
+  if (riderSumEl) {
+    if (r.enableRider && layerMargins.rider.rev > 0) {
+      riderSumEl.innerHTML = `<span class="val">${fmt(layerMargins.rider.rev)}</span>Margin ${layerMargins.rider.pct.toFixed(0)}%`;
+    } else {
+      riderSumEl.innerHTML = '—';
+    }
+  }
+}
+
+function renderBaselineRolesList() {
+  const list = document.getElementById('baseline-roles-list');
+  if (!list) return;
+  const r = state.retainer || {};
+  const rows = r.baselineRoles || [];
+  list.innerHTML = '';
+  rows.forEach((br, idx) => {
+    const row = document.createElement('div');
+    row.className = 'baseline-role-row';
+    const rate = RATE_LOOKUP[br.role] || 0;
+    const cost = (br.capacityHours || 0) * rate;
+    row.innerHTML = `
+      <input class="row-input" type="text" placeholder="Name (optional)" value="${(br.name || '').replace(/"/g, '&quot;')}" data-baseline-name="${idx}">
+      <select data-baseline-role="${idx}">${buildRoleSelectHTML(br.role, true)}</select>
+      <input class="row-input hours-input" type="number" min="0" step="5" placeholder="hrs/mo" value="${br.capacityHours || ''}" data-baseline-hours="${idx}">
+      <div class="role-cost">${cost > 0 ? fmt(cost) : '—'}</div>
+      <button class="btn-x" data-baseline-remove="${idx}" title="Remove">×</button>
+    `;
+    list.appendChild(row);
+  });
+  // Wire events
+  list.querySelectorAll('[data-baseline-name]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = parseInt(e.target.dataset.baselineName, 10);
+      state.retainer.baselineRoles[i].name = e.target.value;
+      autosave();
+    });
+  });
+  list.querySelectorAll('[data-baseline-role]').forEach(sel => {
+    sel.addEventListener('change', e => {
+      const i = parseInt(e.target.dataset.baselineRole, 10);
+      state.retainer.baselineRoles[i].role = e.target.value;
+      scheduleHistoryPush();
+      renderAll();
+    });
+  });
+  list.querySelectorAll('[data-baseline-hours]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = parseInt(e.target.dataset.baselineHours, 10);
+      state.retainer.baselineRoles[i].capacityHours = parseFloat(e.target.value) || 0;
+      renderRetainerLayers();
+      renderRetainerSummary();
+      autosave();
+    });
+    inp.addEventListener('change', () => scheduleHistoryPush());
+  });
+  list.querySelectorAll('[data-baseline-remove]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const i = parseInt(e.currentTarget.dataset.baselineRemove, 10);
+      state.retainer.baselineRoles.splice(i, 1);
+      scheduleHistoryPush();
+      renderAll();
+    });
+  });
+}
+
+function renderRoleMixList() {
+  const list = document.getElementById('role-mix-list');
+  if (!list) return;
+  const r = state.retainer || {};
+  const mix = r.roleMix || [];
+  list.innerHTML = '';
+  const allocatedHours = r.allocatedHours || 0;
+  mix.forEach((m, idx) => {
+    const row = document.createElement('div');
+    row.className = 'role-mix-row';
+    const rate = RATE_LOOKUP[m.role] || 0;
+    const hours = allocatedHours * ((m.pct || 0) / 100);
+    const cost = hours * rate;
+    row.innerHTML = `
+      <select data-mix-role="${idx}">${buildRoleSelectHTML(m.role, true)}</select>
+      <input class="row-input pct-input" type="number" min="0" max="100" step="5" placeholder="%" value="${m.pct || ''}" data-mix-pct="${idx}">
+      <div class="mix-stat">${hours > 0 ? `${hours.toFixed(0)} hrs · ${fmt(cost)}` : '—'}</div>
+      <button class="btn-x" data-mix-remove="${idx}" title="Remove">×</button>
+    `;
+    list.appendChild(row);
+  });
+  // Mix total
+  const total = mix.reduce((s, m) => s + (m.pct || 0), 0);
+  const totalEl = document.getElementById('ret-mix-total');
+  if (totalEl) {
+    totalEl.textContent = `Total: ${total}%`;
+    totalEl.className = 'layer-stat ' + (Math.abs(total - 100) < 0.5 ? 'success' : (total > 0 ? 'warn' : ''));
+  }
+  // Wire
+  list.querySelectorAll('[data-mix-role]').forEach(sel => {
+    sel.addEventListener('change', e => {
+      const i = parseInt(e.target.dataset.mixRole, 10);
+      state.retainer.roleMix[i].role = e.target.value;
+      scheduleHistoryPush();
+      renderAll();
+    });
+  });
+  list.querySelectorAll('[data-mix-pct]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = parseInt(e.target.dataset.mixPct, 10);
+      state.retainer.roleMix[i].pct = parseFloat(e.target.value) || 0;
+      renderRoleMixList();
+      renderRetainerSummary();
+      autosave();
+    });
+    inp.addEventListener('change', () => scheduleHistoryPush());
+  });
+  list.querySelectorAll('[data-mix-remove]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const i = parseInt(e.currentTarget.dataset.mixRemove, 10);
+      state.retainer.roleMix.splice(i, 1);
+      scheduleHistoryPush();
+      renderAll();
+    });
+  });
+}
+
+function renderReportingCadence() {
+  const list = document.getElementById('reporting-cadence-list');
+  if (!list) return;
+  const r = state.retainer || {};
+  const selected = r.reportingCadence || [];
+  list.innerHTML = '';
+  REPORTING_CADENCE_OPTIONS.forEach(opt => {
+    const isChecked = selected.includes(opt);
+    const row = document.createElement('div');
+    row.className = 'reporting-row' + (isChecked ? ' checked' : '');
+    row.innerHTML = `
+      <div class="check-indicator">${isChecked ? '✓' : ''}</div>
+      <div class="reporting-row-label">${opt}</div>
+    `;
+    row.addEventListener('click', () => {
+      const cur = state.retainer.reportingCadence || [];
+      if (cur.includes(opt)) state.retainer.reportingCadence = cur.filter(x => x !== opt);
+      else state.retainer.reportingCadence = [...cur, opt];
+      scheduleHistoryPush();
+      renderAll();
+    });
+    list.appendChild(row);
+  });
+}
+
+function renderUtilization() {
+  const table = document.getElementById('util-table');
+  if (!table) return;
+  const r = state.retainer || {};
+  const months = getMonths();
+  const util = r.utilization || {};
+
+  let html = '<thead><tr>';
+  html += '<th class="left">Month</th>';
+  html += '<th>Allocated Planned</th>';
+  html += '<th>Allocated Used</th>';
+  html += '<th>Util %</th>';
+  if (r.enableRider) {
+    html += '<th>Rider Planned</th>';
+    html += '<th>Rider Used</th>';
+    html += '<th>Util %</th>';
+  }
+  html += '</tr></thead><tbody>';
+
+  months.forEach(mo => {
+    const u = util[mo.idx] || {};
+    const planned = r.allocatedHours || 0;
+    const used = u.allocatedUsed || 0;
+    const pct = planned > 0 ? (used / planned) * 100 : 0;
+    const pctCls = used === 0 ? '' : (pct > 100 ? 'over' : (pct > 90 ? 'warn' : 'healthy'));
+    html += `<tr>`;
+    html += `<td class="left"><strong>${mo.label} ${mo.year}</strong></td>`;
+    html += `<td class="center">${planned || '—'}</td>`;
+    html += `<td class="center"><input type="number" min="0" step="5" placeholder="—" value="${u.allocatedUsed || ''}" data-util-alloc="${mo.idx}"></td>`;
+    html += `<td class="center util-pct ${pctCls}">${used > 0 ? pct.toFixed(0) + '%' : '—'}</td>`;
+    if (r.enableRider) {
+      const rPlanned = r.riderHoursMax || 0;
+      const rUsed = u.riderUsed || 0;
+      const rPct = rPlanned > 0 ? (rUsed / rPlanned) * 100 : 0;
+      const rPctCls = rUsed === 0 ? '' : (rPct > 100 ? 'over' : (rPct > 90 ? 'warn' : 'healthy'));
+      html += `<td class="center">${rPlanned || '—'}</td>`;
+      html += `<td class="center"><input type="number" min="0" step="5" placeholder="—" value="${u.riderUsed || ''}" data-util-rider="${mo.idx}"></td>`;
+      html += `<td class="center util-pct ${rPctCls}">${rUsed > 0 ? rPct.toFixed(0) + '%' : '—'}</td>`;
+    }
+    html += `</tr>`;
+  });
+  html += '</tbody>';
+  table.innerHTML = html;
+
+  // Wire inputs
+  table.querySelectorAll('[data-util-alloc]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = parseInt(e.target.dataset.utilAlloc, 10);
+      if (!state.retainer.utilization[i]) state.retainer.utilization[i] = {};
+      state.retainer.utilization[i].allocatedUsed = parseFloat(e.target.value) || 0;
+      // Lightweight refresh: just totals + pct cells
+      updateUtilizationLite();
+      autosave();
+    });
+    inp.addEventListener('change', () => scheduleHistoryPush());
+  });
+  table.querySelectorAll('[data-util-rider]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = parseInt(e.target.dataset.utilRider, 10);
+      if (!state.retainer.utilization[i]) state.retainer.utilization[i] = {};
+      state.retainer.utilization[i].riderUsed = parseFloat(e.target.value) || 0;
+      updateUtilizationLite();
+      autosave();
+    });
+    inp.addEventListener('change', () => scheduleHistoryPush());
+  });
+
+  // Totals
+  const util_stats = retainerUtilization();
+  const totalsEl = document.getElementById('util-totals');
+  if (totalsEl) {
+    const allocPctCls = util_stats.alloc.pct > 100 ? 'danger' : (util_stats.alloc.pct > 90 ? 'warn' : 'success');
+    let html2 = `
+      <div class="stat"><span class="lbl">Allocated Planned</span><span class="val">${util_stats.alloc.planned} hrs</span></div>
+      <div class="stat"><span class="lbl">Allocated Used</span><span class="val">${util_stats.alloc.used} hrs</span></div>
+      <div class="stat"><span class="lbl">Allocated Util</span><span class="val ${allocPctCls}">${util_stats.alloc.pct.toFixed(0)}%</span></div>
+    `;
+    if (r.enableRider) {
+      const riderPctCls = util_stats.rider.pct > 100 ? 'danger' : (util_stats.rider.pct > 90 ? 'warn' : 'success');
+      html2 += `
+        <div class="stat"><span class="lbl">Rider Planned</span><span class="val">${util_stats.rider.planned} hrs</span></div>
+        <div class="stat"><span class="lbl">Rider Used</span><span class="val">${util_stats.rider.used} hrs</span></div>
+        <div class="stat"><span class="lbl">Rider Util</span><span class="val ${riderPctCls}">${util_stats.rider.pct.toFixed(0)}%</span></div>
+      `;
+    }
+    totalsEl.innerHTML = html2;
+  }
+}
+
+function updateUtilizationLite() {
+  // Just update the pct cells and totals — preserves input focus
+  const table = document.getElementById('util-table');
+  if (!table) return;
+  const r = state.retainer || {};
+  const util = r.utilization || {};
+  table.querySelectorAll('tbody tr').forEach((tr, idx) => {
+    const u = util[idx] || {};
+    const planned = r.allocatedHours || 0;
+    const used = u.allocatedUsed || 0;
+    const pct = planned > 0 ? (used / planned) * 100 : 0;
+    const pctCls = used === 0 ? '' : (pct > 100 ? 'over' : (pct > 90 ? 'warn' : 'healthy'));
+    const cells = tr.querySelectorAll('td.util-pct');
+    if (cells[0]) {
+      cells[0].textContent = used > 0 ? pct.toFixed(0) + '%' : '—';
+      cells[0].className = 'center util-pct ' + pctCls;
+    }
+    if (r.enableRider && cells[1]) {
+      const rPlanned = r.riderHoursMax || 0;
+      const rUsed = u.riderUsed || 0;
+      const rPct = rPlanned > 0 ? (rUsed / rPlanned) * 100 : 0;
+      const rPctCls = rUsed === 0 ? '' : (rPct > 100 ? 'over' : (rPct > 90 ? 'warn' : 'healthy'));
+      cells[1].textContent = rUsed > 0 ? rPct.toFixed(0) + '%' : '—';
+      cells[1].className = 'center util-pct ' + rPctCls;
+    }
+  });
+  // Refresh totals
+  const util_stats = retainerUtilization();
+  const totalsEl = document.getElementById('util-totals');
+  if (totalsEl) {
+    const allocPctCls = util_stats.alloc.pct > 100 ? 'danger' : (util_stats.alloc.pct > 90 ? 'warn' : 'success');
+    let html2 = `
+      <div class="stat"><span class="lbl">Allocated Planned</span><span class="val">${util_stats.alloc.planned} hrs</span></div>
+      <div class="stat"><span class="lbl">Allocated Used</span><span class="val">${util_stats.alloc.used} hrs</span></div>
+      <div class="stat"><span class="lbl">Allocated Util</span><span class="val ${allocPctCls}">${util_stats.alloc.pct.toFixed(0)}%</span></div>
+    `;
+    if (r.enableRider) {
+      const riderPctCls = util_stats.rider.pct > 100 ? 'danger' : (util_stats.rider.pct > 90 ? 'warn' : 'success');
+      html2 += `
+        <div class="stat"><span class="lbl">Rider Planned</span><span class="val">${util_stats.rider.planned} hrs</span></div>
+        <div class="stat"><span class="lbl">Rider Used</span><span class="val">${util_stats.rider.used} hrs</span></div>
+        <div class="stat"><span class="lbl">Rider Util</span><span class="val ${riderPctCls}">${util_stats.rider.pct.toFixed(0)}%</span></div>
+      `;
+    }
+    totalsEl.innerHTML = html2;
+  }
+}
+
+// Helpers
+function setText(id, text) { const el = document.getElementById(id); if (el) el.textContent = text; }
+function setVal(id, val) {
+  const el = document.getElementById(id);
+  if (el && document.activeElement !== el) el.value = val;
 }
 
 function renderBaselineToggle() {
@@ -3062,6 +4481,35 @@ function renderCollapsedSummaries() {
   if (simEl) {
     const dealCount = Object.keys(loadDeals()).length;
     simEl.textContent = dealCount === 0 ? '— no saved deals yet —' : `${dealCount} saved deal${dealCount === 1 ? '' : 's'} in library`;
+  }
+  // Retainer summaries
+  if (state.pricingMode === 'retainer') {
+    const r = state.retainer || {};
+    const summaryEl = document.getElementById('collapsed-retainer-summary');
+    if (summaryEl) {
+      const totalRev = retainerEngagementRevenue();
+      summaryEl.textContent = totalRev > 0 ? `${fmt(retainerMonthlyRevenue())}/mo · ${fmt(totalRev)} total` : '— configure layers below —';
+    }
+    const layersEl = document.getElementById('collapsed-retainer-layers');
+    if (layersEl) {
+      const on = [];
+      if (r.enableBaseline) on.push('Baseline');
+      if (r.enableAllocated) on.push('Allocated');
+      if (r.enableRider) on.push('Rider');
+      layersEl.textContent = on.length > 0 ? on.join(' · ') : '— all layers off —';
+    }
+    const reportEl = document.getElementById('collapsed-retainer-reporting');
+    if (reportEl) {
+      const sel = r.reportingCadence || [];
+      reportEl.textContent = sel.length > 0 ? `${sel.length} cadence${sel.length === 1 ? '' : 's'} selected` : '— none selected —';
+    }
+    const utilEl = document.getElementById('collapsed-retainer-utilization');
+    if (utilEl) {
+      const u = retainerUtilization();
+      utilEl.textContent = (u.alloc.used > 0 || u.rider.used > 0)
+        ? `Allocated ${u.alloc.pct.toFixed(0)}%${r.enableRider ? ` · Rider ${u.rider.pct.toFixed(0)}%` : ''}`
+        : '— no usage logged —';
+    }
   }
 }
 
@@ -3673,6 +5121,8 @@ function initApp() {
   initCollapseButtons();
   initSimilarFilters();
   initTierAutoButtons();
+  initRetainerDropdowns();
+  initRoleMixSection();
   renderFitScore();
   renderAll();
   // Establish baseline for undo
@@ -3691,6 +5141,34 @@ function initSimilarFilters() {
   if (budgetEl) budgetEl.addEventListener('change', e => { SIMILAR_FILTERS.budget = e.target.value; renderSimilar(); });
   if (searchEl) searchEl.addEventListener('input', e => { SIMILAR_FILTERS.search = e.target.value; renderSimilar(); });
   if (sortEl) sortEl.addEventListener('change', e => { SIMILAR_FILTERS.sort = e.target.value; renderSimilar(); });
+}
+
+function initRetainerDropdowns() {
+  const baselineRoleSel = document.getElementById('add-baseline-role');
+  if (baselineRoleSel) {
+    baselineRoleSel.innerHTML = '<option value="">Select role…</option>' + buildRoleSelectHTML('', false);
+  }
+  const mixRoleSel = document.getElementById('add-mix-role');
+  if (mixRoleSel) {
+    mixRoleSel.innerHTML = '<option value="">Select role…</option>' + buildRoleSelectHTML('', false);
+  }
+  const riderRoleSel = document.getElementById('ret-rider-role');
+  if (riderRoleSel) {
+    riderRoleSel.innerHTML = '<option value="">Select role…</option>' + buildRoleSelectHTML('', false);
+  }
+}
+
+function initRoleMixSection() {
+  const sec = document.getElementById('role-mix-section');
+  const btn = document.getElementById('role-mix-toggle');
+  const r = state.retainer || {};
+  if (r.roleMixCollapsed === false) {
+    sec.style.display = 'block';
+    btn.textContent = '▾ Hide intended role mix';
+  } else {
+    sec.style.display = 'none';
+    btn.textContent = '▸ Show intended role mix (optional documentation)';
+  }
 }
 
 function setProjectTypeUI(val) {
@@ -3853,6 +5331,170 @@ document.getElementById('baseline-toggle').addEventListener('click', () => {
   scheduleHistoryPush();
   renderAll();
 });
+
+// ============== RETAINER MODE HANDLERS ==============
+// Mode toggle buttons
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const newMode = btn.dataset.mode;
+    if (state.pricingMode === newMode) return;
+    state.pricingMode = newMode;
+    scheduleHistoryPush();
+    renderAll();
+    showToast(`Switched to ${newMode === 'retainer' ? 'Retainer (Layered)' : 'Project Schedule'} mode`);
+  });
+});
+
+// Retainer preset cards
+document.querySelectorAll('[data-retainer-preset]').forEach(card => {
+  card.addEventListener('click', () => {
+    const presetKey = card.dataset.retainerPreset;
+    const preset = RETAINER_PRESETS[presetKey];
+    if (!preset) return;
+    if (!confirm(`Apply "${preset.name}" preset? This overwrites your current retainer configuration.`)) return;
+    pushHistory();
+    // Clone the preset to avoid mutating it
+    state.retainer = JSON.parse(JSON.stringify({
+      enableBaseline: preset.enableBaseline,
+      enableAllocated: preset.enableAllocated,
+      enableRider: preset.enableRider,
+      baselineFee: preset.baselineFee,
+      baselineRoles: preset.baselineRoles,
+      allocatedHours: preset.allocatedHours,
+      blendedRate: preset.blendedRate,
+      roleMix: preset.roleMix,
+      roleMixCollapsed: true,
+      riderRole: preset.riderRole,
+      riderRate: preset.riderRate,
+      riderHoursMax: preset.riderHoursMax,
+      rushMultiplier: preset.rushMultiplier,
+      rolloverAllowed: preset.rolloverAllowed,
+      reportingCadence: preset.reportingCadence,
+      utilization: {},
+      nteOverride: 0
+    }));
+    renderAll();
+    showToast(`Applied "${preset.name}"`);
+  });
+});
+
+// Layer toggles
+document.querySelectorAll('[data-layer-toggle]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const key = btn.dataset.layerToggle;
+    state.retainer[key] = !state.retainer[key];
+    scheduleHistoryPush();
+    renderAll();
+  });
+});
+
+// Layer 1 fields
+document.getElementById('ret-baseline-fee').addEventListener('input', e => {
+  state.retainer.baselineFee = parseFloat(e.target.value) || 0;
+  renderRetainerLayers();
+  renderRetainerSummary();
+  autosave();
+});
+document.getElementById('ret-baseline-fee').addEventListener('change', () => scheduleHistoryPush());
+
+document.getElementById('add-baseline-btn').addEventListener('click', () => {
+  const name = document.getElementById('add-baseline-name').value.trim();
+  const role = document.getElementById('add-baseline-role').value.trim();
+  const hours = parseFloat(document.getElementById('add-baseline-hours').value) || 0;
+  if (!role) { document.getElementById('add-baseline-role').focus(); return; }
+  state.retainer.baselineRoles.push({ name, role, capacityHours: hours });
+  document.getElementById('add-baseline-name').value = '';
+  document.getElementById('add-baseline-role').value = '';
+  document.getElementById('add-baseline-hours').value = '';
+  scheduleHistoryPush();
+  renderAll();
+});
+
+// Layer 2 fields
+document.getElementById('ret-allocated-hours').addEventListener('input', e => {
+  state.retainer.allocatedHours = parseFloat(e.target.value) || 0;
+  renderRoleMixList();
+  renderRetainerLayers();
+  renderRetainerSummary();
+  renderUtilization();
+  autosave();
+});
+document.getElementById('ret-allocated-hours').addEventListener('change', () => scheduleHistoryPush());
+
+document.getElementById('ret-blended-rate').addEventListener('input', e => {
+  state.retainer.blendedRate = parseFloat(e.target.value) || 0;
+  renderRetainerLayers();
+  renderRetainerSummary();
+  autosave();
+});
+document.getElementById('ret-blended-rate').addEventListener('change', () => scheduleHistoryPush());
+
+document.getElementById('ret-rush-mult').addEventListener('input', e => {
+  state.retainer.rushMultiplier = parseFloat(e.target.value) || 1;
+  renderRetainerSummary();
+  autosave();
+});
+document.getElementById('ret-rush-mult').addEventListener('change', () => scheduleHistoryPush());
+
+document.getElementById('ret-rollover-toggle').addEventListener('change', e => {
+  state.retainer.rolloverAllowed = e.target.checked;
+  scheduleHistoryPush();
+  renderRetainerLayers();
+  autosave();
+});
+
+// Role mix
+document.getElementById('role-mix-toggle').addEventListener('click', () => {
+  const sec = document.getElementById('role-mix-section');
+  const btn = document.getElementById('role-mix-toggle');
+  const isOpen = sec.style.display !== 'none';
+  sec.style.display = isOpen ? 'none' : 'block';
+  btn.textContent = isOpen ? '▸ Show intended role mix (optional documentation)' : '▾ Hide intended role mix';
+  state.retainer.roleMixCollapsed = isOpen;
+  autosave();
+});
+
+document.getElementById('add-mix-btn').addEventListener('click', () => {
+  const role = document.getElementById('add-mix-role').value.trim();
+  const pct = parseFloat(document.getElementById('add-mix-pct').value) || 0;
+  if (!role) { document.getElementById('add-mix-role').focus(); return; }
+  state.retainer.roleMix.push({ role, pct });
+  document.getElementById('add-mix-role').value = '';
+  document.getElementById('add-mix-pct').value = '';
+  scheduleHistoryPush();
+  renderAll();
+});
+
+// Layer 3 fields
+document.getElementById('ret-rider-role').addEventListener('change', e => {
+  state.retainer.riderRole = e.target.value;
+  if (RATE_LOOKUP[e.target.value]) state.retainer.riderRate = RATE_LOOKUP[e.target.value];
+  scheduleHistoryPush();
+  renderAll();
+});
+document.getElementById('ret-rider-rate').addEventListener('input', e => {
+  state.retainer.riderRate = parseFloat(e.target.value) || 0;
+  renderRetainerLayers();
+  renderRetainerSummary();
+  autosave();
+});
+document.getElementById('ret-rider-rate').addEventListener('change', () => scheduleHistoryPush());
+document.getElementById('ret-rider-hours').addEventListener('input', e => {
+  state.retainer.riderHoursMax = parseFloat(e.target.value) || 0;
+  renderRetainerLayers();
+  renderRetainerSummary();
+  renderUtilization();
+  autosave();
+});
+document.getElementById('ret-rider-hours').addEventListener('change', () => scheduleHistoryPush());
+
+// NTE override
+document.getElementById('ret-nte-input').addEventListener('input', e => {
+  state.retainer.nteOverride = parseFloat(e.target.value) || 0;
+  renderRetainerSummary();
+  autosave();
+});
+document.getElementById('ret-nte-input').addEventListener('change', () => scheduleHistoryPush());
 
 document.getElementById('notes-textarea').addEventListener('input', e => {
   state.notes = e.target.value;
@@ -4527,6 +6169,116 @@ function exportExcel() {
   ];
 
   XLSX.utils.book_append_sheet(wb, ws, (state.projectName || 'Pricing').slice(0, 30));
+
+  // Retainer sheet (if in retainer mode)
+  if (state.pricingMode === 'retainer') {
+    const rRows = [];
+    const r = state.retainer || {};
+    const lm = retainerLayerMargins();
+    rRows.push(['RETAINER STRUCTURE', '', '', '']);
+    rRows.push(['Project', state.projectName || '', '', '']);
+    rRows.push(['Project Type', state.projectType || '', '', '']);
+    rRows.push(['Status', state.dealStatus || 'Draft', '', '']);
+    rRows.push(['Start', state.startMonth, 'End', addMonths(state.startMonth, state.duration)]);
+    rRows.push(['Duration', `${state.duration} months`, '', '']);
+    rRows.push([]);
+    rRows.push(['SUMMARY']);
+    rRows.push(['Monthly Run Rate', retainerMonthlyRevenue(), '', '']);
+    rRows.push(['Engagement Total', retainerEngagementRevenue(), '', '']);
+    rRows.push(['Delivery Cost (total)', retainerEngagementCost(), '', '']);
+    rRows.push(['Net Margin $', retainerMargin().dollars, '', '']);
+    rRows.push(['Net Margin %', retainerMargin().pct / 100, '', '']);
+    rRows.push(['NTE Ceiling', retainerNTE(), '', '']);
+    rRows.push(['Rush Rate ($/hr)', retainerRushRate(), `${r.blendedRate || 0} × ${r.rushMultiplier || 1.5}`, '']);
+    rRows.push(['Rollover', r.rolloverAllowed ? 'Allowed' : 'No rollover', '', '']);
+    rRows.push([]);
+    if (r.enableBaseline) {
+      rRows.push(['LAYER 1 — BASELINE RETAINER']);
+      rRows.push(['Monthly Fee', r.baselineFee || 0, '', '']);
+      rRows.push(['Engagement Revenue', lm.baseline.rev, '', '']);
+      rRows.push(['Delivery Cost', lm.baseline.cost, '', '']);
+      rRows.push(['Margin %', lm.baseline.pct / 100, '', '']);
+      rRows.push(['']);
+      rRows.push(['Name', 'Role', 'Hrs/Mo', 'Rate']);
+      (r.baselineRoles || []).forEach(br => {
+        rRows.push([br.name || '', br.role || '', br.capacityHours || 0, RATE_LOOKUP[br.role] || 0]);
+      });
+      rRows.push([]);
+    }
+    if (r.enableAllocated) {
+      rRows.push(['LAYER 2 — ALLOCATED HOURS POOL']);
+      rRows.push(['Hours / Month', r.allocatedHours || 0, '', '']);
+      rRows.push(['Blended Rate', r.blendedRate || 0, '', '']);
+      rRows.push(['Monthly Revenue', (r.allocatedHours || 0) * (r.blendedRate || 0), '', '']);
+      rRows.push(['Engagement Revenue', lm.allocated.rev, '', '']);
+      rRows.push(['Delivery Cost', lm.allocated.cost, '', '']);
+      rRows.push(['Margin %', lm.allocated.pct / 100, '', '']);
+      if (r.roleMix && r.roleMix.length > 0) {
+        rRows.push([]);
+        rRows.push(['Intended Role Mix']);
+        rRows.push(['Role', '%', 'Rate', 'Hrs/Mo']);
+        r.roleMix.forEach(m => {
+          const hrs = (r.allocatedHours || 0) * ((m.pct || 0) / 100);
+          rRows.push([m.role, (m.pct || 0) / 100, RATE_LOOKUP[m.role] || 0, hrs]);
+        });
+      }
+      rRows.push([]);
+    }
+    if (r.enableRider) {
+      rRows.push(['LAYER 3 — DEVELOPMENT RIDER']);
+      rRows.push(['Role', r.riderRole || '', '', '']);
+      rRows.push(['Rate', r.riderRate || 0, '', '']);
+      rRows.push(['Max Hours / Month', r.riderHoursMax || 0, '', '']);
+      rRows.push(['Monthly Reserve', (r.riderRate || 0) * (r.riderHoursMax || 0), '', '']);
+      rRows.push(['Engagement Reserve', lm.rider.rev, '', '']);
+      rRows.push([]);
+    }
+    if (r.reportingCadence && r.reportingCadence.length > 0) {
+      rRows.push(['REPORTING CADENCE']);
+      r.reportingCadence.forEach(c => rRows.push([c, '', '', '']));
+      rRows.push([]);
+    }
+    // Utilization tab
+    const months2 = getMonths();
+    const util = r.utilization || {};
+    if (Object.keys(util).length > 0) {
+      rRows.push(['UTILIZATION (Planned vs. Actual)']);
+      rRows.push(['Month', 'Alloc Planned', 'Alloc Used', 'Alloc %', r.enableRider ? 'Rider Planned' : '', r.enableRider ? 'Rider Used' : '', r.enableRider ? 'Rider %' : '']);
+      months2.forEach(mo => {
+        const u = util[mo.idx] || {};
+        const planned = r.allocatedHours || 0;
+        const used = u.allocatedUsed || 0;
+        const pct = planned > 0 ? used / planned : 0;
+        const row = [mo.fullLabel, planned, used, pct];
+        if (r.enableRider) {
+          const rP = r.riderHoursMax || 0;
+          const rU = u.riderUsed || 0;
+          row.push(rP, rU, rP > 0 ? rU / rP : 0);
+        }
+        rRows.push(row);
+      });
+    }
+
+    const retWs = XLSX.utils.aoa_to_sheet(rRows);
+    retWs['!cols'] = [{ wch: 26 }, { wch: 16 }, { wch: 16 }, { wch: 16 }, { wch: 14 }, { wch: 14 }, { wch: 12 }];
+    // Apply currency formatting to numeric cells in column B
+    const retRange = XLSX.utils.decode_range(retWs['!ref']);
+    for (let R = retRange.s.r; R <= retRange.e.r; R++) {
+      for (let C = 1; C <= 3; C++) {
+        const cell = retWs[XLSX.utils.encode_cell({ r: R, c: C })];
+        if (cell && typeof cell.v === 'number') {
+          // % rows get percent format
+          const labelCell = retWs[XLSX.utils.encode_cell({ r: R, c: 0 })];
+          const label = labelCell ? String(labelCell.v).toLowerCase() : '';
+          if (label.includes('%') || label.includes('margin %')) cell.z = '0.0%';
+          else if (label.includes('hrs') || label.includes('hours') || label.includes('rate ($/hr)')) cell.z = '0';
+          else cell.z = '"$"#,##0';
+        }
+      }
+    }
+    XLSX.utils.book_append_sheet(wb, retWs, 'Retainer');
+  }
+
   XLSX.writeFile(wb, `gn-pricing-${slugify(state.projectName || 'export')}-${new Date().toISOString().slice(0,10)}.xlsx`);
   showToast('Excel exported · open in Sheets or Excel');
 }
@@ -4647,6 +6399,65 @@ function copyToClipboard() {
     text += `FIT (${fitTotal}/30 = ${Math.round(fitTotal/30*100)}%)\n`;
     FIT_CRITERIA.forEach(c => text += `  ${c.label}: ${state.fitScore[c.key]}/5\n`);
     text += `\n`;
+  }
+
+  if (state.pricingMode === 'retainer') {
+    const r = state.retainer || {};
+    const layerMargins = retainerLayerMargins();
+    const monthlyRev = retainerMonthlyRevenue();
+    const totalRev = retainerEngagementRevenue();
+    const margin = retainerMargin();
+    text += `\n${SEP}\nRETAINER STRUCTURE\n${SEP}\n\n`;
+    text += `  Pricing Mode:    Retainer (Layered)\n`;
+    text += `  Monthly Run Rate: ${fmt(monthlyRev)}\n`;
+    text += `  Engagement Total: ${fmt(totalRev)} over ${state.duration} months\n`;
+    text += `  NTE Ceiling:     ${fmt(retainerNTE())}\n`;
+    text += `  Net Margin:      ${fmt(margin.dollars)} (${margin.pct.toFixed(0)}%)\n`;
+    text += `  Rush Rate:       $${Math.round(retainerRushRate())}/hr (${r.blendedRate || 0} × ${r.rushMultiplier || 1.5})\n`;
+    text += `  Rollover:        ${r.rolloverAllowed ? 'Allowed' : 'Use it or lose it'}\n\n`;
+
+    if (r.enableBaseline) {
+      text += `LAYER 1 — Baseline Retainer\n`;
+      text += `  Monthly Fee: ${fmt(r.baselineFee || 0)} · Engagement: ${fmt(layerMargins.baseline.rev)} · Margin ${layerMargins.baseline.pct.toFixed(0)}%\n`;
+      (r.baselineRoles || []).forEach(br => {
+        const nameStr = br.name ? `${br.name} — ${br.role}` : br.role;
+        text += `    ${nameStr}: ${br.capacityHours || 0} hrs/mo @ $${RATE_LOOKUP[br.role] || 0}/hr\n`;
+      });
+      text += `\n`;
+    }
+
+    if (r.enableAllocated) {
+      text += `LAYER 2 — Allocated Hours Pool\n`;
+      text += `  ${r.allocatedHours || 0} hrs/mo @ $${r.blendedRate || 0}/hr blended · Monthly: ${fmt((r.allocatedHours || 0) * (r.blendedRate || 0))}\n`;
+      text += `  Engagement: ${fmt(layerMargins.allocated.rev)} · Margin ${layerMargins.allocated.pct.toFixed(0)}%\n`;
+      if (r.roleMix && r.roleMix.length > 0) {
+        text += `  Intended role mix:\n`;
+        r.roleMix.forEach(m => {
+          text += `    ${m.role}: ${m.pct || 0}%\n`;
+        });
+      }
+      text += `\n`;
+    }
+
+    if (r.enableRider) {
+      text += `LAYER 3 — Development Rider\n`;
+      text += `  ${r.riderRole} @ $${r.riderRate || 0}/hr · Up to ${r.riderHoursMax || 0} hrs/mo\n`;
+      text += `  Engagement reserve: ${fmt(layerMargins.rider.rev)} · Margin ${layerMargins.rider.pct.toFixed(0)}%\n\n`;
+    }
+
+    if (r.reportingCadence && r.reportingCadence.length > 0) {
+      text += `REPORTING CADENCE\n`;
+      r.reportingCadence.forEach(c => text += `  • ${c}\n`);
+      text += `\n`;
+    }
+
+    const util = retainerUtilization();
+    if (util.alloc.used > 0 || util.rider.used > 0) {
+      text += `UTILIZATION\n`;
+      text += `  Allocated: ${util.alloc.used}/${util.alloc.planned} hrs (${util.alloc.pct.toFixed(0)}%)\n`;
+      if (r.enableRider) text += `  Rider:     ${util.rider.used}/${util.rider.planned} hrs (${util.rider.pct.toFixed(0)}%)\n`;
+      text += `\n`;
+    }
   }
 
   if (state.notes && state.notes.trim()) {
