@@ -153,10 +153,7 @@ h1 em { color: var(--lime); font-style: italic; }
 .autosave-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--success); margin-right: 6px; vertical-align: middle; transition: background 0.3s ease; }
 .autosave-dot.saving { background: var(--warn); }
 .header-actions { display: flex; gap: 6px; margin-top: 6px; }
-.icon-btn {
-  background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text-muted); font: inherit; font-size: 11px; padding: 5px 10px; border-radius: 6px; cursor: pointer; letter-spacing: 0.02em; transition: all 0.15s ease; text-transform: none;
-}
-.icon-btn:hover { border-color: var(--lime); color: var(--lime); }
+.icon-btn:hover { border-color: var(--lime); color: var(--lime); background: var(--bg-elev-3); }
 
 /* ========== DEAL SWITCHER ========== */
 .deal-bar { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -170,14 +167,21 @@ h1 em { color: var(--lime); font-style: italic; }
 }
 .deal-bar input[type=text]:focus { border-color: var(--lime); }
 .deal-bar .spacer { flex: 1; min-width: 10px; }
-.deal-bar .btn-mini-action {
-  background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text-muted); font: inherit; font-size: 12px; padding: 7px 12px; border-radius: 6px; cursor: pointer; letter-spacing: 0.02em; transition: all 0.15s ease;
+.btn-mini-action:hover { border-color: var(--lime); color: var(--lime); background: var(--bg-elev-3); }
+.btn-mini-action.primary {
+  background: var(--lime);
+  color: #0a0a0a;
+  border-color: var(--lime);
+  font-weight: 600;
 }
-.deal-bar .btn-mini-action:hover { border-color: var(--lime); color: var(--lime); }
-.deal-bar .btn-mini-action.primary { background: var(--lime); color: #0a0a0a; border-color: var(--lime); font-weight: 500; }
-.deal-bar .btn-mini-action.primary:hover { background: #b6dc1f; }
-.deal-bar .btn-mini-action.danger { color: var(--danger); }
-.deal-bar .btn-mini-action.danger:hover { border-color: var(--danger); background: var(--danger-dim); }
+.btn-mini-action.primary:hover {
+  background: #d4ff3d;
+  border-color: #d4ff3d;
+  color: #0a0a0a;
+  box-shadow: 0 2px 8px rgba(200, 241, 53, 0.25);
+}
+.btn-mini-action.danger { color: var(--danger); }
+.btn-mini-action.danger:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-dim); }
 .lock-icon-inline { display: inline-block; margin-left: 4px; font-size: 11px; }
 
 /* ========== PROJECT SETUP ========== */
@@ -413,13 +417,78 @@ h1 em { color: var(--lime); font-style: italic; }
 
 /* ========== ADD ROW ========== */
 .add-row { display: flex; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); align-items: center; flex-wrap: wrap; }
-.add-input { background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text); font: inherit; font-size: 13px; padding: 8px 10px; border-radius: 6px; outline: none; }
+.add-input { background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text); font: inherit; font-size: 13px; padding: 9px 12px; border-radius: 8px; outline: none; }
 .add-input:focus { border-color: var(--lime); }
-.btn-add { background: transparent; border: 1px dashed var(--border-strong); color: var(--text-muted); font: inherit; font-size: 12px; padding: 8px 14px; border-radius: 6px; cursor: pointer; letter-spacing: 0.04em; white-space: nowrap; }
-.btn-add:hover { border-color: var(--lime); color: var(--lime); border-style: solid; }
-.preset-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
-.btn-preset { background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text-muted); font: inherit; font-size: 11px; padding: 6px 12px; border-radius: 6px; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; }
-.btn-preset:hover { border-color: var(--lime); color: var(--lime); }
+
+/* ============== UNIFIED BUTTON SYSTEM ============== */
+/* Shared base — all small/medium buttons inherit these traits */
+.btn-add, .btn-preset, .btn-mini-action, .icon-btn {
+  font: inherit;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.08s ease, box-shadow 0.18s ease;
+}
+.btn-add:active, .btn-preset:active, .btn-mini-action:active, .icon-btn:active {
+  transform: translateY(1px);
+}
+.btn-add:focus-visible, .btn-preset:focus-visible, .btn-mini-action:focus-visible, .icon-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(200, 241, 53, 0.4);
+}
+
+/* btn-add: dashed action ("+ Add row") */
+.btn-add {
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+  color: var(--text-muted);
+  font-size: 12.5px;
+  padding: 9px 16px;
+  min-height: 36px;
+}
+.btn-add:hover { border-color: var(--lime); color: var(--lime); border-style: solid; background: var(--lime-dim); }
+
+/* btn-preset: small pill for inline actions (presets, tier actions, etc.) */
+.preset-buttons { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.btn-preset {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11.5px;
+  padding: 7px 12px;
+  text-transform: none;
+  min-height: 32px;
+}
+.btn-preset:hover { border-color: var(--lime); color: var(--lime); background: var(--bg-elev-3); }
+
+/* btn-mini-action: deal-bar actions (Save, Duplicate, Export, etc.) */
+.btn-mini-action {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 12.5px;
+  padding: 8px 14px;
+  min-height: 34px;
+}
+
+/* icon-btn: header utility buttons (Undo, Help, Lock) */
+.icon-btn {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11.5px;
+  padding: 7px 12px;
+  text-transform: none;
+  min-height: 32px;
+}
 
 /* ========== PASSTHROUGH ========== */
 .passthrough-grid { display: grid; grid-template-columns: 1.4fr 1fr 140px 24px; gap: 8px; align-items: center; }
@@ -520,6 +589,31 @@ h1 em { color: var(--lime); font-style: italic; }
 .pay-totals .stat .val.success { color: var(--success); }
 
 /* ========== TIER CARDS ========== */
+/* Auto-generate tier action bar */
+.tier-auto-bar {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 12px 14px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+}
+.tier-auto-label {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-faint);
+  margin-right: 4px;
+}
+.tier-auto-btn { background: var(--bg-elev); }
+.tier-auto-btn:hover { background: var(--lime-dim); border-color: var(--lime); color: var(--lime); }
+.tier-uplift-badge {
+  display: inline-block;
+  font-size: 9px; font-weight: 600; letter-spacing: 0.04em;
+  background: var(--lime-dim); color: var(--lime);
+  padding: 2px 5px; border-radius: 3px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
 .tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 @media (max-width: 760px) { .tier-grid { grid-template-columns: 1fr; } }
 .tier-card {
@@ -568,6 +662,127 @@ h1 em { color: var(--lime); font-style: italic; }
 }
 .tier-card-actions .btn-preset { flex: 1; padding: 8px 10px; text-align: center; }
 .tier-card-actions .btn-preset.danger-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+/* ========== SIMILAR DEALS / REFERENCE LIBRARY ========== */
+.similar-filters {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  padding: 14px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+}
+.filter-group { display: flex; flex-direction: column; gap: 4px; min-width: 130px; }
+.filter-label {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint);
+}
+.similar-filters select, .similar-filters .filter-input {
+  background: var(--bg-elev); border: 1px solid var(--border); color: var(--text);
+  font: inherit; font-size: 13px; padding: 8px 10px; border-radius: 6px; outline: none;
+  cursor: pointer;
+}
+.similar-filters .filter-input { cursor: text; }
+.similar-filters select:focus, .similar-filters .filter-input:focus { border-color: var(--lime); }
+
+.similar-stats {
+  font-size: 11px; color: var(--text-faint);
+  margin-bottom: 12px;
+  letter-spacing: 0.04em;
+}
+.similar-stats strong { color: var(--text); font-weight: 500; }
+
+.similar-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;
+}
+.similar-card {
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  display: flex; flex-direction: column;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.similar-card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+.similar-card.current { border-color: var(--lime); }
+.similar-card-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 8px; margin-bottom: 8px;
+}
+.similar-card-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 16px; letter-spacing: -0.01em; color: var(--text);
+  line-height: 1.2;
+  word-break: break-word;
+}
+.similar-card-status {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 3px; flex-shrink: 0;
+  background: var(--bg-elev-3); color: var(--text-muted);
+}
+.similar-card-status.draft { background: var(--bg-elev-3); color: var(--text-muted); }
+.similar-card-status.sent { background: rgba(139, 127, 217, 0.18); color: var(--purple); }
+.similar-card-status.negotiating { background: var(--warn-dim); color: var(--warn-bright); }
+.similar-card-status.signed { background: var(--success-dim); color: var(--success-bright); }
+.similar-card-status.lost { background: var(--danger-dim); color: var(--danger); }
+.similar-card-type {
+  font-size: 11px; color: var(--text-muted);
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+.similar-card-budget {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px; letter-spacing: -0.02em; color: var(--lime);
+  line-height: 1; margin-bottom: 8px;
+}
+.similar-card-meta { display: flex; flex-direction: column; gap: 3px; margin-bottom: 12px; }
+.similar-card-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
+.similar-card-row > span:last-child { color: var(--text); }
+.similar-card-row .grade-mini {
+  display: inline-block;
+  font-size: 9px; font-weight: 600; letter-spacing: 0.06em;
+  padding: 1px 5px; border-radius: 3px;
+  margin-left: 4px;
+}
+.similar-card-row .grade-mini.success { background: var(--success-dim); color: var(--success-bright); }
+.similar-card-row .grade-mini.warn { background: var(--warn-dim); color: var(--warn-bright); }
+.similar-card-row .grade-mini.danger { background: var(--danger-dim); color: var(--danger); }
+.similar-card-tiers {
+  display: flex; gap: 4px; margin-bottom: 10px; flex-wrap: wrap;
+}
+.tier-pill {
+  font-size: 9px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 3px;
+  background: var(--bg-elev-3);
+  color: var(--text-muted);
+}
+.tier-pill.has { background: var(--lime-dim); color: var(--lime); }
+.similar-card-timestamp {
+  font-size: 10px; color: var(--text-faint); letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+.similar-card-actions {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  padding-top: 10px; border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+.similar-card-actions .btn-preset { flex: 1; padding: 7px 8px; text-align: center; font-size: 10px; }
+.similar-empty {
+  grid-column: 1 / -1;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-faint);
+  font-style: italic;
+  font-size: 13px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+@media (max-width: 760px) {
+  .similar-filters { gap: 8px; padding: 12px; }
+  .filter-group { min-width: 0; flex: 1 1 calc(50% - 4px); }
+  .similar-grid { grid-template-columns: 1fr; }
+}
 
 /* ========== BASELINE COLUMN ========== */
 .cell-baseline { min-width: 80px; padding: 6px 4px !important; text-align: center; }
@@ -667,11 +882,41 @@ h1 em { color: var(--lime); font-style: italic; }
 
 /* ========== ACTIONS ========== */
 .actions-bar { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
-.btn { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 11px 18px; font: inherit; font-size: 13px; border-radius: var(--radius); cursor: pointer; transition: all 0.15s ease; }
-.btn:hover { border-color: var(--border-strong); }
-.btn.primary { background: var(--lime); color: #0a0a0a; border-color: var(--lime); font-weight: 500; }
-.btn.primary:hover { background: #b6dc1f; border-color: #b6dc1f; }
+.btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 13px 22px;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.08s ease, box-shadow 0.18s ease;
+}
+.btn:hover { border-color: var(--border-strong); background: var(--bg-elev-2); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(200, 241, 53, 0.4); }
+.btn.primary {
+  background: var(--lime);
+  color: #0a0a0a;
+  border-color: var(--lime);
+  font-weight: 600;
+}
+.btn.primary:hover {
+  background: #d4ff3d;
+  border-color: #d4ff3d;
+  box-shadow: 0 4px 14px rgba(200, 241, 53, 0.3);
+}
 .btn.secondary { background: var(--bg-elev-2); }
+.btn.secondary:hover { background: var(--bg-elev-3); }
 .btn.flex { flex: 1; min-width: 140px; }
 
 /* ========== COLLAPSIBLE ========== */
@@ -795,17 +1040,11 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   .fill-btn { display: inline-flex; }
 }
 
-/* Subtle dynamic transitions (light touch) */
+/* Subtle hover lifts for cards and panels */
 .summary-card, .panel, .field {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .summary-card:hover { border-color: var(--border-strong); }
-.btn, .btn-add, .btn-preset, .btn-mini-action, .icon-btn, .pt-btn, .btn-collapse {
-  transition: all 0.15s ease;
-}
-.btn:active, .btn-preset:active, .btn-mini-action:active, .icon-btn:active {
-  transform: translateY(1px);
-}
 .row-input, .add-input, select, .notes-textarea {
   transition: border-color 0.15s ease, background 0.15s ease;
 }
@@ -862,13 +1101,21 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
     </div>
 
     <div class="modal-section">
+      <h3>Similar Deals · Reference Library</h3>
+      <p>Open the <strong>Similar Deals</strong> panel to browse every saved deal as a card. Filter by project type, status, budget range, or search across name / team / notes. Sort by recency, budget, margin, or name. Click a card to open it; click <strong>Use as template</strong> to clone the schedule (team, hours, passthrough, phases, payment schedule, tiers) into a fresh deal — name and notes get reset so you start clean. The more you save and tag with Project Type, the more useful this gets.</p>
+    </div>
+
+    <div class="modal-section">
       <h3>Baseline Mode (Retainer)</h3>
       <p>Toggle <strong>Enable Baseline</strong> in the Mode bar. A new <em>Base/mo</em> column appears in the schedule — type how many hours per person should recur every month. Individual month cells then act as <em>overrides</em>. Empty month cell means "use the baseline." Type a number to override that specific month. Useful for steady-state retainers where most months look the same, with a few peak/quiet months mixed in.</p>
     </div>
 
     <div class="modal-section">
       <h3>Pricing Tiers · Low / Medium / High</h3>
-      <p>Open the <strong>Pricing Tiers</strong> panel near the top. Build your recommended price (start with Medium), click <strong>Snapshot</strong>. Trim the team or hours, snap as <strong>Low</strong>. Add more scope or seniority, snap as <strong>High</strong>. The active tier is highlighted — that's the one your edits flow into. <strong>Load</strong> brings a saved tier back into the workspace. Each tier shows margin grade so you can see the tradeoff at a glance.</p>
+      <p>Open the <strong>Pricing Tiers</strong> panel near the top. Two ways to build them:</p>
+      <p><strong>Manual.</strong> Build your recommended price first (start with Medium), click <strong>Snapshot</strong>. Trim the team or hours, snap as <strong>Low</strong>. Add more scope, snap as <strong>High</strong>.</p>
+      <p><strong>Auto-generate.</strong> Hit one of the uplift presets — <em>Standard (0/10/20%)</em>, <em>Moderate (0/15/30%)</em>, or <em>Aggressive (0/20/40%)</em> — to instantly create all three tiers by multiplying current rates. Useful when you've built a Low tier and just want to show what +X% rate uplifts look like. <strong>Custom uplifts…</strong> lets you set each tier's % yourself. If no budget is set, each tier's budget is auto-calculated from labor + passthrough at the uplifted rates.</p>
+      <p>The active tier is highlighted — that's the one your edits flow into. <strong>Load</strong> brings a saved tier back into the workspace. Each tier shows margin grade so you can see the tradeoff at a glance.</p>
     </div>
 
     <div class="modal-section">
@@ -981,7 +1228,7 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   </div>
   <div class="header-meta">
     <div><span class="autosave-dot" id="autosave-dot"></span><span id="autosave-text">Saved</span></div>
-    <div>v4.4 · 2025 Rate Card</div>
+    <div>v4.6 · 2025 Rate Card</div>
     <div class="header-actions">
       <button class="icon-btn" id="undo-btn" disabled>↶ Undo</button>
       <button class="icon-btn" id="redo-btn" disabled>↷ Redo</button>
@@ -1126,14 +1373,89 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
     </div>
     <div>
       <p style="font-size: 12px; color: var(--text-faint); margin-bottom: 14px; font-style: italic;">
-        Snapshot the current schedule into Low / Medium / High tiers. Switch between them anytime — the active one is what edits flow into. Use Snapshot to overwrite the current tier with what's on screen, or Load to bring a saved tier back into the workspace.
+        Snapshot the current schedule into Low / Medium / High tiers — or auto-generate three tiers by applying uplifts to your current rates.
       </p>
+
+      <!-- Auto-generate row -->
+      <div class="tier-auto-bar">
+        <div class="tier-auto-label">Auto-generate from current rates:</div>
+        <button class="btn-preset tier-auto-btn" data-tier-auto="standard" title="Low = current, Medium = +10%, High = +20%">Standard · 0 / 10 / 20%</button>
+        <button class="btn-preset tier-auto-btn" data-tier-auto="moderate" title="Low = current, Medium = +15%, High = +30%">Moderate · 0 / 15 / 30%</button>
+        <button class="btn-preset tier-auto-btn" data-tier-auto="aggressive" title="Low = current, Medium = +20%, High = +40%">Aggressive · 0 / 20 / 40%</button>
+        <button class="btn-preset tier-auto-btn" data-tier-auto="custom" title="Set your own % uplifts">Custom uplifts…</button>
+      </div>
+
       <div class="tier-grid" id="tier-grid"></div>
       <div class="tier-actions">
         <p style="font-size: 11px; color: var(--text-faint); margin-top: 12px; font-style: italic;">
-          <strong>Common pattern:</strong> Build the Medium tier first (your recommended price). Snapshot it. Then make a leaner version, snapshot as Low. Then add more hours / scope, snapshot as High.
+          <strong>Common pattern:</strong> Build the Medium tier first (your recommended price). Snapshot it. Then make a leaner version, snapshot as Low. Then add more hours / scope, snapshot as High. <em>Or skip all that and use the auto-generate buttons above.</em>
         </p>
       </div>
+    </div>
+  </div>
+
+  <!-- SIMILAR DEALS / REFERENCE LIBRARY -->
+  <div class="panel collapsed" id="panel-similar">
+    <div class="panel-head">
+      <div class="panel-title purple-prefix">Similar Deals · Reference Library</div>
+      <div class="panel-actions">
+        <span class="collapsed-summary" id="collapsed-similar">— no saved deals yet —</span>
+        <button class="btn-collapse" data-collapse="panel-similar" title="Collapse"></button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size: 12px; color: var(--text-faint); margin-bottom: 14px; font-style: italic;">
+        Browse your saved deals. Filter by type, status, or budget range. Click any deal to see its summary, or use <strong>Apply as template</strong> to pull its schedule into a new working deal.
+      </p>
+
+      <div class="similar-filters">
+        <div class="filter-group">
+          <label class="filter-label">Type</label>
+          <select id="similar-filter-type">
+            <option value="">All types</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Status</label>
+          <select id="similar-filter-status">
+            <option value="">All statuses</option>
+            <option value="Draft">Draft</option>
+            <option value="Sent">Sent</option>
+            <option value="Negotiating">Negotiating</option>
+            <option value="Signed">Signed</option>
+            <option value="Lost">Lost</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Budget range</label>
+          <select id="similar-filter-budget">
+            <option value="">Any size</option>
+            <option value="0-50000">Under $50K</option>
+            <option value="50000-100000">$50K — $100K</option>
+            <option value="100000-200000">$100K — $200K</option>
+            <option value="200000-500000">$200K — $500K</option>
+            <option value="500000-99999999">$500K+</option>
+          </select>
+        </div>
+        <div class="filter-group" style="flex: 1; min-width: 160px;">
+          <label class="filter-label">Search</label>
+          <input type="text" id="similar-filter-search" placeholder="Name, role, anything…" class="filter-input">
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Sort by</label>
+          <select id="similar-sort">
+            <option value="recency">Most recent</option>
+            <option value="budget-desc">Budget (high → low)</option>
+            <option value="budget-asc">Budget (low → high)</option>
+            <option value="margin-desc">Best margin first</option>
+            <option value="name">Name (A → Z)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="similar-stats" id="similar-stats"></div>
+
+      <div class="similar-grid" id="similar-grid"></div>
     </div>
   </div>
 
@@ -2636,6 +2958,7 @@ function renderAll() {
   renderPhases();
   renderPayments();
   renderTiers();
+  renderSimilar();
   renderSummary();
   renderReminders();
   renderDealSelect();
@@ -2733,6 +3056,12 @@ function renderCollapsedSummaries() {
       });
       tiersEl.textContent = parts.join(' · ');
     }
+  }
+  // Similar Deals
+  const simEl = document.getElementById('collapsed-similar');
+  if (simEl) {
+    const dealCount = Object.keys(loadDeals()).length;
+    simEl.textContent = dealCount === 0 ? '— no saved deals yet —' : `${dealCount} saved deal${dealCount === 1 ? '' : 's'} in library`;
   }
 }
 
@@ -2874,7 +3203,9 @@ function renderTiers() {
     const isActive = state.activeTier === key;
     const hasSnap = !!snap;
     html += `<div class="tier-card ${hasSnap ? 'filled' : ''} ${isActive ? 'active' : ''}" data-tier="${key}">`;
-    html += `<div class="tier-card-head"><div class="tier-card-label">${TIER_LABELS[key]}</div>`;
+    html += `<div class="tier-card-head"><div class="tier-card-label">${TIER_LABELS[key]}`;
+    if (hasSnap && snap.autoGenerated) html += ` <span class="tier-uplift-badge">+${snap.upliftPct}%</span>`;
+    html += `</div>`;
     if (isActive) html += `<div class="tier-active-badge">Active</div>`;
     html += `</div>`;
     if (hasSnap && metrics) {
@@ -2947,7 +3278,339 @@ function renderTiers() {
   });
 }
 
-// ============== END MONTH / DURATION SYNC ==============
+// Auto-generate tiers: Low = current state, Medium = +X% rates, High = +Y% rates
+// Budget adjusts proportionally to total labor so margin grades stay comparable
+function autoGenerateTiers(preset) {
+  const presets = {
+    standard:   { low: 0, medium: 10, high: 20 },
+    moderate:   { low: 0, medium: 15, high: 30 },
+    aggressive: { low: 0, medium: 20, high: 40 }
+  };
+
+  let upliftPcts;
+  if (preset === 'custom') {
+    const lowStr = prompt('Low tier uplift (% above current rates):', '0');
+    if (lowStr === null) return;
+    const medStr = prompt('Medium tier uplift (% above current rates):', '10');
+    if (medStr === null) return;
+    const highStr = prompt('High tier uplift (% above current rates):', '20');
+    if (highStr === null) return;
+    upliftPcts = {
+      low: parseFloat(lowStr) || 0,
+      medium: parseFloat(medStr) || 0,
+      high: parseFloat(highStr) || 0
+    };
+  } else {
+    upliftPcts = presets[preset];
+    if (!upliftPcts) return;
+  }
+
+  const anyExists = TIER_KEYS.some(k => state.tiers[k]);
+  if (anyExists && !confirm('Auto-generate will overwrite all three tier snapshots. Continue?')) return;
+
+  pushHistory();
+
+  // Capture current schedule as the baseline (Low gets 0% uplift = current)
+  const currentLabor = totalLabor();
+  const currentPT = totalPassthrough();
+  // If budget isn't set, derive it from current labor + PT for the Low tier baseline
+  const baseLowBudget = state.totalBudget > 0 ? state.totalBudget : (currentLabor + currentPT);
+
+  TIER_KEYS.forEach(key => {
+    const uplift = upliftPcts[key];
+    // Build a snapshot with rates uplifted
+    const upliftedTeam = state.team.map(t => ({
+      ...JSON.parse(JSON.stringify(t)),
+      rate: Math.round(t.rate * (1 + uplift / 100))
+    }));
+    // Compute the new labor with uplifted rates
+    const upliftedLabor = upliftedTeam.reduce((sum, t) => {
+      if (t.isPT) return sum;
+      let hrs = 0;
+      for (let i = 0; i < state.duration; i++) {
+        if (state.baselineMode) {
+          if (t.hours[i] !== undefined) hrs += t.hours[i];
+          else hrs += t.baselineHours || 0;
+        } else {
+          hrs += t.hours[i] || 0;
+        }
+      }
+      return sum + hrs * t.rate;
+    }, 0);
+    // Budget for this tier:
+    // - If original budget was set, scale it by the labor multiplier
+    // - If it wasn't, the new "budget" becomes uplifted labor + current PT
+    const labMultiplier = currentLabor > 0 ? upliftedLabor / currentLabor : 1;
+    const newBudget = state.totalBudget > 0
+      ? Math.round(state.totalBudget * (1 + uplift / 100))
+      : Math.round(upliftedLabor + currentPT);
+
+    state.tiers[key] = {
+      totalBudget: newBudget,
+      team: upliftedTeam,
+      passthroughs: JSON.parse(JSON.stringify(state.passthroughs)),
+      duration: state.duration,
+      startMonth: state.startMonth,
+      baselineMode: state.baselineMode,
+      phases: JSON.parse(JSON.stringify(state.phases)),
+      paymentSchedule: JSON.parse(JSON.stringify(state.paymentSchedule)),
+      capturedAt: Date.now(),
+      autoGenerated: true,
+      upliftPct: uplift
+    };
+  });
+
+  // Set Medium as active (it's the recommended one)
+  state.activeTier = 'medium';
+  // Apply the Medium snapshot to the live workspace
+  const med = state.tiers.medium;
+  state.totalBudget = med.totalBudget;
+  state.team = JSON.parse(JSON.stringify(med.team));
+
+  applyAllUIFromState();
+  scheduleHistoryPush();
+  renderAll();
+  const summary = `Low +${upliftPcts.low}% · Medium +${upliftPcts.medium}% · High +${upliftPcts.high}%`;
+  showToast(`Tiers generated · ${summary}`);
+}
+
+// Wire up the auto-generate buttons (run once on init since the panel HTML is static)
+function initTierAutoButtons() {
+  document.querySelectorAll('[data-tier-auto]').forEach(btn => {
+    btn.addEventListener('click', () => autoGenerateTiers(btn.dataset.tierAuto));
+  });
+}
+
+// ============== RENDER: SIMILAR DEALS / REFERENCE LIBRARY ==============
+const SIMILAR_FILTERS = { type: '', status: '', budget: '', search: '', sort: 'recency' };
+
+// Compute metrics for a deal's state without disturbing the active state
+function dealMetrics(dealState) {
+  const saved = {
+    team: state.team,
+    passthroughs: state.passthroughs,
+    duration: state.duration,
+    totalBudget: state.totalBudget,
+    baselineMode: state.baselineMode,
+    startMonth: state.startMonth
+  };
+  state.team = dealState.team || [];
+  state.passthroughs = dealState.passthroughs || [];
+  state.duration = dealState.duration || 6;
+  state.totalBudget = dealState.totalBudget || 0;
+  state.baselineMode = dealState.baselineMode || false;
+  state.startMonth = dealState.startMonth || '';
+  const labor = totalLabor();
+  const pt = totalPassthrough();
+  const fee = agencyFee();
+  const m = netMargin();
+  // Restore
+  state.team = saved.team;
+  state.passthroughs = saved.passthroughs;
+  state.duration = saved.duration;
+  state.totalBudget = saved.totalBudget;
+  state.baselineMode = saved.baselineMode;
+  state.startMonth = saved.startMonth;
+  return { labor, pt, fee, marginDollars: m.dollars, marginPct: m.pct };
+}
+
+function renderSimilar() {
+  const grid = document.getElementById('similar-grid');
+  const statsEl = document.getElementById('similar-stats');
+  const typeFilter = document.getElementById('similar-filter-type');
+  if (!grid || !typeFilter) return;
+
+  const deals = loadDeals();
+  const dealKeys = Object.keys(deals);
+
+  // Populate type filter dynamically based on actual saved deals
+  const typesInUse = new Set();
+  dealKeys.forEach(k => { const t = deals[k].state?.projectType; if (t) typesInUse.add(t); });
+  const currentTypeVal = typeFilter.value;
+  typeFilter.innerHTML = '<option value="">All types</option>' +
+    Array.from(typesInUse).sort().map(t => `<option value="${t}"${t === currentTypeVal ? ' selected' : ''}>${t}</option>`).join('');
+
+  // Filter deals
+  let filtered = dealKeys.map(k => ({ key: k, deal: deals[k] })).filter(({ deal }) => {
+    const s = deal.state || {};
+    if (SIMILAR_FILTERS.type && s.projectType !== SIMILAR_FILTERS.type) return false;
+    if (SIMILAR_FILTERS.status && (s.dealStatus || 'Draft') !== SIMILAR_FILTERS.status) return false;
+    if (SIMILAR_FILTERS.budget) {
+      const [lo, hi] = SIMILAR_FILTERS.budget.split('-').map(Number);
+      const b = s.totalBudget || 0;
+      if (b < lo || b > hi) return false;
+    }
+    if (SIMILAR_FILTERS.search) {
+      const q = SIMILAR_FILTERS.search.toLowerCase();
+      const haystack = [
+        deal.name || '',
+        s.projectName || '',
+        s.projectType || '',
+        s.dealStatus || '',
+        s.notes || '',
+        ...(s.team || []).map(t => `${t.name || ''} ${t.role || ''}`)
+      ].join(' ').toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  filtered.sort((a, b) => {
+    const sa = a.deal.state || {};
+    const sb = b.deal.state || {};
+    switch (SIMILAR_FILTERS.sort) {
+      case 'budget-desc': return (sb.totalBudget || 0) - (sa.totalBudget || 0);
+      case 'budget-asc':  return (sa.totalBudget || 0) - (sb.totalBudget || 0);
+      case 'margin-desc': return dealMetrics(sb).marginPct - dealMetrics(sa).marginPct;
+      case 'name':        return (a.deal.name || '').localeCompare(b.deal.name || '');
+      case 'recency':
+      default:            return (b.deal.updatedAt || 0) - (a.deal.updatedAt || 0);
+    }
+  });
+
+  // Stats line
+  const totalCount = dealKeys.length;
+  const shownCount = filtered.length;
+  const sumBudget = filtered.reduce((s, x) => s + (x.deal.state?.totalBudget || 0), 0);
+  const avgBudget = shownCount > 0 ? sumBudget / shownCount : 0;
+  statsEl.innerHTML = `Showing <strong>${shownCount}</strong> of <strong>${totalCount}</strong> saved deals · Total budget shown: <strong>${fmt(sumBudget)}</strong> · Avg: <strong>${fmt(avgBudget)}</strong>`;
+
+  // Render
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="similar-empty">${totalCount === 0 ? 'No saved deals yet. Save a few from the deal switcher above to start building your reference library.' : 'No deals match these filters.'}</div>`;
+    return;
+  }
+
+  let html = '';
+  filtered.forEach(({ key, deal }) => {
+    const s = deal.state || {};
+    const isCurrent = key === state.currentDealKey;
+    const metrics = dealMetrics(s);
+    const labor = metrics.labor;
+    const fee = metrics.fee;
+    const hasMargin = fee > 0 && labor > 0;
+    const g = hasMargin ? getMarginGrade(metrics.marginPct) : null;
+    const status = (s.dealStatus || 'Draft').toLowerCase();
+    const teamCount = (s.team || []).length;
+    const totalHrs = (s.team || []).reduce((sum, t) => {
+      const baseTotal = (s.baselineMode && t.baselineHours) ? t.baselineHours * (s.duration || 0) : 0;
+      const overrides = Object.values(t.hours || {}).reduce((a, b) => a + (b||0), 0);
+      return sum + (s.baselineMode ? baseTotal + overrides : overrides);
+    }, 0);
+    const tiers = s.tiers || { low: null, medium: null, high: null };
+    const dt = deal.updatedAt ? new Date(deal.updatedAt) : null;
+
+    html += `<div class="similar-card ${isCurrent ? 'current' : ''}" data-similar-key="${key}">`;
+    html += `<div class="similar-card-head">`;
+    html += `<div class="similar-card-name">${(deal.name || s.projectName || '(unnamed)').replace(/</g, '&lt;')}</div>`;
+    html += `<div class="similar-card-status ${status}">${s.dealStatus || 'Draft'}</div>`;
+    html += `</div>`;
+    if (s.projectType) html += `<div class="similar-card-type">${s.projectType}</div>`;
+    html += `<div class="similar-card-budget">${fmt(s.totalBudget || 0)}</div>`;
+    html += `<div class="similar-card-meta">`;
+    html += `<div class="similar-card-row"><span>Duration</span><span>${s.duration || 0} mo</span></div>`;
+    html += `<div class="similar-card-row"><span>Team</span><span>${teamCount} role${teamCount === 1 ? '' : 's'} · ${totalHrs} hrs</span></div>`;
+    html += `<div class="similar-card-row"><span>Labor</span><span>${fmt(labor)}</span></div>`;
+    if (hasMargin) {
+      html += `<div class="similar-card-row"><span>Margin</span><span>${metrics.marginPct.toFixed(0)}% <span class="grade-mini ${g.color}">${g.grade}</span></span></div>`;
+    }
+    html += `</div>`;
+    // Tier pills
+    const filledTiers = TIER_KEYS.filter(t => tiers[t]);
+    if (filledTiers.length > 0) {
+      html += `<div class="similar-card-tiers">`;
+      TIER_KEYS.forEach(t => {
+        html += `<span class="tier-pill ${tiers[t] ? 'has' : ''}">${TIER_LABELS[t][0]}</span>`;
+      });
+      html += `</div>`;
+    }
+    if (dt) html += `<div class="similar-card-timestamp">Updated ${dt.toLocaleDateString()} ${dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>`;
+    html += `<div class="similar-card-actions">`;
+    html += `<button class="btn-preset" data-similar-load="${key}" title="Load this deal into the workspace">Open</button>`;
+    html += `<button class="btn-preset" data-similar-template="${key}" title="Use as starting template for a new deal">Use as template</button>`;
+    html += `</div></div>`;
+  });
+  grid.innerHTML = html;
+
+  // Bind actions
+  grid.querySelectorAll('[data-similar-load]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const key = btn.dataset.similarLoad;
+      loadDealByKey(key);
+    });
+  });
+  grid.querySelectorAll('[data-similar-template]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const key = btn.dataset.similarTemplate;
+      applyAsTemplate(key);
+    });
+  });
+  // Click anywhere on card opens the deal
+  grid.querySelectorAll('.similar-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const key = card.dataset.similarKey;
+      loadDealByKey(key);
+    });
+  });
+}
+
+// Reuse the deal-select behavior for loading
+function loadDealByKey(key) {
+  const deals = loadDeals();
+  if (!deals[key]) return;
+  if (deals[key].password) {
+    const pw = prompt(`"${deals[key].name}" is locked. Enter password:`);
+    if (pw === null) return;
+    if (pw !== deals[key].password) { showToast('Wrong password', 'danger'); return; }
+  }
+  state = { ...freshState(), ...deals[key].state, currentDealKey: key };
+  applyAllUIFromState();
+  renderFitScore();
+  renderAll();
+  showToast(`Loaded "${deals[key].name}"`);
+  // Scroll up so the user sees the loaded deal at the top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function applyAsTemplate(key) {
+  const deals = loadDeals();
+  const source = deals[key];
+  if (!source) return;
+  if (source.password) {
+    const pw = prompt(`"${source.name}" is locked. Enter password to use as template:`);
+    if (pw === null) return;
+    if (pw !== source.password) { showToast('Wrong password', 'danger'); return; }
+  }
+  const newName = prompt(`Use "${source.name}" as a template — name your new deal:`, `${source.name} (template)`);
+  if (!newName || !newName.trim()) return;
+
+  // Clone the source state — but reset the deal-specific metadata
+  pushHistory();
+  const cloned = JSON.parse(JSON.stringify(source.state || {}));
+  // Carry over: team, hours, baseline, passthroughs, phases, paymentSchedule, totalBudget, duration, startMonth, projectType, baselineMode, fitScore, tiers
+  // Reset: projectName (use new name), dealStatus (back to Draft), notes (private to original), currentDealKey (new working deal)
+  cloned.projectName = newName.trim();
+  cloned.dealStatus = 'Draft';
+  cloned.notes = '';
+  cloned.currentDealKey = null;
+  // Give each team row a fresh id so they don't collide if the source is later loaded side-by-side
+  cloned.team = (cloned.team || []).map(t => ({ ...t, id: genId() }));
+  cloned.passthroughs = (cloned.passthroughs || []).map(p => ({ ...p, id: genId() }));
+  // Wipe collapsed panel state so the user sees everything in the new deal
+  cloned.collapsedPanels = {};
+
+  state = { ...freshState(), ...cloned };
+  applyAllUIFromState();
+  renderFitScore();
+  renderAll();
+  showToast(`New deal from template "${source.name}"`);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
 let syncing = false;
 function syncEndMonth() {
   if (syncing) return;
@@ -3008,11 +3671,26 @@ function initApp() {
   initPTPreset();
   initProjectTypePreset();
   initCollapseButtons();
+  initSimilarFilters();
+  initTierAutoButtons();
   renderFitScore();
   renderAll();
   // Establish baseline for undo
   lastSnapshot = snapshotState();
   updateUndoRedoButtons();
+}
+
+function initSimilarFilters() {
+  const typeEl = document.getElementById('similar-filter-type');
+  const statusEl = document.getElementById('similar-filter-status');
+  const budgetEl = document.getElementById('similar-filter-budget');
+  const searchEl = document.getElementById('similar-filter-search');
+  const sortEl = document.getElementById('similar-sort');
+  if (typeEl) typeEl.addEventListener('change', e => { SIMILAR_FILTERS.type = e.target.value; renderSimilar(); });
+  if (statusEl) statusEl.addEventListener('change', e => { SIMILAR_FILTERS.status = e.target.value; renderSimilar(); });
+  if (budgetEl) budgetEl.addEventListener('change', e => { SIMILAR_FILTERS.budget = e.target.value; renderSimilar(); });
+  if (searchEl) searchEl.addEventListener('input', e => { SIMILAR_FILTERS.search = e.target.value; renderSimilar(); });
+  if (sortEl) sortEl.addEventListener('change', e => { SIMILAR_FILTERS.sort = e.target.value; renderSimilar(); });
 }
 
 function setProjectTypeUI(val) {
