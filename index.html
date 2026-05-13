@@ -105,6 +105,19 @@ body {
   letter-spacing: 0.1em;
 }
 .gate-input:focus { border-color: var(--lime); }
+.gate-pw-wrap { position: relative; margin-bottom: 12px; }
+.gate-pw-wrap .gate-input { margin-bottom: 0; padding-right: 48px; }
+.gate-eye {
+  position: absolute; right: 4px; top: 4px; bottom: 4px;
+  background: transparent; border: none; cursor: pointer;
+  width: 40px;
+  color: var(--text-muted); font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+.gate-eye:hover { color: var(--lime); background: rgba(255,255,255,0.04); }
+.gate-eye.active { color: var(--lime); }
 .gate-btn {
   width: 100%;
   background: var(--lime);
@@ -228,6 +241,28 @@ h1 em { color: var(--lime); font-style: italic; }
 /* ========== PANELS ========== */
 .panel { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
 .panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+.btn-collapse {
+  background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+  width: 26px; height: 26px; border-radius: 6px; cursor: pointer;
+  font-size: 14px; line-height: 1; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s ease;
+}
+.btn-collapse:hover { border-color: var(--lime); color: var(--lime); }
+.panel.collapsed > *:not(.panel-head) { display: none; }
+.panel.collapsed .panel-head { margin-bottom: 0; }
+.panel.collapsed .panel-actions > *:not(.btn-collapse):not(.collapsed-summary) { display: none; }
+.panel.collapsed .btn-collapse::before { content: '+'; }
+.panel:not(.collapsed) .btn-collapse::before { content: '−'; }
+.collapsed-summary {
+  display: none;
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-right: 8px;
+}
+.panel.collapsed .collapsed-summary { display: inline-block; }
 .panel-title { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
 .panel-title::before { content: ''; width: 16px; height: 1px; background: var(--lime); }
 .panel-title.purple-prefix::before { background: var(--purple); }
@@ -383,6 +418,91 @@ h1 em { color: var(--lime); font-style: italic; }
 .phase-totals .stat .val.success { color: var(--success); }
 .phase-totals .stat .val.lime { color: var(--lime); }
 
+/* ========== PAYMENT SCHEDULE ========== */
+.pay-list { display: flex; flex-direction: column; gap: 8px; }
+.pay-row {
+  display: grid;
+  grid-template-columns: 1.4fr 80px 100px 100px 110px 1.1fr 24px;
+  gap: 8px;
+  align-items: center;
+}
+.pay-row .row-input,
+.pay-row select {
+  background: var(--bg-elev-2); border: 1px solid var(--border); color: var(--text);
+  font: inherit; font-size: 13px; padding: 8px 10px; border-radius: 6px; outline: none;
+}
+.pay-row .row-input:focus,
+.pay-row select:focus { border-color: var(--lime); }
+.pay-row .pct { text-align: right; }
+.pay-row .amount-display { font-family: 'DM Serif Display', serif; font-size: 14px; color: var(--lime); text-align: right; padding-right: 4px; }
+.pay-row select {
+  appearance: none; -webkit-appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a8a8a' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 22px;
+}
+.pay-row select option { background: var(--bg-elev-2); color: var(--text); }
+.pay-status {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+  padding-top: 4px; padding-bottom: 4px; padding-left: 8px;
+  border-radius: 4px;
+}
+.pay-status.pending { background: var(--bg-elev-2); color: var(--text-muted); }
+.pay-status.invoiced { background: rgba(139, 127, 217, 0.18); color: var(--purple); }
+.pay-status.paid { background: var(--success-dim); color: var(--success-bright); }
+.pay-status.overdue { background: var(--danger-dim); color: var(--danger); }
+.pay-header-row {
+  display: grid;
+  grid-template-columns: 1.4fr 80px 100px 100px 110px 1.1fr 24px;
+  gap: 8px;
+  font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint);
+  padding: 0 0 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.pay-header-row > div:nth-child(2),
+.pay-header-row > div:nth-child(3) { text-align: right; }
+.pay-totals {
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-strong);
+  display: flex; gap: 24px; flex-wrap: wrap;
+}
+.pay-totals .stat { display: flex; flex-direction: column; gap: 2px; }
+.pay-totals .stat .lbl { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); }
+.pay-totals .stat .val { font-family: 'DM Serif Display', serif; font-size: 18px; }
+.pay-totals .stat .val.lime { color: var(--lime); }
+.pay-totals .stat .val.warn { color: var(--warn); }
+.pay-totals .stat .val.success { color: var(--success); }
+
+/* ========== INTERNAL NOTES ========== */
+.notes-textarea {
+  width: 100%;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font: inherit; font-size: 13px; line-height: 1.5;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  outline: none;
+  min-height: 120px;
+  resize: vertical;
+  font-family: 'DM Sans', sans-serif;
+}
+.notes-textarea:focus { border-color: var(--lime); }
+.notes-textarea::placeholder { color: var(--text-faint); }
+
+/* ========== DEAL STATUS BADGE ========== */
+.deal-bar select#deal-status {
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.deal-bar select#deal-status[data-status="draft"]       { background-color: var(--bg-elev-2); color: var(--text-muted); border-color: var(--border); }
+.deal-bar select#deal-status[data-status="sent"]        { background-color: rgba(139, 127, 217, 0.18); color: var(--purple); border-color: var(--purple); }
+.deal-bar select#deal-status[data-status="negotiating"] { background-color: var(--warn-dim); color: var(--warn-bright); border-color: var(--warn); }
+.deal-bar select#deal-status[data-status="signed"]      { background-color: var(--success-dim); color: var(--success-bright); border-color: var(--success); }
+.deal-bar select#deal-status[data-status="lost"]        { background-color: var(--danger-dim); color: var(--danger); border-color: var(--danger); }
+
 /* ========== FIT SCORE ========== */
 .fit-grid { display: grid; grid-template-columns: 1fr 200px; gap: 24px; align-items: center; }
 @media (max-width: 700px) { .fit-grid { grid-template-columns: 1fr; } }
@@ -505,6 +625,10 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   .phase-row .row-input { padding: 7px 8px; font-size: 12px; }
   .passthrough-grid { grid-template-columns: 1fr 100px 24px; }
   .passthrough-grid .pt-note-col { display: none; }
+  .pay-row, .pay-header-row { grid-template-columns: 1fr 60px 80px 90px 22px; gap: 4px; }
+  .pay-row > .pay-due, .pay-row > .pay-notes,
+  .pay-header-row > .pay-due-h, .pay-header-row > .pay-notes-h { display: none; }
+  .pay-row .row-input, .pay-row select { padding: 7px 8px; font-size: 12px; }
 }
 </style>
 </head>
@@ -517,7 +641,10 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
     <div class="gate-logo-fallback" id="gate-logo-fallback" style="display:none;">Ghost Note</div>
     <div class="gate-title">BD × Finance <em>Pricing</em></div>
     <div class="gate-sub">Enter password to continue</div>
-    <input type="password" class="gate-input" id="gate-input" placeholder="••••••••" autocomplete="off">
+    <div class="gate-pw-wrap">
+      <input type="password" class="gate-input" id="gate-input" placeholder="••••••••" autocomplete="off">
+      <button class="gate-eye" id="gate-eye" type="button" title="Show / hide password" aria-label="Toggle password visibility">👁</button>
+    </div>
     <button class="gate-btn" id="gate-btn">Enter</button>
     <div class="gate-error" id="gate-error"></div>
   </div>
@@ -556,23 +683,58 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
     </div>
 
     <div class="modal-section">
+      <h3>Phase Budget</h3>
+      <p>Split the total budget across phases (Discovery 20%, Strategy 25%, etc.). Useful when prepping the SOW so you can defend the allocation.</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Payment Schedule</h3>
+      <p>Milestones with percentages, due months, status (Pending/Invoiced/Paid/Overdue), and notes. Presets: <strong>30/40/30, 50/50, 3 × equal, Equal monthly, Quarterly</strong> — or build it custom. Amounts auto-compute from the total budget. Status colors persist into the Excel export so it can double as a tracker.</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Deal Status &amp; Project Type</h3>
+      <p>Tag every deal as <strong>Draft / Sent / Negotiating / Signed / Lost</strong> with a colored badge. Project Type (Retainer, Campaign, Brand Strategy, Origination, etc.) sets you up for cross-deal search and "show me similar deals" in Phase 2.</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Internal Notes</h3>
+      <p>Strategic context, why you priced this way, who's championing it, what's negotiable. Private to you. Loaded back automatically when you re-open the deal.</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Minimize Any Panel</h3>
+      <p>The <strong>−</strong> button in every panel collapses it. Collapsed state is saved per deal — so a Signed deal can ship with everything collapsed except Summary if that's how you like it.</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Duplicate a Deal</h3>
+      <p>Loaded a deal? The <strong>Duplicate</strong> button clones it with a new name and resets status to Draft. Use it as a starting template for a similar deal — saves rebuilding the schedule from scratch.</p>
+    </div>
+
+    <div class="modal-section">
       <h3>Saving &amp; Loading</h3>
-      <p>Auto-saves to this browser on every change. Green dot = saved, yellow = saving. Type a name in <strong>Save as…</strong> and hit Save to keep a named copy. Switch between deals via the dropdown. <strong>Export JSON</strong> for cross-machine moves or backup.</p>
+      <p>Auto-saves to this browser on every change and when you click out of the tab. Green dot = saved, yellow = saving. Hit <strong>Save now</strong> to force a save. Type a name in <strong>Save as…</strong> and hit Save to keep a named copy. <strong>Export JSON</strong> for cross-machine moves.</p>
     </div>
 
     <div class="modal-section">
       <h3>Excel Export</h3>
-      <p>Generates a real .xlsx with <strong>live formulas</strong> — open in Excel or Google Sheets, change a cell, totals recalc. Sheet structure matches your BD_Pricing_Estimates: monthly grid, labor, passthrough, summary block, fit score.</p>
-    </div>
-
-    <div class="modal-section">
-      <h3>Phase Budget</h3>
-      <p>Open the Phase Budget panel to split the total budget across phases (Discovery 20%, Strategy 25%, etc.). Useful when prepping the SOW so you can defend the allocation.</p>
+      <p>Generates a real .xlsx with <strong>live formulas</strong> — open in Excel or Google Sheets, change a cell, totals recalc. Includes labor, passthrough, summary, fit, phase, payment schedule, and notes. Drop into Drive and Drive auto-converts to Sheets.</p>
     </div>
 
     <div class="modal-section">
       <h3>Per-Deal Lock</h3>
-      <p>Click the 🔒 next to a saved deal to set a password on it. Anyone loading that deal will be prompted. <strong>Note:</strong> this is light obfuscation, not real encryption — it stops casual viewing, not someone with browser dev tools.</p>
+      <p>Click <strong>🔒 Set password</strong> while a deal is loaded to lock it. Anyone trying to load it later is prompted. <strong>Note:</strong> light obfuscation, not real encryption — stops casual viewing, not someone with browser dev tools.</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Password Visibility</h3>
+      <p>The 👁 button on the site password gate (and any prompt) toggles between hidden dots and visible text — useful when you mistype.</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Rates &amp; Steps</h3>
+      <p>Type any rate. Arrow keys / spinners move in increments of $5 for fine control. Switch a role and the rate auto-applies from the rate card; override if needed.</p>
     </div>
 
     <div class="modal-section">
@@ -597,7 +759,7 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   </div>
   <div class="header-meta">
     <div><span class="autosave-dot" id="autosave-dot"></span><span id="autosave-text">Saved</span></div>
-    <div>v4.1 · 2025 Rate Card</div>
+    <div>v4.2 · 2025 Rate Card</div>
     <div class="header-actions">
       <button class="icon-btn" id="save-now-btn">Save now</button>
       <button class="icon-btn" id="help-btn">? Help</button>
@@ -610,8 +772,16 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
 <div class="deal-bar">
   <span class="deal-bar-label">Current Deal</span>
   <select id="deal-select"></select>
-  <input type="text" id="save-as-name" placeholder="Save as…" style="width: 180px;">
+  <select id="deal-status" title="Deal status">
+    <option value="Draft">Draft</option>
+    <option value="Sent">Sent</option>
+    <option value="Negotiating">Negotiating</option>
+    <option value="Signed">Signed</option>
+    <option value="Lost">Lost</option>
+  </select>
+  <input type="text" id="save-as-name" placeholder="Save as…" style="width: 160px;">
   <button class="btn-mini-action" id="save-deal-btn">Save</button>
+  <button class="btn-mini-action" id="duplicate-deal-btn" style="display:none;">Duplicate</button>
   <button class="btn-mini-action" id="lock-deal-btn" style="display:none;">🔒 Set password</button>
   <button class="btn-mini-action danger" id="delete-deal-btn" style="display:none;">Delete</button>
   <div class="spacer"></div>
@@ -619,6 +789,29 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   <button class="btn-mini-action" id="import-json-btn">Import JSON</button>
   <input type="file" id="import-file" accept=".json,application/json" style="display: none;">
   <button class="btn-mini-action primary" id="export-excel-btn">Export Excel</button>
+</div>
+
+<!-- PROJECT TYPE BAR -->
+<div class="deal-bar" style="margin-top: -8px; margin-bottom: 16px;">
+  <span class="deal-bar-label">Project Type</span>
+  <select id="project-type-preset" style="min-width: 180px;">
+    <option value="">— Pick type —</option>
+    <option value="New Engagement">New Engagement</option>
+    <option value="Retainer">Retainer</option>
+    <option value="Project (Fixed)">Project (Fixed)</option>
+    <option value="Campaign">Campaign</option>
+    <option value="Brand Strategy">Brand Strategy</option>
+    <option value="Brand Identity">Brand Identity</option>
+    <option value="Website / Digital">Website / Digital</option>
+    <option value="Content / Production">Content / Production</option>
+    <option value="Strategy Sprint">Strategy Sprint</option>
+    <option value="Origination">Origination</option>
+    <option value="Other">Other</option>
+  </select>
+  <input type="text" id="project-type-custom" placeholder="or custom type…" style="flex: 1; min-width: 140px; max-width: 300px;">
+  <div class="spacer"></div>
+  <span class="deal-bar-label">Modified</span>
+  <span id="last-modified" style="font-size: 11px; color: var(--text-muted);">—</span>
 </div>
 
 <!-- PROJECT SETUP -->
@@ -689,12 +882,14 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
 <div class="main-grid">
 
   <!-- SCHEDULE -->
-  <div class="panel">
+  <div class="panel" id="panel-schedule">
     <div class="panel-head">
       <div class="panel-title purple-prefix">Labor Schedule</div>
       <div class="panel-actions">
+        <span class="collapsed-summary" id="collapsed-schedule">— hidden —</span>
         <button class="btn-preset" id="distribute-evenly">Even distribute</button>
         <button class="btn-preset" id="clear-hours">Clear hours</button>
+        <button class="btn-collapse" data-collapse="panel-schedule" title="Collapse"></button>
       </div>
     </div>
 
@@ -708,7 +903,7 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
       <select class="add-input" id="add-role" style="min-width: 220px;"></select>
       <div style="display: flex; align-items: center; gap: 4px;">
         <span style="color: var(--text-faint); font-size: 13px;">$</span>
-        <input class="add-input" id="add-rate" type="number" placeholder="rate" style="width: 80px;" step="25">
+        <input class="add-input" id="add-rate" type="number" placeholder="rate" style="width: 80px;" step="5">
         <span style="color: var(--text-faint); font-size: 11px;">/hr</span>
       </div>
       <button class="btn-add" id="add-team-btn">+ Add row</button>
@@ -732,9 +927,13 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   <div class="two-col">
 
     <!-- PASSTHROUGH (non-labor) -->
-    <div class="panel">
+    <div class="panel" id="panel-passthrough">
       <div class="panel-head">
         <div class="panel-title warn-prefix">Passthrough · Non-Labor</div>
+        <div class="panel-actions">
+          <span class="collapsed-summary" id="collapsed-passthrough">— hidden —</span>
+          <button class="btn-collapse" data-collapse="panel-passthrough" title="Collapse"></button>
+        </div>
       </div>
       <p style="font-size: 11px; color: var(--text-faint); margin-bottom: 12px; font-style: italic;">
         Hard costs: production, talent, paid media, seeding, licensing. Freelance labor goes in the schedule above (toggle PT).
@@ -762,19 +961,20 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
     </div>
 
     <!-- FIT SCORE -->
-    <div class="panel">
+    <div class="panel collapsed" id="panel-fit">
       <div class="panel-head">
         <div class="panel-title">Deal Fit Score</div>
-        <button class="collapsible-toggle" id="fit-toggle">Show</button>
+        <div class="panel-actions">
+          <span class="collapsed-summary" id="collapsed-fit">— hidden —</span>
+          <button class="btn-collapse" data-collapse="panel-fit" title="Collapse"></button>
+        </div>
       </div>
-      <div class="collapsible" id="fit-collapsible">
-        <div class="fit-grid">
-          <div class="fit-list" id="fit-list"></div>
-          <div class="fit-summary">
-            <div class="fit-pct" id="fit-pct">—</div>
-            <div class="fit-score-text" id="fit-score-text">0 / 30</div>
-            <div class="fit-label">Overall fit</div>
-          </div>
+      <div class="fit-grid">
+        <div class="fit-list" id="fit-list"></div>
+        <div class="fit-summary">
+          <div class="fit-pct" id="fit-pct">—</div>
+          <div class="fit-score-text" id="fit-score-text">0 / 30</div>
+          <div class="fit-label">Overall fit</div>
         </div>
       </div>
     </div>
@@ -782,12 +982,15 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
   </div>
 
   <!-- PHASE BREAKDOWN -->
-  <div class="panel">
+  <div class="panel" id="panel-phases">
     <div class="panel-head">
       <div class="panel-title">Phase Budget Breakdown</div>
-      <button class="collapsible-toggle" id="phase-toggle">Show</button>
+      <div class="panel-actions">
+        <span class="collapsed-summary" id="collapsed-phases">— hidden —</span>
+        <button class="btn-collapse" data-collapse="panel-phases" title="Collapse"></button>
+      </div>
     </div>
-    <div class="collapsible" id="phase-collapsible">
+    <div>
       <p style="font-size: 12px; color: var(--text-faint); margin-bottom: 14px; font-style: italic;">
         Allocate the total budget across phases. Useful for defending the breakdown in the SOW. Percentages should total 100%.
       </p>
@@ -809,10 +1012,81 @@ footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border
     </div>
   </div>
 
+  <!-- PAYMENT SCHEDULE -->
+  <div class="panel" id="panel-payments">
+    <div class="panel-head">
+      <div class="panel-title warn-prefix">Payment Schedule</div>
+      <div class="panel-actions">
+        <span class="collapsed-summary" id="collapsed-payments">— hidden —</span>
+        <button class="btn-collapse" data-collapse="panel-payments" title="Collapse"></button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size: 12px; color: var(--text-faint); margin-bottom: 14px; font-style: italic;">
+        Milestones, percentages, due dates, status. Use one of the presets or build it custom — every row is editable.
+      </p>
+      <div class="pay-header-row">
+        <div>Milestone</div>
+        <div>%</div>
+        <div>Amount</div>
+        <div class="pay-due-h">Due Month</div>
+        <div>Status</div>
+        <div class="pay-notes-h">Notes</div>
+        <div></div>
+      </div>
+      <div class="pay-list" id="pay-list"></div>
+      <div class="add-row" style="margin-top: 14px; padding-top: 14px;">
+        <input class="add-input" id="add-pay-name" placeholder="Milestone name" style="flex: 1; min-width: 160px;">
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <input class="add-input" id="add-pay-pct" type="number" placeholder="%" style="width: 70px;" step="5" min="0" max="100">
+          <span style="color: var(--text-faint); font-size: 12px;">%</span>
+        </div>
+        <button class="btn-add" id="add-pay-btn">+ Add milestone</button>
+        <div style="flex: 1; min-width: 10px;"></div>
+        <div class="preset-buttons">
+          <span style="font-size: 10px; color: var(--text-faint); letter-spacing: 0.08em; text-transform: uppercase; align-self: center; margin-right: 4px;">Presets:</span>
+          <button class="btn-preset" data-pay-preset="standard">30 / 40 / 30</button>
+          <button class="btn-preset" data-pay-preset="half-half">50 / 50</button>
+          <button class="btn-preset" data-pay-preset="thirds">3 × equal</button>
+          <button class="btn-preset" data-pay-preset="monthly">Equal monthly</button>
+          <button class="btn-preset" data-pay-preset="quarterly">Quarterly</button>
+          <button class="btn-preset" data-pay-preset="clear">Clear</button>
+        </div>
+      </div>
+      <div class="pay-totals">
+        <div class="stat"><span class="lbl">Total %</span><span class="val" id="pay-total-pct">0%</span></div>
+        <div class="stat"><span class="lbl">Total invoiced</span><span class="val lime" id="pay-total-amt">$0</span></div>
+        <div class="stat"><span class="lbl">Paid to date</span><span class="val success" id="pay-paid">$0</span></div>
+        <div class="stat"><span class="lbl">Outstanding</span><span class="val warn" id="pay-outstanding">$0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERNAL NOTES -->
+  <div class="panel collapsed" id="panel-notes">
+    <div class="panel-head">
+      <div class="panel-title">Internal Notes</div>
+      <div class="panel-actions">
+        <span class="collapsed-summary" id="collapsed-notes">— hidden —</span>
+        <button class="btn-collapse" data-collapse="panel-notes" title="Collapse"></button>
+      </div>
+    </div>
+    <div>
+      <p style="font-size: 12px; color: var(--text-faint); margin-bottom: 12px; font-style: italic;">
+        Strategic context, why this number, who's championing this deal, what to defend in negotiation. Private to you.
+      </p>
+      <textarea class="notes-textarea" id="notes-textarea" placeholder="Why we priced this way, what's negotiable, who else is in the running, internal politics, anything worth remembering when this comes back around…"></textarea>
+    </div>
+  </div>
+
   <!-- REMINDERS -->
   <div class="panel" id="reminders-panel">
     <div class="panel-head">
       <div class="panel-title">Pricing Discipline</div>
+      <div class="panel-actions">
+        <span class="collapsed-summary" id="collapsed-reminders">— hidden —</span>
+        <button class="btn-collapse" data-collapse="reminders-panel" title="Collapse"></button>
+      </div>
     </div>
     <div class="reminders" id="reminders"></div>
   </div>
@@ -868,6 +1142,13 @@ function unlockGate() {
 
 document.getElementById('gate-btn').addEventListener('click', unlockGate);
 document.getElementById('gate-input').addEventListener('keydown', e => { if (e.key === 'Enter') unlockGate(); });
+document.getElementById('gate-eye').addEventListener('click', () => {
+  const inp = document.getElementById('gate-input');
+  const eye = document.getElementById('gate-eye');
+  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '🙈'; eye.classList.add('active'); }
+  else { inp.type = 'password'; eye.textContent = '👁'; eye.classList.remove('active'); }
+  inp.focus();
+});
 
 // ============== 2025 RATE CARD ==============
 const RATE_CARD = [
@@ -992,21 +1273,36 @@ const DEFAULT_PHASES = [
   { name: 'Launch & Measurement',     pct: 10 }
 ];
 
+const DEFAULT_PAYMENT_SCHEDULE = [
+  { name: 'Upon signing',     pct: 30, dueMonth: '', status: 'Pending', notes: '' },
+  { name: 'Midpoint',         pct: 40, dueMonth: '', status: 'Pending', notes: '' },
+  { name: 'Final delivery',   pct: 30, dueMonth: '', status: 'Pending', notes: '' }
+];
+
+const PAY_STATUSES = ['Pending', 'Invoiced', 'Paid', 'Overdue'];
+
 // ============== STATE ==============
-const STORAGE_KEY = 'gn-pricing-calculator-v4-1';
-const STORAGE_DEALS_KEY = 'gn-pricing-calculator-v4-1-deals';
+const STORAGE_KEY = 'gn-pricing-calculator-v4-2';
+const STORAGE_DEALS_KEY = 'gn-pricing-calculator-v4-2-deals';
+const STORAGE_KEY_PREV = 'gn-pricing-calculator-v4-1';
+const STORAGE_DEALS_KEY_PREV = 'gn-pricing-calculator-v4-1-deals';
 
 function freshState() {
   return {
     projectName: '',
+    projectType: '',
+    dealStatus: 'Draft',
     totalBudget: 142000,
     startMonth: new Date().toISOString().slice(0, 7),
     duration: 6,
     team: PRESETS['lean'].map(m => ({ id: genId(), name: m.name, role: m.role, rate: m.rate || RATE_LOOKUP[m.role] || 150, isPT: m.isPT || false, hours: {} })),
     passthroughs: [],
     phases: JSON.parse(JSON.stringify(DEFAULT_PHASES)),
+    paymentSchedule: JSON.parse(JSON.stringify(DEFAULT_PAYMENT_SCHEDULE)),
+    notes: '',
     fitScore: { budget: 0, culture: 0, decision: 0, strategic: 0, visibility: 0, retainer: 0 },
-    currentDealKey: null
+    currentDealKey: null,
+    collapsedPanels: {}
   };
 }
 
@@ -1061,19 +1357,39 @@ function saveNow() {
 
 function loadFromStorage() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    let raw = localStorage.getItem(STORAGE_KEY);
+    // Migrate v4.1 → v4.2 if needed
+    if (!raw) {
+      const prev = localStorage.getItem(STORAGE_KEY_PREV);
+      if (prev) {
+        raw = prev;
+        localStorage.setItem(STORAGE_KEY, prev);
+      }
+    }
     if (raw) {
       const loaded = JSON.parse(raw);
       state = { ...freshState(), ...loaded };
       state.team.forEach(m => { if (m.isPT === undefined) m.isPT = false; });
       if (!state.phases || state.phases.length === 0) state.phases = JSON.parse(JSON.stringify(DEFAULT_PHASES));
+      if (!state.paymentSchedule || state.paymentSchedule.length === 0) state.paymentSchedule = JSON.parse(JSON.stringify(DEFAULT_PAYMENT_SCHEDULE));
+      if (!state.dealStatus) state.dealStatus = 'Draft';
+      if (!state.collapsedPanels) state.collapsedPanels = {};
+      if (state.notes === undefined) state.notes = '';
+      if (state.projectType === undefined) state.projectType = '';
     }
   } catch (e) { console.error('Failed to load state:', e); }
 }
 
 function loadDeals() {
   try {
-    const raw = localStorage.getItem(STORAGE_DEALS_KEY);
+    let raw = localStorage.getItem(STORAGE_DEALS_KEY);
+    if (!raw) {
+      const prev = localStorage.getItem(STORAGE_DEALS_KEY_PREV);
+      if (prev) {
+        raw = prev;
+        localStorage.setItem(STORAGE_DEALS_KEY, prev);
+      }
+    }
     return raw ? JSON.parse(raw) : {};
   } catch (e) { return {}; }
 }
@@ -1206,7 +1522,7 @@ function renderSchedule() {
     html += `<td class="cell-pt-toggle"><button class="pt-btn ${member.isPT ? 'active' : ''}" data-pt-toggle="${idx}" title="Toggle passthrough">PT</button></td>`;
     html += `<td class="cell-name"><input class="row-input" data-field="name" value="${(member.name || '').replace(/"/g, '&quot;')}" placeholder="—"></td>`;
     html += `<td class="cell-role"><select class="role-select" data-field="role">${buildRoleSelectHTML(member.role, true)}</select></td>`;
-    html += `<td class="cell-rate"><div class="rate-wrap"><span>$</span><input class="row-input" data-field="rate" type="number" value="${member.rate}" step="25"></div></td>`;
+    html += `<td class="cell-rate"><div class="rate-wrap"><span>$</span><input class="row-input" data-field="rate" type="number" value="${member.rate}" step="5"></div></td>`;
     months.forEach(m => {
       const h = member.hours[m.idx] || '';
       html += `<td class="cell-month"><input class="row-input" data-month="${m.idx}" type="number" value="${h}" min="0" step="1" placeholder="—"></td>`;
@@ -1586,11 +1902,152 @@ function renderAll() {
   renderSchedule();
   renderPassthrough();
   renderPhases();
+  renderPayments();
   renderSummary();
   renderReminders();
   renderDealSelect();
+  renderLastModified();
+  renderCollapsedSummaries();
   syncEndMonth();
   autosave();
+}
+
+function renderLastModified() {
+  const el = document.getElementById('last-modified');
+  if (!el) return;
+  if (state.currentDealKey) {
+    const deals = loadDeals();
+    const d = deals[state.currentDealKey];
+    if (d && d.updatedAt) {
+      const dt = new Date(d.updatedAt);
+      el.textContent = dt.toLocaleDateString() + ' ' + dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return;
+    }
+  }
+  el.textContent = 'unsaved';
+}
+
+function renderCollapsedSummaries() {
+  // Schedule
+  const schedEl = document.getElementById('collapsed-schedule');
+  if (schedEl) {
+    const labor = totalLabor();
+    const hrs = state.team.reduce((s, t) => s + (Object.values(t.hours).reduce((a, b) => a + (b||0), 0)), 0);
+    schedEl.textContent = state.team.length > 0 ? `${state.team.length} roles · ${hrs} hrs · ${fmt(labor)}` : '— empty —';
+  }
+  // Passthrough
+  const ptEl = document.getElementById('collapsed-passthrough');
+  if (ptEl) {
+    const pt = totalPassthroughHard();
+    ptEl.textContent = state.passthroughs.length > 0 ? `${state.passthroughs.length} items · ${fmt(pt)}` : '— none —';
+  }
+  // Fit
+  const fitEl = document.getElementById('collapsed-fit');
+  if (fitEl) {
+    const total = fitScoreTotal();
+    fitEl.textContent = total > 0 ? `${total}/30 · ${Math.round((total/30)*100)}%` : '— not scored —';
+  }
+  // Phases
+  const phEl = document.getElementById('collapsed-phases');
+  if (phEl) {
+    const totalPct = state.phases.reduce((s, p) => s + (p.pct || 0), 0);
+    phEl.textContent = `${state.phases.length} phases · ${totalPct.toFixed(0)}%`;
+  }
+  // Payments
+  const payEl = document.getElementById('collapsed-payments');
+  if (payEl) {
+    const totalPct = state.paymentSchedule.reduce((s, p) => s + (p.pct || 0), 0);
+    payEl.textContent = `${state.paymentSchedule.length} milestones · ${totalPct.toFixed(0)}%`;
+  }
+  // Notes
+  const notesEl = document.getElementById('collapsed-notes');
+  if (notesEl) {
+    const len = (state.notes || '').length;
+    notesEl.textContent = len > 0 ? `${len} chars` : '— empty —';
+  }
+  // Reminders
+  const remEl = document.getElementById('collapsed-reminders');
+  if (remEl) {
+    const count = document.getElementById('reminders').children.length;
+    remEl.textContent = `${count} item${count !== 1 ? 's' : ''}`;
+  }
+}
+
+// ============== RENDER: PAYMENT SCHEDULE ==============
+function renderPayments() {
+  const list = document.getElementById('pay-list');
+  if (!list) return;
+  list.innerHTML = '';
+  state.paymentSchedule.forEach((p, idx) => {
+    const row = document.createElement('div');
+    row.className = 'pay-row';
+    const amt = state.totalBudget * (p.pct / 100);
+
+    const nameInput = document.createElement('input');
+    nameInput.className = 'row-input';
+    nameInput.value = p.name || '';
+    nameInput.placeholder = 'Milestone';
+    nameInput.addEventListener('input', e => { state.paymentSchedule[idx].name = e.target.value; renderPayments(); autosave(); });
+
+    const pctInput = document.createElement('input');
+    pctInput.className = 'row-input pct';
+    pctInput.type = 'number';
+    pctInput.value = p.pct;
+    pctInput.min = '0'; pctInput.max = '100'; pctInput.step = '1';
+    pctInput.addEventListener('input', e => { state.paymentSchedule[idx].pct = parseFloat(e.target.value) || 0; renderPayments(); autosave(); });
+
+    const amtEl = document.createElement('div');
+    amtEl.className = 'amount-display';
+    amtEl.textContent = fmt(amt);
+
+    const dueEl = document.createElement('input');
+    dueEl.className = 'row-input pay-due';
+    dueEl.type = 'month';
+    dueEl.value = p.dueMonth || '';
+    dueEl.addEventListener('input', e => { state.paymentSchedule[idx].dueMonth = e.target.value; autosave(); });
+
+    const statusSel = document.createElement('select');
+    statusSel.innerHTML = PAY_STATUSES.map(s => `<option value="${s}"${p.status === s ? ' selected' : ''}>${s}</option>`).join('');
+    statusSel.className = 'pay-status ' + (p.status || 'Pending').toLowerCase();
+    statusSel.addEventListener('change', e => {
+      state.paymentSchedule[idx].status = e.target.value;
+      renderPayments();
+      autosave();
+    });
+
+    const notesInput = document.createElement('input');
+    notesInput.className = 'row-input pay-notes';
+    notesInput.value = p.notes || '';
+    notesInput.placeholder = 'Notes (optional)';
+    notesInput.addEventListener('input', e => { state.paymentSchedule[idx].notes = e.target.value; autosave(); });
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'btn-x';
+    removeBtn.textContent = '×';
+    removeBtn.addEventListener('click', () => { state.paymentSchedule.splice(idx, 1); renderPayments(); autosave(); });
+
+    row.appendChild(nameInput);
+    row.appendChild(pctInput);
+    row.appendChild(amtEl);
+    row.appendChild(dueEl);
+    row.appendChild(statusSel);
+    row.appendChild(notesInput);
+    row.appendChild(removeBtn);
+    list.appendChild(row);
+  });
+
+  // Totals
+  const totalPct = state.paymentSchedule.reduce((s, p) => s + (p.pct || 0), 0);
+  const totalAmt = state.totalBudget * (totalPct / 100);
+  const paidAmt = state.paymentSchedule.filter(p => p.status === 'Paid').reduce((s, p) => s + state.totalBudget * (p.pct || 0) / 100, 0);
+  const outstanding = totalAmt - paidAmt;
+
+  const pctEl = document.getElementById('pay-total-pct');
+  pctEl.textContent = totalPct.toFixed(0) + '%';
+  pctEl.className = 'val ' + (Math.abs(totalPct - 100) < 0.5 ? 'success' : 'warn');
+  document.getElementById('pay-total-amt').textContent = fmt(totalAmt);
+  document.getElementById('pay-paid').textContent = fmt(paidAmt);
+  document.getElementById('pay-outstanding').textContent = fmt(outstanding);
 }
 
 // ============== END MONTH / DURATION SYNC ==============
@@ -1623,6 +2080,7 @@ function renderDealSelect() {
   });
   document.getElementById('delete-deal-btn').style.display = currentKey && deals[currentKey] ? 'inline-block' : 'none';
   document.getElementById('lock-deal-btn').style.display = currentKey && deals[currentKey] ? 'inline-block' : 'none';
+  document.getElementById('duplicate-deal-btn').style.display = currentKey && deals[currentKey] ? 'inline-block' : 'none';
   if (currentKey && deals[currentKey] && deals[currentKey].password) {
     document.getElementById('lock-deal-btn').textContent = '🔓 Remove lock';
   } else {
@@ -1637,10 +2095,37 @@ function initApp() {
   document.getElementById('total-budget').value = state.totalBudget;
   document.getElementById('duration').value = state.duration;
   document.getElementById('project-name').value = state.projectName || '';
+  document.getElementById('deal-status').value = state.dealStatus || 'Draft';
+  applyDealStatusColor();
+  setProjectTypeUI(state.projectType || '');
+  document.getElementById('notes-textarea').value = state.notes || '';
+  // Apply persisted collapsed state
+  Object.keys(state.collapsedPanels || {}).forEach(id => {
+    const p = document.getElementById(id);
+    if (p) {
+      if (state.collapsedPanels[id]) p.classList.add('collapsed');
+      else p.classList.remove('collapsed');
+    }
+  });
   initAddRole();
   initPTPreset();
+  initProjectTypePreset();
+  initCollapseButtons();
   renderFitScore();
   renderAll();
+}
+
+function setProjectTypeUI(val) {
+  const sel = document.getElementById('project-type-preset');
+  const custom = document.getElementById('project-type-custom');
+  const presetVals = Array.from(sel.options).map(o => o.value);
+  if (presetVals.includes(val)) { sel.value = val; custom.value = ''; }
+  else { sel.value = ''; custom.value = val; }
+}
+
+function applyDealStatusColor() {
+  const sel = document.getElementById('deal-status');
+  sel.setAttribute('data-status', (state.dealStatus || 'Draft').toLowerCase());
 }
 
 function initAddRole() {
@@ -1657,6 +2142,34 @@ function initPTPreset() {
   sel.innerHTML = '<option value="">Pick category…</option>' + PT_CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
   sel.addEventListener('change', e => {
     if (e.target.value) document.getElementById('pt-desc-custom').value = '';
+  });
+}
+
+function initProjectTypePreset() {
+  document.getElementById('project-type-preset').addEventListener('change', e => {
+    state.projectType = e.target.value;
+    document.getElementById('project-type-custom').value = '';
+    autosave();
+  });
+  document.getElementById('project-type-custom').addEventListener('input', e => {
+    state.projectType = e.target.value;
+    if (e.target.value) document.getElementById('project-type-preset').value = '';
+    autosave();
+  });
+}
+
+function initCollapseButtons() {
+  document.querySelectorAll('[data-collapse]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.dataset.collapse;
+      const panel = document.getElementById(targetId);
+      if (!panel) return;
+      panel.classList.toggle('collapsed');
+      if (!state.collapsedPanels) state.collapsedPanels = {};
+      state.collapsedPanels[targetId] = panel.classList.contains('collapsed');
+      autosave();
+      renderCollapsedSummaries();
+    });
   });
 }
 
@@ -1742,16 +2255,15 @@ document.getElementById('add-pt-btn').addEventListener('click', () => {
   renderAll();
 });
 
-document.getElementById('fit-toggle').addEventListener('click', () => {
-  const el = document.getElementById('fit-collapsible');
-  el.classList.toggle('open');
-  document.getElementById('fit-toggle').textContent = el.classList.contains('open') ? 'Hide' : 'Show';
+document.getElementById('deal-status').addEventListener('change', e => {
+  state.dealStatus = e.target.value;
+  applyDealStatusColor();
+  autosave();
 });
 
-document.getElementById('phase-toggle').addEventListener('click', () => {
-  const el = document.getElementById('phase-collapsible');
-  el.classList.toggle('open');
-  document.getElementById('phase-toggle').textContent = el.classList.contains('open') ? 'Hide' : 'Show';
+document.getElementById('notes-textarea').addEventListener('input', e => {
+  state.notes = e.target.value;
+  autosave();
 });
 
 document.getElementById('add-phase-btn').addEventListener('click', () => {
@@ -1771,6 +2283,77 @@ document.getElementById('reset-phases').addEventListener('click', () => {
   state.phases = JSON.parse(JSON.stringify(DEFAULT_PHASES));
   renderPhases();
   autosave();
+});
+
+// ============== PAYMENT SCHEDULE EVENTS ==============
+document.getElementById('add-pay-btn').addEventListener('click', () => {
+  const nEl = document.getElementById('add-pay-name');
+  const pEl = document.getElementById('add-pay-pct');
+  const name = nEl.value.trim();
+  const pct = parseFloat(pEl.value) || 0;
+  if (!name) { nEl.focus(); return; }
+  state.paymentSchedule.push({ name, pct, dueMonth: '', status: 'Pending', notes: '' });
+  nEl.value = ''; pEl.value = '';
+  renderPayments();
+  autosave();
+});
+
+document.querySelectorAll('[data-pay-preset]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const preset = btn.dataset.payPreset;
+    if (preset === 'clear') {
+      if (!confirm('Clear all payment milestones?')) return;
+      state.paymentSchedule = [];
+    } else if (preset === 'standard') {
+      state.paymentSchedule = [
+        { name: 'Upon signing',  pct: 30, dueMonth: state.startMonth || '', status: 'Pending', notes: '' },
+        { name: 'Midpoint',      pct: 40, dueMonth: addMonths(state.startMonth, Math.floor(state.duration / 2)) || '', status: 'Pending', notes: '' },
+        { name: 'Final delivery',pct: 30, dueMonth: addMonths(state.startMonth, state.duration) || '', status: 'Pending', notes: '' }
+      ];
+    } else if (preset === 'half-half') {
+      state.paymentSchedule = [
+        { name: 'Upon signing', pct: 50, dueMonth: state.startMonth || '', status: 'Pending', notes: '' },
+        { name: 'On completion',pct: 50, dueMonth: addMonths(state.startMonth, state.duration) || '', status: 'Pending', notes: '' }
+      ];
+    } else if (preset === 'thirds') {
+      const third = Math.floor(state.duration / 3);
+      state.paymentSchedule = [
+        { name: 'Phase 1', pct: 33, dueMonth: state.startMonth || '', status: 'Pending', notes: '' },
+        { name: 'Phase 2', pct: 33, dueMonth: addMonths(state.startMonth, third) || '', status: 'Pending', notes: '' },
+        { name: 'Phase 3', pct: 34, dueMonth: addMonths(state.startMonth, third * 2) || '', status: 'Pending', notes: '' }
+      ];
+    } else if (preset === 'monthly') {
+      const n = Math.max(state.duration, 1);
+      const each = Math.floor((100 / n) * 100) / 100;
+      const remainder = 100 - each * n;
+      state.paymentSchedule = [];
+      for (let i = 0; i < n; i++) {
+        state.paymentSchedule.push({
+          name: `Month ${i + 1}`,
+          pct: i === n - 1 ? each + remainder : each,
+          dueMonth: addMonths(state.startMonth, i) || '',
+          status: 'Pending',
+          notes: ''
+        });
+      }
+    } else if (preset === 'quarterly') {
+      const quarters = Math.ceil(state.duration / 3);
+      const each = Math.floor((100 / quarters) * 100) / 100;
+      const remainder = 100 - each * quarters;
+      state.paymentSchedule = [];
+      for (let i = 0; i < quarters; i++) {
+        state.paymentSchedule.push({
+          name: `Q${i + 1}`,
+          pct: i === quarters - 1 ? each + remainder : each,
+          dueMonth: addMonths(state.startMonth, i * 3) || '',
+          status: 'Pending',
+          notes: ''
+        });
+      }
+    }
+    renderPayments();
+    autosave();
+  });
 });
 
 // HEADER ACTIONS
@@ -1816,10 +2399,7 @@ document.getElementById('deal-select').addEventListener('change', e => {
       state = { ...freshState(), ...loaded };
       state.currentDealKey = null;
     }
-    document.getElementById('project-name').value = state.projectName || '';
-    document.getElementById('total-budget').value = state.totalBudget;
-    document.getElementById('duration').value = state.duration;
-    document.getElementById('start-month').value = state.startMonth || '';
+    applyAllUIFromState();
     renderFitScore();
     renderAll();
     return;
@@ -1829,7 +2409,6 @@ document.getElementById('deal-select').addEventListener('change', e => {
     if (deals[k].password) {
       const pw = prompt(`"${deals[k].name}" is locked. Enter password:`);
       if (pw === null) {
-        // user cancelled — revert select
         document.getElementById('deal-select').value = state.currentDealKey || '__current__';
         return;
       }
@@ -1840,15 +2419,29 @@ document.getElementById('deal-select').addEventListener('change', e => {
       }
     }
     state = { ...freshState(), ...deals[k].state, currentDealKey: k };
-    document.getElementById('project-name').value = state.projectName || '';
-    document.getElementById('total-budget').value = state.totalBudget;
-    document.getElementById('duration').value = state.duration;
-    document.getElementById('start-month').value = state.startMonth || '';
+    applyAllUIFromState();
     renderFitScore();
     renderAll();
     showToast(`Loaded "${deals[k].name}"`);
   }
 });
+
+function applyAllUIFromState() {
+  document.getElementById('project-name').value = state.projectName || '';
+  document.getElementById('total-budget').value = state.totalBudget;
+  document.getElementById('duration').value = state.duration;
+  document.getElementById('start-month').value = state.startMonth || '';
+  document.getElementById('deal-status').value = state.dealStatus || 'Draft';
+  applyDealStatusColor();
+  setProjectTypeUI(state.projectType || '');
+  document.getElementById('notes-textarea').value = state.notes || '';
+  // Reapply collapsed states
+  document.querySelectorAll('.panel[id^="panel-"], #reminders-panel').forEach(p => p.classList.remove('collapsed'));
+  Object.keys(state.collapsedPanels || {}).forEach(id => {
+    const p = document.getElementById(id);
+    if (p && state.collapsedPanels[id]) p.classList.add('collapsed');
+  });
+}
 
 document.getElementById('delete-deal-btn').addEventListener('click', () => {
   const k = state.currentDealKey;
@@ -1862,6 +2455,31 @@ document.getElementById('delete-deal-btn').addEventListener('click', () => {
   renderDealSelect();
   autosave();
   showToast('Deal deleted', 'warn');
+});
+
+document.getElementById('duplicate-deal-btn').addEventListener('click', () => {
+  const k = state.currentDealKey;
+  if (!k) return;
+  const deals = loadDeals();
+  if (!deals[k]) return;
+  const originalName = deals[k].name;
+  const newName = prompt(`Duplicate "${originalName}" — enter a new name:`, `${originalName} (copy)`);
+  if (!newName || !newName.trim()) return;
+  const newKey = slugify(newName.trim()) || ('deal_' + Date.now());
+  if (deals[newKey] && !confirm(`A deal at slug "${newKey}" already exists. Overwrite?`)) return;
+  const clonedState = JSON.parse(JSON.stringify(state));
+  clonedState.currentDealKey = newKey;
+  clonedState.projectName = newName.trim();
+  clonedState.dealStatus = 'Draft'; // reset to Draft on duplicate
+  deals[newKey] = { name: newName.trim(), state: clonedState, updatedAt: Date.now(), password: null };
+  saveDeals(deals);
+  state = clonedState;
+  document.getElementById('project-name').value = state.projectName;
+  document.getElementById('deal-status').value = state.dealStatus;
+  applyDealStatusColor();
+  renderDealSelect();
+  renderAll();
+  showToast(`Duplicated as "${newName.trim()}"`);
 });
 
 document.getElementById('lock-deal-btn').addEventListener('click', () => {
@@ -1912,10 +2530,7 @@ document.getElementById('import-file').addEventListener('change', e => {
           saveDeals({ ...existing, ...data.savedDeals });
         }
         state = { ...freshState(), ...data.state, currentDealKey: null };
-        document.getElementById('project-name').value = state.projectName || '';
-        document.getElementById('total-budget').value = state.totalBudget;
-        document.getElementById('duration').value = state.duration;
-        document.getElementById('start-month').value = state.startMonth || '';
+        applyAllUIFromState();
         renderFitScore();
         renderAll();
         showToast('Import complete');
@@ -1942,6 +2557,8 @@ function exportExcel() {
 
   // 1: Project header
   rows.push([state.projectName || 'GN Pricing', '', '', 'Total Budget', state.totalBudget]);
+  rows.push(['', '', '', 'Project Type', state.projectType || '']);
+  rows.push(['', '', '', 'Status', state.dealStatus || 'Draft']);
   rows.push(['', '', '', 'Duration', state.duration + ' months']);
   rows.push(['', '', '', 'Start', state.startMonth]);
   rows.push(['', '', '', 'End', addMonths(state.startMonth, state.duration)]);
@@ -2046,12 +2663,35 @@ function exportExcel() {
   }
 
   // Phase breakdown
+  let phaseRowStart = null;
   if (state.phases && state.phases.length > 0) {
     rows.push([]);
     rows.push(['PHASE BUDGET']);
+    phaseRowStart = rows.length + 1; // 1-based row of first phase entry
     state.phases.forEach(p => {
       rows.push([p.name, p.pct + '%', null]);
     });
+  }
+
+  // Payment schedule
+  let paymentRowStart = null;
+  if (state.paymentSchedule && state.paymentSchedule.length > 0) {
+    rows.push([]);
+    rows.push(['PAYMENT SCHEDULE']);
+    rows.push(['Milestone', '%', 'Amount', 'Due Month', 'Status', 'Notes']);
+    paymentRowStart = rows.length + 1;
+    state.paymentSchedule.forEach(p => {
+      rows.push([p.name, p.pct + '%', null, p.dueMonth || '', p.status || 'Pending', p.notes || '']);
+    });
+    // Totals row
+    rows.push(['Total', null, null]);
+  }
+
+  // Internal notes
+  if (state.notes && state.notes.trim()) {
+    rows.push([]);
+    rows.push(['INTERNAL NOTES']);
+    state.notes.split('\n').forEach(line => rows.push([line]));
   }
 
   // Convert to sheet
@@ -2228,16 +2868,36 @@ function exportExcel() {
     ws[XLSX.utils.encode_cell({r: fitPctRow-1, c: 2})].z = '0%';
   }
 
-  // Phase amounts (placed at the end)
-  if (state.phases && state.phases.length > 0) {
-    // find phase rows — they are appended after fit
-    const lastRowIdx = rows.length - 1; // 0-based
-    const phaseStartIdx = lastRowIdx - state.phases.length + 1;
+  // Phase amounts — uses tracked phaseRowStart
+  if (phaseRowStart !== null && state.phases && state.phases.length > 0) {
     state.phases.forEach((p, i) => {
-      const r = phaseStartIdx + i + 1; // 1-based
+      const r = phaseRowStart + i;
       const ref = XLSX.utils.encode_cell({ r: r-1, c: 2 });
       ws[ref] = { t: 'n', f: `${budgetCell}*${p.pct}/100`, v: state.totalBudget * (p.pct / 100), z: '"$"#,##0' };
     });
+  }
+
+  // Payment schedule amounts and totals
+  if (paymentRowStart !== null && state.paymentSchedule && state.paymentSchedule.length > 0) {
+    state.paymentSchedule.forEach((p, i) => {
+      const r = paymentRowStart + i;
+      const ref = XLSX.utils.encode_cell({ r: r-1, c: 2 });
+      ws[ref] = { t: 'n', f: `${budgetCell}*${p.pct}/100`, v: state.totalBudget * (p.pct / 100), z: '"$"#,##0' };
+    });
+    // Total row
+    const totalRow = paymentRowStart + state.paymentSchedule.length;
+    const totalAmtRef = XLSX.utils.encode_cell({ r: totalRow-1, c: 2 });
+    const firstAmtRef = XLSX.utils.encode_cell({ r: paymentRowStart-1, c: 2 });
+    const lastAmtRef = XLSX.utils.encode_cell({ r: paymentRowStart + state.paymentSchedule.length - 2, c: 2 });
+    const totalPctRef = XLSX.utils.encode_cell({ r: totalRow-1, c: 1 });
+    const firstPctRef = XLSX.utils.encode_cell({ r: paymentRowStart-1, c: 1 });
+    const lastPctRef = XLSX.utils.encode_cell({ r: paymentRowStart + state.paymentSchedule.length - 2, c: 1 });
+    ws[totalAmtRef] = {
+      t: 'n',
+      f: `SUM(${firstAmtRef}:${lastAmtRef})`,
+      v: state.totalBudget * state.paymentSchedule.reduce((s, p) => s + (p.pct||0), 0) / 100,
+      z: '"$"#,##0'
+    };
   }
 
   // Column widths
@@ -2264,14 +2924,18 @@ function showToast(msg, level) {
 }
 
 function resetAll() {
-  if (!confirm('Reset everything? Clears project name, team, hours, passthrough, phases, and fit score. Saved deals kept.')) return;
+  if (!confirm('Reset everything? Clears project, team, hours, passthrough, phases, payment schedule, notes, and fit score. Saved deals kept.')) return;
   state = freshState();
   state.team = [];
   state.phases = JSON.parse(JSON.stringify(DEFAULT_PHASES));
-  document.getElementById('project-name').value = '';
+  state.paymentSchedule = JSON.parse(JSON.stringify(DEFAULT_PAYMENT_SCHEDULE));
+  state.notes = '';
+  state.projectType = '';
+  state.dealStatus = 'Draft';
   document.getElementById('total-budget').value = 0;
+  state.totalBudget = 0;
   document.getElementById('duration').value = 6;
-  document.getElementById('start-month').value = state.startMonth;
+  applyAllUIFromState();
   renderFitScore();
   renderAll();
 }
@@ -2289,6 +2953,8 @@ function copyToClipboard() {
 
   let text = `GHOST NOTE — BD × FINANCE PRICING\n${SEP}\n\n`;
   text += `Project:        ${state.projectName || '(unnamed)'}\n`;
+  if (state.projectType) text += `Type:           ${state.projectType}\n`;
+  text += `Status:         ${state.dealStatus || 'Draft'}\n`;
   text += `Budget:         ${fmt(state.totalBudget)}\n`;
   text += `Duration:       ${state.duration} months (${state.startMonth} → ${addMonths(state.startMonth, state.duration)})\n\n`;
 
@@ -2345,9 +3011,28 @@ function copyToClipboard() {
     text += `\n`;
   }
 
+  if (state.paymentSchedule && state.paymentSchedule.length > 0 && state.totalBudget > 0) {
+    text += `PAYMENT SCHEDULE\n`;
+    state.paymentSchedule.forEach(p => {
+      const amt = state.totalBudget * (p.pct / 100);
+      const due = p.dueMonth ? ` · due ${p.dueMonth}` : '';
+      const status = p.status ? ` [${p.status}]` : '';
+      const note = p.notes ? ` — ${p.notes}` : '';
+      text += `  ${p.name}: ${p.pct}% · ${fmt(amt)}${due}${status}${note}\n`;
+    });
+    const totalPct = state.paymentSchedule.reduce((s, p) => s + (p.pct || 0), 0);
+    text += `  Total: ${totalPct.toFixed(0)}%\n\n`;
+  }
+
   if (fitTotal > 0) {
     text += `FIT (${fitTotal}/30 = ${Math.round(fitTotal/30*100)}%)\n`;
     FIT_CRITERIA.forEach(c => text += `  ${c.label}: ${state.fitScore[c.key]}/5\n`);
+    text += `\n`;
+  }
+
+  if (state.notes && state.notes.trim()) {
+    text += `INTERNAL NOTES\n`;
+    state.notes.split('\n').forEach(line => text += `  ${line}\n`);
   }
 
   navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard'));
